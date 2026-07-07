@@ -28,6 +28,8 @@ The platform includes:
 - Avoid large monolithic JavaScript files.
 - Use reusable Bootstrap components where appropriate.
 - Keep HTML, CSS and JavaScript readable and well organized.
+- Use a custom client-side router with clean URLs without hashes.
+- Keep each route page and shared component in separate HTML, CSS and JavaScript files, loaded dynamically by the router.
 
 ## UI and design direction
 - Create a polished, premium, modern and trustworthy pet platform.
