@@ -21,7 +21,9 @@ The platform includes:
 - Do not add Supabase, authentication or database logic until explicitly requested.
 
 ## Architecture
-- Use a multi-page application structure with separate HTML pages.
+- Use a Vite multi-page-style application with a custom client-side router and clean URLs without hashes.
+- Keep each page and shared component in separate HTML, CSS and JavaScript files.
+- Load page fragments dynamically through the router.
 - Keep pages, components, services, utilities and styles in separate files.
 - Avoid large monolithic JavaScript files.
 - Use reusable Bootstrap components where appropriate.
