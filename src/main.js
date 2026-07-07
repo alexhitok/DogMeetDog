@@ -1,3 +1,4 @@
+import 'bootstrap/dist/css/bootstrap.min.css'
 import './style.css'
 import { createRouter } from './app/router.js'
 import { renderFooter } from './components/footer/footer.js'
