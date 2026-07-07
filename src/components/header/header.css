@@ -9,3 +9,33 @@
 .site-header .nav-link.is-active {
   color: #0d6efd;
 }
+.site-header .navbar-brand {
+  gap: 0.55rem;
+  color: #243447;
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.site-header .brand-mark {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 38px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #fff7ef;
+}
+
+.site-header .brand-mark img {
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  width: 76px;
+  max-width: none;
+  transform: translateX(-50%);
+}
+
+.site-header .brand-wordmark {
+  white-space: nowrap;
+}
