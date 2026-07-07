@@ -1,0 +1,11 @@
+.site-header .navbar-brand {
+  letter-spacing: 0.02em;
+}
+
+.site-header .nav-link {
+  color: #495057;
+}
+
+.site-header .nav-link.is-active {
+  color: #0d6efd;
+}
