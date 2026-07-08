@@ -3,5 +3,63 @@
     <h1 class="h3 mb-4">Profile</h1>
     <div data-profile-user class="mb-3"></div>
     <div data-profile-actions></div>
+    <hr class="my-4" data-dog-section-divider />
+    <section class="mb-4" data-dog-form-section>
+      <h2 class="h5 mb-3">Add your dog</h2>
+      <div data-dog-form-status class="mb-3"></div>
+      <form data-dog-form class="row g-3">
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="dog-name">Dog name</label>
+          <input id="dog-name" name="name" type="text" class="form-control" required />
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="dog-breed">Breed</label>
+          <input id="dog-breed" name="breed" type="text" class="form-control" />
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="dog-age-years">Age years</label>
+          <input id="dog-age-years" name="ageYears" type="number" min="0" class="form-control" />
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="dog-size">Size</label>
+          <select id="dog-size" name="size" class="form-select" required>
+            <option value="">Select size</option>
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label" for="dog-gender">Gender</label>
+          <select id="dog-gender" name="gender" class="form-select" required>
+            <option value="">Select gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="unknown">Unknown</option>
+          </select>
+        </div>
+        <div class="col-12">
+          <label class="form-label" for="dog-temperament">Temperament</label>
+          <input id="dog-temperament" name="temperament" type="text" class="form-control" />
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="dog-district">District</label>
+          <input id="dog-district" name="district" type="text" class="form-control" />
+        </div>
+        <div class="col-12">
+          <label class="form-label" for="dog-description">Description</label>
+          <textarea id="dog-description" name="description" class="form-control" rows="4"></textarea>
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary">Add dog</button>
+        </div>
+      </form>
+    </section>
+    <hr class="my-4" data-my-dogs-divider />
+    <section data-my-dogs-section>
+      <h2 class="h5 mb-3">My dogs</h2>
+      <div data-my-dogs-status class="mb-3"></div>
+      <div data-my-dogs-list class="row g-3"></div>
+    </section>
   </div>
 </section>
