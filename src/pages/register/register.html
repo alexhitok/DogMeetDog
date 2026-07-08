@@ -1,6 +1,23 @@
 <section class="page-panel card shadow-sm border-0">
   <div class="card-body py-4">
-    <h1 class="h3">Register</h1>
-    <p class="mb-0">This page is ready for a future registration form.</p>
+    <h1 class="h3 mb-4">Sign up</h1>
+    <div data-register-status class="mb-3"></div>
+    <form data-register-form class="row g-3">
+      <div class="col-12">
+        <label class="form-label" for="register-email">Email</label>
+        <input id="register-email" name="email" type="email" class="form-control" required />
+      </div>
+      <div class="col-12">
+        <label class="form-label" for="register-password">Password</label>
+        <input id="register-password" name="password" type="password" class="form-control" required />
+      </div>
+      <div class="col-12">
+        <label class="form-label" for="register-full-name">Full name</label>
+        <input id="register-full-name" name="fullName" type="text" class="form-control" required />
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary">Sign up</button>
+      </div>
+    </form>
   </div>
 </section>
