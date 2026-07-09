@@ -80,5 +80,5 @@ export async function getActiveDogs() {
     .eq('status', 'active')
     .order('created_at', { ascending: false })
 
-  return { data: data ?? [], error }
+  return { data: Array.isArray(data) ? data : [], error }
 }
