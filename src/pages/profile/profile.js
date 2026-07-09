@@ -1,14 +1,17 @@
 import template from './profile.html?raw'
 import './profile.css'
 import { getCurrentUser, logoutUser } from '../../services/authService.js'
-import { createDogProfile, getMyDogs } from '../../services/dogService.js'
+import { createDogProfile, getMyDogs, uploadDogPhotos } from '../../services/dogService.js'
 
 function setMessage(target, message, variant) {
-  target.innerHTML = `
-    <div class="alert alert-${variant} mb-0" role="alert">
-      ${message}
-    </div>
-  `
+  target.replaceChildren()
+
+  const alert = document.createElement('div')
+  alert.className = `alert alert-${variant} mb-0`
+  alert.setAttribute('role', 'alert')
+  alert.textContent = message
+
+  target.append(alert)
 }
 
 function escapeHtml(value) {
@@ -89,6 +92,7 @@ async function bindDogForm() {
     status.innerHTML = ''
 
     const formData = new FormData(form)
+    const selectedPhotos = Array.from(form.querySelector('[name="photos"]')?.files ?? [])
     const payload = {
       name: String(formData.get('name') ?? '').trim(),
       breed: String(formData.get('breed') ?? '').trim(),
@@ -100,10 +104,33 @@ async function bindDogForm() {
       description: String(formData.get('description') ?? '').trim(),
     }
 
-    const { error } = await createDogProfile(payload)
+    const { data: createdDog, error: createError } = await createDogProfile(payload)
 
-    if (error) {
-      setMessage(status, error.message, 'danger')
+    if (createError) {
+      setMessage(status, createError.message, 'danger')
+      return
+    }
+
+    if (selectedPhotos.length) {
+      const { error: uploadError, data: uploadedPhotos } = await uploadDogPhotos({
+        dogId: createdDog.id,
+        files: selectedPhotos,
+      })
+
+      if (uploadError) {
+        setMessage(status, `Dog profile created, but photo upload failed: ${uploadError.message}`, 'warning')
+        form.reset()
+        await refreshMyDogs()
+        return
+      }
+
+      setMessage(
+        status,
+        `Dog profile created successfully and ${uploadedPhotos.length} photo${uploadedPhotos.length === 1 ? '' : 's'} uploaded.`,
+        'success'
+      )
+      form.reset()
+      await refreshMyDogs()
       return
     }
 

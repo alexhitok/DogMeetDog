@@ -19,6 +19,38 @@ function createDogCard(dog) {
 
   const card = document.createElement('article')
   card.className = 'card h-100 shadow-sm'
+  card.setAttribute('role', 'button')
+  card.setAttribute('tabindex', '0')
+  card.style.cursor = 'pointer'
+
+  const openDogProfile = () => {
+    window.history.pushState({}, '', `/dogs/${dog.id}`)
+    window.dispatchEvent(new PopStateEvent('popstate'))
+  }
+
+  card.addEventListener('click', openDogProfile)
+  card.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      openDogProfile()
+    }
+  })
+
+  const media = document.createElement('div')
+  media.className = 'ratio ratio-4x3 bg-body-tertiary'
+
+  if (dog.photoUrl) {
+    const image = document.createElement('img')
+    image.src = dog.photoUrl
+    image.alt = `${dog.name || 'Dog'} photo`
+    image.className = 'w-100 h-100 object-fit-cover'
+    media.append(image)
+  } else {
+    const placeholder = document.createElement('div')
+    placeholder.className = 'd-flex align-items-center justify-content-center text-secondary small'
+    placeholder.textContent = 'No photo'
+    media.append(placeholder)
+  }
 
   const body = document.createElement('div')
   body.className = 'card-body d-flex flex-column'
@@ -60,7 +92,7 @@ function createDogCard(dog) {
     body.append(title, details, list)
   }
 
-  card.append(body)
+  card.append(media, body)
   column.append(card)
 
   return column
