@@ -5,9 +5,16 @@
     <div data-profile-actions></div>
     <hr class="my-4" data-dog-section-divider />
     <section class="mb-4" data-dog-form-section>
-      <h2 class="h5 mb-3">Add your dog</h2>
-      <div data-dog-form-status class="mb-3"></div>
-      <form data-dog-form class="row g-3">
+  <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
+    <h2 class="h5 mb-0">Add your dog</h2>
+    <button type="button" class="btn btn-primary btn-sm" data-toggle-dog-form>
+      Add new dog
+    </button>
+  </div>
+
+  <div data-dog-form-status class="mb-3"></div>
+
+  <form data-dog-form class="row g-3 d-none">
         <div class="col-12 col-md-6">
           <label class="form-label" for="dog-name">Dog name</label>
           <input id="dog-name" name="name" type="text" class="form-control" required />
