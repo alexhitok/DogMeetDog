@@ -103,10 +103,34 @@ async function refreshMyDogs() {
 async function bindDogForm() {
   const form = document.querySelector('[data-dog-form]')
   const status = document.querySelector('[data-dog-form-status]')
+  const toggleButton = document.querySelector('[data-toggle-dog-form]')
 
-  if (!form || !status) {
+  if (!form || !status || !toggleButton) {
     return
   }
+
+  const showDogForm = () => {
+    form.classList.remove('d-none')
+    toggleButton.textContent = 'Cancel'
+    toggleButton.classList.remove('btn-primary')
+    toggleButton.classList.add('btn-outline-secondary')
+  }
+
+  const hideDogForm = () => {
+    form.classList.add('d-none')
+    toggleButton.textContent = 'Add new dog'
+    toggleButton.classList.remove('btn-outline-secondary')
+    toggleButton.classList.add('btn-primary')
+  }
+
+  toggleButton.addEventListener('click', () => {
+    if (form.classList.contains('d-none')) {
+      showDogForm()
+      return
+    }
+
+    hideDogForm()
+  })
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault()
@@ -115,6 +139,7 @@ async function bindDogForm() {
 
     const formData = new FormData(form)
     const selectedPhotos = Array.from(form.querySelector('[name="photos"]')?.files ?? [])
+
     const payload = {
       name: String(formData.get('name') ?? '').trim(),
       breed: String(formData.get('breed') ?? '').trim(),
@@ -142,6 +167,7 @@ async function bindDogForm() {
       if (uploadError) {
         setMessage(status, `Dog profile created, but photo upload failed: ${uploadError.message}`, 'warning')
         form.reset()
+        hideDogForm()
         await refreshMyDogs()
         return
       }
@@ -151,13 +177,16 @@ async function bindDogForm() {
         `Dog profile created successfully and ${uploadedPhotos.length} photo${uploadedPhotos.length === 1 ? '' : 's'} uploaded.`,
         'success'
       )
+
       form.reset()
+      hideDogForm()
       await refreshMyDogs()
       return
     }
 
     setMessage(status, 'Dog profile created successfully.', 'success')
     form.reset()
+    hideDogForm()
     await refreshMyDogs()
   })
 }
