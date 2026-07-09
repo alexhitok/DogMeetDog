@@ -17,14 +17,14 @@
       <a class="nav-link px-2" href="/adoption" data-link>Adoption</a>
       <a class="nav-link px-2" href="/lost-dogs" data-link>Lost Dogs</a>
       <a class="nav-link px-2" href="/places" data-link>Places</a>
-      <a class="nav-link" href="/profile">Profile</a>
+      <a class="nav-link px-2" href="/profile" data-link data-auth-visible="logged-in">Profile</a>
 
-      <a class="btn btn-outline-primary btn-sm ms-md-2" href="/login" data-link>
-        Sign in
-      </a>
-      <a class="btn btn-primary btn-sm" href="/register" data-link>
-        Join now
-      </a>
+<a class="btn btn-outline-primary btn-sm ms-md-2" href="/login" data-link data-auth-visible="logged-out">
+  Sign in
+</a>
+<a class="btn btn-primary btn-sm" href="/register" data-link data-auth-visible="logged-out">
+  Join now
+</a>
     </div>
   </div>
 </nav>
