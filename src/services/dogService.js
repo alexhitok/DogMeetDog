@@ -99,11 +99,30 @@ export async function getMyDogs() {
 
   const { data, error } = await supabase
     .from('dogs')
-    .select('*')
+    .select('*, dog_photos(image_url, is_main, created_at)')
     .eq('owner_id', user.id)
     .order('created_at', { ascending: false })
 
-  return { data: data ?? [], error }
+  const dogs = Array.isArray(data)
+    ? data.map((dog) => {
+        const photos = Array.isArray(dog.dog_photos)
+          ? [...dog.dog_photos].sort((left, right) => {
+              if (left.is_main !== right.is_main) {
+                return Number(right.is_main) - Number(left.is_main)
+              }
+
+              return new Date(left.created_at).getTime() - new Date(right.created_at).getTime()
+            })
+          : []
+
+        return {
+          ...dog,
+          photoUrl: photos[0]?.image_url ?? '',
+        }
+      })
+    : []
+
+  return { data: dogs, error }
 }
 
 export async function getActiveDogs() {

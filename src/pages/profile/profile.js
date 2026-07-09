@@ -36,22 +36,44 @@ function renderDogCards(dogs) {
 
   return dogs
     .map((dog) => {
+      const dogId = encodeURIComponent(dog.id)
       const dogName = escapeHtml(dog.name ?? 'Unnamed dog')
       const dogBreed = escapeHtml(dog.breed ?? 'No breed')
       const dogDistrict = escapeHtml(dog.district ?? 'No district')
       const dogStatus = escapeHtml(dog.status ?? 'unknown')
+      const photoUrl = dog.photoUrl ? escapeHtml(dog.photoUrl) : ''
       const shortDescription = dog.description ? escapeHtml(dog.description.slice(0, 140)) : ''
+
+      const photoMarkup = photoUrl
+        ? `
+          <img
+            src="${photoUrl}"
+            class="w-100 h-100 object-fit-cover"
+            alt="${dogName} photo"
+          />
+        `
+        : `
+          <div class="d-flex align-items-center justify-content-center text-secondary small h-100">
+            No photo
+          </div>
+        `
 
       return `
         <div class="col-12 col-lg-6">
-          <div class="card h-100 shadow-sm">
-            <div class="card-body">
-              <h3 class="h6 card-title mb-2">${dogName}</h3>
-              <p class="text-secondary mb-2">${dogBreed} · ${dogDistrict}</p>
-              <p class="mb-2"><span class="fw-semibold">Status:</span> ${dogStatus}</p>
-              ${shortDescription ? `<p class="mb-0">${shortDescription}</p>` : '<p class="mb-0 text-secondary">No description.</p>'}
-            </div>
-          </div>
+          <a href="/dogs/${dogId}" class="text-decoration-none text-body" data-link>
+            <article class="card h-100 shadow-sm">
+              <div class="ratio ratio-4x3 bg-body-tertiary">
+                ${photoMarkup}
+              </div>
+
+              <div class="card-body">
+                <h3 class="h6 card-title mb-2">${dogName}</h3>
+                <p class="text-secondary mb-2">${dogBreed} · ${dogDistrict}</p>
+                <p class="mb-2"><span class="fw-semibold">Status:</span> ${dogStatus}</p>
+                ${shortDescription ? `<p class="mb-0">${shortDescription}</p>` : '<p class="mb-0 text-secondary">No description.</p>'}
+              </div>
+            </article>
+          </a>
         </div>
       `
     })
