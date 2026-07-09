@@ -190,6 +190,31 @@ export async function getDogById(dogId) {
     error: null,
   }
 }
+export async function deleteDogById(dogId) {
+  ensureSupabaseClient()
+
+  if (!dogId) {
+    return { error: new Error('Dog id is required.') }
+  }
+
+  const { user, error: userError } = await getCurrentUser()
+
+  if (userError) {
+    return { error: userError }
+  }
+
+  if (!user) {
+    return { error: new Error('You must be logged in to delete a dog.') }
+  }
+
+  const { error } = await supabase
+    .from('dogs')
+    .delete()
+    .eq('id', dogId)
+    .eq('owner_id', user.id)
+
+  return { error }
+}
 export async function uploadDogPhotos({ dogId, files }) {
   ensureSupabaseClient()
 

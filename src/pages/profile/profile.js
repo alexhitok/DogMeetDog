@@ -1,7 +1,7 @@
 import template from './profile.html?raw'
 import './profile.css'
 import { getCurrentUser, logoutUser } from '../../services/authService.js'
-import { createDogProfile, getMyDogs, uploadDogPhotos } from '../../services/dogService.js'
+import { createDogProfile, deleteDogById, getMyDogs, uploadDogPhotos } from '../../services/dogService.js'
 
 function setMessage(target, message, variant) {
   target.replaceChildren()
@@ -60,20 +60,32 @@ function renderDogCards(dogs) {
 
       return `
         <div class="col-12 col-lg-6">
-          <a href="/dogs/${dogId}" class="text-decoration-none text-body" data-link>
-            <article class="card h-100 shadow-sm">
-              <div class="ratio ratio-4x3 bg-body-tertiary">
-                ${photoMarkup}
-              </div>
+          <article class="card h-100 shadow-sm">
+            <div class="ratio ratio-4x3 bg-body-tertiary">
+              ${photoMarkup}
+            </div>
 
-              <div class="card-body">
-                <h3 class="h6 card-title mb-2">${dogName}</h3>
-                <p class="text-secondary mb-2">${dogBreed} · ${dogDistrict}</p>
-                <p class="mb-2"><span class="fw-semibold">Status:</span> ${dogStatus}</p>
-                ${shortDescription ? `<p class="mb-0">${shortDescription}</p>` : '<p class="mb-0 text-secondary">No description.</p>'}
+            <div class="card-body">
+              <h3 class="h6 card-title mb-2">${dogName}</h3>
+              <p class="text-secondary mb-2">${dogBreed} · ${dogDistrict}</p>
+              <p class="mb-2"><span class="fw-semibold">Status:</span> ${dogStatus}</p>
+              ${shortDescription ? `<p class="mb-0">${shortDescription}</p>` : '<p class="mb-0 text-secondary">No description.</p>'}
+
+              <div class="d-flex flex-wrap gap-2 mt-3">
+                <a href="/dogs/${dogId}" class="btn btn-outline-primary btn-sm" data-link>
+                  View profile
+                </a>
+                <button
+                  type="button"
+                  class="btn btn-outline-danger btn-sm"
+                  data-delete-dog-id="${dogId}"
+                  data-dog-name="${dogName}"
+                >
+                  Delete
+                </button>
               </div>
-            </article>
-          </a>
+            </div>
+          </article>
         </div>
       `
     })
@@ -99,7 +111,47 @@ async function refreshMyDogs() {
   status.innerHTML = ''
   list.innerHTML = renderDogCards(data ?? [])
 }
+function bindMyDogsActions() {
+  const list = document.querySelector('[data-my-dogs-list]')
+  const status = document.querySelector('[data-my-dogs-status]')
 
+  if (!list || !status) {
+    return
+  }
+
+  list.addEventListener('click', async (event) => {
+    const deleteButton = event.target.closest('[data-delete-dog-id]')
+
+    if (!deleteButton) {
+      return
+    }
+
+    event.preventDefault()
+
+    const dogId = deleteButton.dataset.deleteDogId
+    const dogName = deleteButton.dataset.dogName || 'this dog'
+    const confirmed = window.confirm(`Delete ${dogName}? This action cannot be undone.`)
+
+    if (!confirmed) {
+      return
+    }
+
+    deleteButton.disabled = true
+    deleteButton.textContent = 'Deleting...'
+
+    const { error } = await deleteDogById(dogId)
+
+    if (error) {
+      setMessage(status, error.message, 'danger')
+      deleteButton.disabled = false
+      deleteButton.textContent = 'Delete'
+      return
+    }
+
+    setMessage(status, 'Dog deleted successfully.', 'success')
+    await refreshMyDogs()
+  })
+}
 async function bindDogForm() {
   const form = document.querySelector('[data-dog-form]')
   const status = document.querySelector('[data-dog-form-status]')
@@ -253,8 +305,9 @@ async function bindProfileView() {
     window.location.assign('/login')
   })
 
-  await refreshMyDogs()
-  await bindDogForm()
+ await refreshMyDogs()
+bindMyDogsActions()
+await bindDogForm() 
 }
 
 export function renderPage() {
