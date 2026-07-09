@@ -1,6 +1,52 @@
 <section class="page-panel card shadow-sm border-0">
   <div class="card-body py-4">
-    <h1 class="h3">Dog profile {{id}}</h1>
-    <p class="mb-0">This route is ready for a future dog profile view.</p>
+    <div data-dog-detail-status class="mb-3"></div>
+
+    <article data-dog-detail-content class="d-none">
+      <div class="row g-4 align-items-start">
+        <div class="col-12 col-md-5">
+          <div class="ratio ratio-4x3 bg-body-tertiary rounded overflow-hidden">
+            <img
+              data-dog-photo
+              class="w-100 h-100 object-fit-cover d-none"
+              alt="Dog photo"
+            />
+            <div
+              data-dog-photo-placeholder
+              class="d-flex align-items-center justify-content-center text-secondary small h-100"
+            >
+              No photo
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-7">
+          <p class="text-secondary mb-1">Dog profile</p>
+          <h1 data-dog-name class="h2 mb-2"></h1>
+
+          <p data-dog-main-info class="text-secondary mb-3"></p>
+
+          <dl class="row small mb-4">
+            <dt class="col-5 col-sm-4">Age</dt>
+            <dd data-dog-age class="col-7 col-sm-8"></dd>
+
+            <dt class="col-5 col-sm-4">Size</dt>
+            <dd data-dog-size class="col-7 col-sm-8"></dd>
+
+            <dt class="col-5 col-sm-4">Gender</dt>
+            <dd data-dog-gender class="col-7 col-sm-8"></dd>
+
+            <dt class="col-5 col-sm-4">Temperament</dt>
+            <dd data-dog-temperament class="col-7 col-sm-8"></dd>
+
+            <dt class="col-5 col-sm-4">District</dt>
+            <dd data-dog-district class="col-7 col-sm-8"></dd>
+          </dl>
+
+          <h2 class="h5">About</h2>
+          <p data-dog-description class="mb-0"></p>
+        </div>
+      </div>
+    </article>
   </div>
 </section>

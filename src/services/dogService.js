@@ -136,7 +136,41 @@ export async function getActiveDogs() {
 
   return { data: dogs, error }
 }
+export async function getDogById(dogId) {
+  ensureSupabaseClient()
 
+  if (!dogId) {
+    return { data: null, error: new Error('Dog id is required.') }
+  }
+
+  const { data, error } = await supabase
+    .from('dogs')
+    .select('*, dog_photos(image_url, is_main, created_at)')
+    .eq('id', dogId)
+    .single()
+
+  if (error) {
+    return { data: null, error }
+  }
+
+  const photos = Array.isArray(data?.dog_photos)
+    ? [...data.dog_photos].sort((left, right) => {
+        if (left.is_main !== right.is_main) {
+          return Number(right.is_main) - Number(left.is_main)
+        }
+
+        return new Date(left.created_at).getTime() - new Date(right.created_at).getTime()
+      })
+    : []
+
+  return {
+    data: {
+      ...data,
+      photoUrl: photos[0]?.image_url ?? '',
+    },
+    error: null,
+  }
+}
 export async function uploadDogPhotos({ dogId, files }) {
   ensureSupabaseClient()
 
