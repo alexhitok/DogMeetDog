@@ -1,0 +1,48 @@
+.messages-page .conversation-list {
+  max-height: 24rem;
+  overflow-y: auto;
+}
+
+.messages-page .conversation-item {
+  border-radius: 0.75rem;
+}
+
+.messages-page .conversation-item.is-active {
+  border-color: #0d6efd;
+  background: #eef5ff;
+}
+
+.messages-page .messages-thread {
+  min-height: 18rem;
+  max-height: 32rem;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.messages-page .message-row {
+  max-width: 100%;
+}
+
+.messages-page .message-bubble {
+  max-width: min(42rem, 90%);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.messages-page .message-bubble.is-own {
+  margin-left: auto;
+}
+
+@media (max-width: 991.98px) {
+  .messages-page .conversation-list {
+    max-height: 18rem;
+  }
+
+  .messages-page .messages-thread {
+    max-height: none;
+  }
+
+  .messages-page .message-bubble {
+    max-width: 100%;
+  }
+}
