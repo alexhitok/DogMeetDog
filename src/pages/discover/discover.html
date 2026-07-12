@@ -3,11 +3,109 @@
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4">
       <div>
         <h1 class="h3 mb-1">Discover</h1>
-        <p class="text-secondary mb-0">Browse active dog profiles from Supabase.</p>
+        <p class="text-secondary mb-0">Browse active dog profiles, view approximate nearby locations and find playdate matches.</p>
       </div>
       <div data-discover-meta class="small text-secondary"></div>
     </div>
+
     <div data-discover-status class="mb-3"></div>
-    <div data-discover-list class="row g-3"></div>
+
+    <section class="card shadow-sm border-0 mb-4">
+      <div class="card-body">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+          <div>
+            <h2 class="h5 mb-1">Filters</h2>
+            <p class="text-secondary small mb-0">Filter by city, district and nearby radius. Nearby filtering needs an explicit location.</p>
+          </div>
+          <div data-discover-location-status class="small text-secondary"></div>
+        </div>
+
+        <div class="row g-3 align-items-end">
+          <div class="col-12 col-md-4">
+            <label class="form-label" for="discover-city-filter">City</label>
+            <select id="discover-city-filter" class="form-select" data-discover-city-filter>
+              <option value="">All cities</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-4">
+            <label class="form-label" for="discover-district-filter">District / neighborhood</label>
+            <select id="discover-district-filter" class="form-select" data-discover-district-filter>
+              <option value="">All districts</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-2">
+            <label class="form-label" for="discover-radius-filter">Nearby radius</label>
+            <select id="discover-radius-filter" class="form-select" data-discover-radius-filter disabled>
+              <option value="">Any</option>
+              <option value="2">2 km</option>
+              <option value="5">5 km</option>
+              <option value="10">10 km</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-2 d-grid gap-2">
+            <button type="button" class="btn btn-outline-primary" data-discover-use-location>
+              Use my location
+            </button>
+            <button type="button" class="btn btn-outline-secondary d-none" data-discover-clear-location>
+              Clear
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card shadow-sm border-0 mb-4">
+      <div class="card-body">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+          <div>
+            <h2 class="h5 mb-1">Nearby map</h2>
+            <p class="text-secondary small mb-0">Markers show approximate public locations only.</p>
+          </div>
+          <div data-discover-map-meta class="small text-secondary"></div>
+        </div>
+
+        <div data-discover-map-status class="mb-3"></div>
+        <div data-discover-map class="discover-map rounded-3 border bg-body-tertiary"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+        <div>
+          <h2 class="h5 mb-1">Available dogs</h2>
+          <p class="text-secondary small mb-0">Open a profile or request a playdate from another dog owner.</p>
+        </div>
+        <div data-discover-list-meta class="small text-secondary"></div>
+      </div>
+
+      <div data-discover-list class="row g-3"></div>
+    </section>
   </div>
 </section>
+
+<div class="modal fade" tabindex="-1" aria-hidden="true" data-playdate-modal>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title h5 mb-0">Request a playdate</h2>
+          <p class="text-secondary small mb-0" data-playdate-recipient-summary></p>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div data-playdate-modal-status class="mb-3"></div>
+        <form data-playdate-form class="d-grid gap-3">
+          <input type="hidden" name="recipientDogId" />
+          <div>
+            <label class="form-label" for="playdate-sender-dog">Send from</label>
+            <select id="playdate-sender-dog" class="form-select" name="senderDogId"></select>
+            <div class="form-text">Choose one of your dogs as the sender.</div>
+          </div>
+          <div class="small text-secondary" data-playdate-modal-note></div>
+          <button type="submit" class="btn btn-primary" data-playdate-submit>Send request</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

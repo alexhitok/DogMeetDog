@@ -2,6 +2,8 @@ import template from './profile.html?raw'
 import './profile.css'
 import { getCurrentUser, logoutUser } from '../../services/authService.js'
 import { createDogProfile, deleteDogById, getMyDogs, updateDogById, uploadDogPhotos } from '../../services/dogService.js'
+import { getMyPlaydateRequests, updatePlaydateRequestStatus } from '../../services/playdateService.js'
+import { formatApproximateDogLocation, resolveApproximateDogLocation } from '../../utils/approximateLocation.js'
 
 let profileFormController = null
 
@@ -43,6 +45,7 @@ function renderDogCards(dogs) {
       const dogBreed = escapeHtml(dog.breed ?? 'No breed')
       const dogDistrict = escapeHtml(dog.district ?? 'No district')
       const dogStatus = escapeHtml(dog.status ?? 'unknown')
+      const dogLocation = escapeHtml(formatApproximateDogLocation(dog))
       const photoUrl = dog.photoUrl ? escapeHtml(dog.photoUrl) : ''
       const shortDescription = dog.description ? escapeHtml(dog.description.slice(0, 140)) : ''
 
@@ -71,6 +74,7 @@ function renderDogCards(dogs) {
               <h3 class="h6 card-title mb-2">${dogName}</h3>
               <p class="text-secondary mb-2">${dogBreed} · ${dogDistrict}</p>
               <p class="mb-2"><span class="fw-semibold">Status:</span> ${dogStatus}</p>
+              <p class="mb-2"><span class="fw-semibold">Location:</span> ${dogLocation}</p>
               ${shortDescription ? `<p class="mb-0">${shortDescription}</p>` : '<p class="mb-0 text-secondary">No description.</p>'}
 
               <div class="d-flex flex-wrap gap-2 mt-3">
@@ -108,6 +112,18 @@ function renderDogCards(dogs) {
       `
     })
     .join('')
+}
+
+function buildApproximateLocationPayload({ locationCity, district }) {
+  const location = resolveApproximateDogLocation({ location_city: locationCity, district })
+  const hasLocationText = Boolean(location.city || location.district)
+
+  return {
+    locationCity: location.city || null,
+    locationLatitude: location.latitude,
+    locationLongitude: location.longitude,
+    locationVisibility: hasLocationText ? 'approximate' : 'hidden',
+  }
 }
 
 async function refreshMyDogs() {
@@ -202,9 +218,10 @@ async function bindDogForm() {
   const genderInput = document.querySelector('[name="gender"]')
   const temperamentInput = document.querySelector('[name="temperament"]')
   const districtInput = document.querySelector('[name="district"]')
+  const locationCityInput = document.querySelector('[name="locationCity"]')
   const descriptionInput = document.querySelector('[name="description"]')
 
-  if (!form || !status || !toggleButton || !submitButton || !cancelButton || !formTitle || !formSubtitle || !photoInput || !dogIdInput || !nameInput || !breedInput || !ageInput || !sizeInput || !genderInput || !temperamentInput || !districtInput || !descriptionInput) {
+  if (!form || !status || !toggleButton || !submitButton || !cancelButton || !formTitle || !formSubtitle || !photoInput || !dogIdInput || !nameInput || !breedInput || !ageInput || !sizeInput || !genderInput || !temperamentInput || !districtInput || !locationCityInput || !descriptionInput) {
     return
   }
 
@@ -248,6 +265,7 @@ async function bindDogForm() {
     genderInput.value = dog.gender ?? ''
     temperamentInput.value = dog.temperament ?? ''
     districtInput.value = dog.district ?? ''
+    locationCityInput.value = resolveApproximateDogLocation(dog).city ?? ''
     descriptionInput.value = dog.description ?? ''
     photoInput.value = ''
     form.classList.remove('d-none')
@@ -327,6 +345,10 @@ async function bindDogForm() {
       gender: String(formData.get('gender') ?? '').trim(),
       temperament: String(formData.get('temperament') ?? '').trim(),
       district: String(formData.get('district') ?? '').trim(),
+      ...buildApproximateLocationPayload({
+        locationCity: String(formData.get('locationCity') ?? '').trim(),
+        district: String(formData.get('district') ?? '').trim(),
+      }),
       description: String(formData.get('description') ?? '').trim(),
     }
 
@@ -378,15 +400,200 @@ async function bindDogForm() {
   })
 }
 
+function createPlaydateRequestCard(request, mode) {
+  const card = document.createElement('div')
+  card.className = 'border rounded-3 p-3 bg-body-tertiary'
+  card.dataset.playdateRequestId = request.id
+
+  const title = document.createElement('div')
+  title.className = 'd-flex justify-content-between align-items-start gap-2 mb-2'
+
+  const titleBody = document.createElement('div')
+  const heading = document.createElement('div')
+  heading.className = 'fw-semibold small mb-1'
+
+  if (mode === 'received') {
+    heading.textContent = `${request.senderDog?.name || 'Unnamed dog'} wants a playdate with ${request.recipientDog?.name || 'your dog'}`
+  } else if (mode === 'sent') {
+    heading.textContent = `You sent ${request.senderDog?.name || 'one of your dogs'} to ${request.recipientDog?.name || 'a dog'}`
+  } else {
+    heading.textContent = `${request.senderDog?.name || 'Dog'} and ${request.recipientDog?.name || 'Dog'} are matched`
+  }
+
+  const badge = document.createElement('span')
+  badge.className = mode === 'match' ? 'badge text-bg-success' : 'badge text-bg-secondary'
+  badge.textContent = request.status
+
+  titleBody.append(heading)
+  title.append(titleBody, badge)
+
+  const details = document.createElement('div')
+  details.className = 'small text-secondary mb-3'
+  details.textContent = `Created ${new Date(request.created_at).toLocaleDateString()}`
+
+  const locationLine = document.createElement('div')
+  locationLine.className = 'small mb-2'
+  locationLine.textContent = `${request.senderDog?.name || 'Sender'} · ${formatApproximateDogLocation(request.senderDog)}`
+
+  const recipientLine = document.createElement('div')
+  recipientLine.className = 'small mb-3'
+  recipientLine.textContent = `${request.recipientDog?.name || 'Recipient'} · ${formatApproximateDogLocation(request.recipientDog)}`
+
+  card.append(title, details, locationLine, recipientLine)
+
+  if (mode === 'received') {
+    const actions = document.createElement('div')
+    actions.className = 'd-flex flex-wrap gap-2'
+
+    const acceptButton = document.createElement('button')
+    acceptButton.type = 'button'
+    acceptButton.className = 'btn btn-success btn-sm'
+    acceptButton.dataset.playdateAction = 'accepted'
+    acceptButton.dataset.playdateRequestId = request.id
+    acceptButton.textContent = 'Accept'
+
+    const declineButton = document.createElement('button')
+    declineButton.type = 'button'
+    declineButton.className = 'btn btn-outline-danger btn-sm'
+    declineButton.dataset.playdateAction = 'declined'
+    declineButton.dataset.playdateRequestId = request.id
+    declineButton.textContent = 'Decline'
+
+    actions.append(acceptButton, declineButton)
+    card.append(actions)
+  }
+
+  if (mode === 'sent') {
+    const actions = document.createElement('div')
+    actions.className = 'd-flex flex-wrap gap-2'
+
+    const cancelButton = document.createElement('button')
+    cancelButton.type = 'button'
+    cancelButton.className = 'btn btn-outline-secondary btn-sm'
+    cancelButton.dataset.playdateAction = 'cancelled'
+    cancelButton.dataset.playdateRequestId = request.id
+    cancelButton.textContent = 'Cancel'
+
+    actions.append(cancelButton)
+    card.append(actions)
+  }
+
+  return card
+}
+
+async function refreshPlaydateDashboard() {
+  const profilePage = document.querySelector('[data-profile-page]')
+  const status = document.querySelector('[data-playdate-status]')
+  const meta = document.querySelector('[data-playdate-meta]')
+  const receivedList = document.querySelector('[data-playdate-received-list]')
+  const sentList = document.querySelector('[data-playdate-sent-list]')
+  const matchesList = document.querySelector('[data-playdate-matches-list]')
+
+  if (!profilePage || !status || !meta || !receivedList || !sentList || !matchesList) {
+    return
+  }
+
+  setMessage(status, 'Loading playdate requests...', 'secondary')
+
+  const { data, error } = await getMyPlaydateRequests()
+
+  if (error) {
+    setMessage(status, error.message, 'danger')
+    receivedList.replaceChildren()
+    sentList.replaceChildren()
+    matchesList.replaceChildren()
+    meta.textContent = 'Unable to load requests.'
+    return
+  }
+
+  const requestsData = data ?? { sent: [], received: [], matches: [] }
+
+  const renderEmpty = (container, message) => {
+    container.replaceChildren()
+
+    const empty = document.createElement('div')
+    empty.className = 'alert alert-light border mb-0 small'
+    empty.setAttribute('role', 'alert')
+    empty.textContent = message
+
+    container.append(empty)
+  }
+
+  if (requestsData.received.length) {
+    receivedList.replaceChildren(...requestsData.received.map((request) => createPlaydateRequestCard(request, 'received')))
+  } else {
+    renderEmpty(receivedList, 'No received requests.')
+  }
+
+  if (requestsData.sent.length) {
+    sentList.replaceChildren(...requestsData.sent.map((request) => createPlaydateRequestCard(request, 'sent')))
+  } else {
+    renderEmpty(sentList, 'No sent requests.')
+  }
+
+  if (requestsData.matches.length) {
+    matchesList.replaceChildren(...requestsData.matches.map((request) => createPlaydateRequestCard(request, 'match')))
+  } else {
+    renderEmpty(matchesList, 'No accepted matches yet.')
+  }
+
+  meta.textContent = `${requestsData.received.length} received, ${requestsData.sent.length} sent, ${requestsData.matches.length} matches`
+  setMessage(status, 'Playdate requests loaded.', 'success')
+}
+
+function bindPlaydateDashboard() {
+  const profilePage = document.querySelector('[data-profile-page]')
+  const section = document.querySelector('[data-playdate-section]')
+  const status = document.querySelector('[data-playdate-status]')
+
+  if (!profilePage || !section || !status) {
+    return
+  }
+
+  section.addEventListener('click', async (event) => {
+    const button = event.target.closest('[data-playdate-action]')
+
+    if (!button) {
+      return
+    }
+
+    const requestId = button.dataset.playdateRequestId
+    const action = button.dataset.playdateAction
+
+    if (!requestId || !action) {
+      return
+    }
+
+    const originalLabel = button.textContent
+    button.disabled = true
+    button.textContent = 'Saving...'
+
+    const { error } = await updatePlaydateRequestStatus({ requestId, status: action })
+
+    if (error) {
+      setMessage(status, error.message, 'danger')
+      button.disabled = false
+      button.textContent = originalLabel
+      return
+    }
+
+    setMessage(status, 'Playdate request updated.', 'success')
+    await refreshPlaydateDashboard()
+  })
+}
+
 async function bindProfileView() {
+  const profilePage = document.querySelector('[data-profile-page]')
   const userInfo = document.querySelector('[data-profile-user]')
   const actionArea = document.querySelector('[data-profile-actions]')
   const dogFormSection = document.querySelector('[data-dog-form-section]')
   const dogSectionDivider = document.querySelector('[data-dog-section-divider]')
   const myDogsSection = document.querySelector('[data-my-dogs-section]')
   const myDogsDivider = document.querySelector('[data-my-dogs-divider]')
+  const playdateSection = document.querySelector('[data-playdate-section]')
+  const playdateDivider = document.querySelector('[data-playdate-divider]')
 
-  if (!userInfo || !actionArea || !dogFormSection || !dogSectionDivider || !myDogsSection || !myDogsDivider) {
+  if (!profilePage || !userInfo || !actionArea || !dogFormSection || !dogSectionDivider || !myDogsSection || !myDogsDivider || !playdateSection || !playdateDivider) {
     return
   }
 
@@ -399,6 +606,8 @@ async function bindProfileView() {
     dogSectionDivider.hidden = true
     myDogsSection.hidden = true
     myDogsDivider.hidden = true
+    playdateSection.hidden = true
+    playdateDivider.hidden = true
     return
   }
 
@@ -409,6 +618,8 @@ async function bindProfileView() {
     dogSectionDivider.hidden = true
     myDogsSection.hidden = true
     myDogsDivider.hidden = true
+    playdateSection.hidden = true
+    playdateDivider.hidden = true
     return
   }
 
@@ -416,6 +627,8 @@ async function bindProfileView() {
   dogSectionDivider.hidden = false
   myDogsSection.hidden = false
   myDogsDivider.hidden = false
+  playdateSection.hidden = false
+  playdateDivider.hidden = false
 
   userInfo.innerHTML = `
     <div class="alert alert-success mb-0" role="alert">
@@ -443,6 +656,8 @@ async function bindProfileView() {
   await refreshMyDogs()
   bindMyDogsActions()
   await bindDogForm()
+  bindPlaydateDashboard()
+  await refreshPlaydateDashboard()
 }
 
 export function renderPage() {
