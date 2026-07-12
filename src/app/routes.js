@@ -10,6 +10,7 @@ export const routeDefinitions = [
   { path: '/lost-dogs', title: 'Lost Dogs', loader: () => import('../pages/lost-dogs/lost-dogs.js') },
   { path: '/places', title: 'Places', loader: () => import('../pages/places/places.js') },
   { path: '/messages', title: 'Messages', loader: () => import('../pages/messages/messages.js') },
+  { path: '/notifications', title: 'Notifications', loader: () => import('../pages/notifications/notifications.js') },
   { path: '/login', title: 'Login', loader: () => import('../pages/login/login.js') },
   { path: '/register', title: 'Register', loader: () => import('../pages/register/register.js') },
   { path: '/profile', title: 'Profile', loader: () => import('../pages/profile/profile.js') },

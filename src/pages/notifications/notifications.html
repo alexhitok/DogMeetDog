@@ -1,0 +1,27 @@
+<section class="page-panel card shadow-sm border-0 notifications-page" data-notifications-page>
+  <div class="card-body py-4 d-grid gap-4">
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+      <div>
+        <h1 class="h3 mb-1">Notifications</h1>
+        <p class="text-secondary small mb-0">Safe in-app alerts for playdates, messages and updates.</p>
+      </div>
+      <button type="button" class="btn btn-outline-secondary btn-sm" data-mark-all-read hidden>
+        Mark all as read
+      </button>
+    </div>
+
+    <div class="alert alert-light border mb-0 d-none" role="alert" data-notifications-signed-out>
+      <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
+        <div>
+          <div class="fw-semibold mb-1">Sign in to view your notifications.</div>
+          <div class="small text-secondary">You’ll see playdate and message updates here after you sign in.</div>
+        </div>
+        <a class="btn btn-primary btn-sm" href="/login" data-link>Sign in</a>
+      </div>
+    </div>
+
+    <div data-notifications-status></div>
+
+    <div class="d-grid gap-2 notifications-list" data-notifications-list></div>
+  </div>
+</section>
