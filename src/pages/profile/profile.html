@@ -5,16 +5,20 @@
     <div data-profile-actions></div>
     <hr class="my-4" data-dog-section-divider />
     <section class="mb-4" data-dog-form-section>
-  <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
-    <h2 class="h5 mb-0">Add your dog</h2>
-    <button type="button" class="btn btn-primary btn-sm" data-toggle-dog-form>
-      Add new dog
-    </button>
-  </div>
+      <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
+        <div>
+          <h2 class="h5 mb-0" data-dog-form-title>Add your dog</h2>
+          <p class="text-secondary small mb-0" data-dog-form-subtitle>Create a new profile or edit an existing one.</p>
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" data-toggle-dog-form>
+          Add new dog
+        </button>
+      </div>
 
-  <div data-dog-form-status class="mb-3"></div>
+      <div data-dog-form-status class="mb-3"></div>
 
-  <form data-dog-form class="row g-3 d-none">
+      <form data-dog-form class="row g-3 d-none">
+        <input type="hidden" name="dogId" />
         <div class="col-12 col-md-6">
           <label class="form-label" for="dog-name">Dog name</label>
           <input id="dog-name" name="name" type="text" class="form-control" required />
@@ -60,10 +64,11 @@
         <div class="col-12">
           <label class="form-label" for="dog-photos">Dog photos</label>
           <input id="dog-photos" name="photos" type="file" class="form-control" accept="image/*" multiple />
-          <div class="form-text">Optional. Up to 5 images, 2 MB each.</div>
+          <div class="form-text">Up to 5 images per upload. Each image must be 5 MB or smaller.</div>
         </div>
-        <div class="col-12">
-          <button type="submit" class="btn btn-primary">Add dog</button>
+        <div class="col-12 d-flex flex-wrap gap-2">
+          <button type="submit" class="btn btn-primary" data-dog-form-submit>Add dog</button>
+          <button type="button" class="btn btn-outline-secondary d-none" data-dog-form-cancel>Cancel</button>
         </div>
       </form>
     </section>

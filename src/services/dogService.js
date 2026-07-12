@@ -2,7 +2,7 @@ import { supabase } from './supabaseClient.js'
 import { getCurrentUser } from './authService.js'
 
 const DOG_PHOTOS_BUCKET = 'dog-photos'
-const MAX_DOG_PHOTO_SIZE_BYTES = 2 * 1024 * 1024
+const MAX_DOG_PHOTO_SIZE_BYTES = 5 * 1024 * 1024
 const MAX_DOG_PHOTOS = 5
 
 function ensureSupabaseClient() {
@@ -35,7 +35,7 @@ function validatePhotoFiles(files) {
     }
 
     if (file.size > MAX_DOG_PHOTO_SIZE_BYTES) {
-      return `File "${file.name}" must be 2 MB or smaller.`
+      return `File "${file.name}" must be 5 MB or smaller.`
     }
   }
 
@@ -78,6 +78,49 @@ export async function createDogProfile({
       status: 'active',
       owner_id: user.id,
     })
+    .select('*')
+    .single()
+
+  return { data, error }
+}
+
+export async function updateDogById(dogId, payload) {
+  ensureSupabaseClient()
+
+  if (!dogId) {
+    return { data: null, error: new Error('Dog id is required.') }
+  }
+
+  const { user, error: userError } = await getCurrentUser()
+
+  if (userError) {
+    return { data: null, error: userError }
+  }
+
+  if (!user) {
+    return { data: null, error: new Error('You must be logged in to update a dog.') }
+  }
+
+  const updatePayload = {
+    name: payload.name,
+    breed: payload.breed,
+    age_years: payload.ageYears === '' || payload.ageYears === null || payload.ageYears === undefined ? null : Number(payload.ageYears),
+    size: payload.size,
+    gender: payload.gender,
+    temperament: payload.temperament,
+    district: payload.district,
+    description: payload.description,
+  }
+
+  if (Object.prototype.hasOwnProperty.call(payload, 'status')) {
+    updatePayload.status = payload.status
+  }
+
+  const { data, error } = await supabase
+    .from('dogs')
+    .update(updatePayload)
+    .eq('id', dogId)
+    .eq('owner_id', user.id)
     .select('*')
     .single()
 

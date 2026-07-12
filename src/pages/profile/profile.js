@@ -1,7 +1,9 @@
 import template from './profile.html?raw'
 import './profile.css'
 import { getCurrentUser, logoutUser } from '../../services/authService.js'
-import { createDogProfile, deleteDogById, getMyDogs, uploadDogPhotos } from '../../services/dogService.js'
+import { createDogProfile, deleteDogById, getMyDogs, updateDogById, uploadDogPhotos } from '../../services/dogService.js'
+
+let profileFormController = null
 
 function setMessage(target, message, variant) {
   target.replaceChildren()
@@ -77,6 +79,22 @@ function renderDogCards(dogs) {
                 </a>
                 <button
                   type="button"
+                  class="btn btn-outline-secondary btn-sm"
+                  data-edit-dog-id="${dogId}"
+                  data-dog-name="${dogName}"
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-success btn-sm"
+                  data-add-photos-dog-id="${dogId}"
+                  data-dog-name="${dogName}"
+                >
+                  Add photos
+                </button>
+                <button
+                  type="button"
                   class="btn btn-outline-danger btn-sm"
                   data-delete-dog-id="${dogId}"
                   data-dog-name="${dogName}"
@@ -111,6 +129,7 @@ async function refreshMyDogs() {
   status.innerHTML = ''
   list.innerHTML = renderDogCards(data ?? [])
 }
+
 function bindMyDogsActions() {
   const list = document.querySelector('[data-my-dogs-list]')
   const status = document.querySelector('[data-my-dogs-status]')
@@ -120,7 +139,21 @@ function bindMyDogsActions() {
   }
 
   list.addEventListener('click', async (event) => {
+    const editButton = event.target.closest('[data-edit-dog-id]')
+    const addPhotosButton = event.target.closest('[data-add-photos-dog-id]')
     const deleteButton = event.target.closest('[data-delete-dog-id]')
+
+    if (editButton) {
+      event.preventDefault()
+      await profileFormController?.openEditForm(editButton.dataset.editDogId)
+      return
+    }
+
+    if (addPhotosButton) {
+      event.preventDefault()
+      await profileFormController?.openEditForm(addPhotosButton.dataset.addPhotosDogId, true)
+      return
+    }
 
     if (!deleteButton) {
       return
@@ -156,14 +189,36 @@ async function bindDogForm() {
   const form = document.querySelector('[data-dog-form]')
   const status = document.querySelector('[data-dog-form-status]')
   const toggleButton = document.querySelector('[data-toggle-dog-form]')
+  const submitButton = document.querySelector('[data-dog-form-submit]')
+  const cancelButton = document.querySelector('[data-dog-form-cancel]')
+  const formTitle = document.querySelector('[data-dog-form-title]')
+  const formSubtitle = document.querySelector('[data-dog-form-subtitle]')
+  const photoInput = document.querySelector('[name="photos"]')
+  const dogIdInput = document.querySelector('[name="dogId"]')
+  const nameInput = document.querySelector('[name="name"]')
+  const breedInput = document.querySelector('[name="breed"]')
+  const ageInput = document.querySelector('[name="ageYears"]')
+  const sizeInput = document.querySelector('[name="size"]')
+  const genderInput = document.querySelector('[name="gender"]')
+  const temperamentInput = document.querySelector('[name="temperament"]')
+  const districtInput = document.querySelector('[name="district"]')
+  const descriptionInput = document.querySelector('[name="description"]')
 
-  if (!form || !status || !toggleButton) {
+  if (!form || !status || !toggleButton || !submitButton || !cancelButton || !formTitle || !formSubtitle || !photoInput || !dogIdInput || !nameInput || !breedInput || !ageInput || !sizeInput || !genderInput || !temperamentInput || !districtInput || !descriptionInput) {
     return
   }
 
-  const showDogForm = () => {
+  const showCreateForm = () => {
+    form.dataset.mode = 'create'
+    dogIdInput.value = ''
+    form.reset()
+    photoInput.value = ''
+    formTitle.textContent = 'Add your dog'
+    formSubtitle.textContent = 'Create a new profile or edit an existing one.'
+    submitButton.textContent = 'Add dog'
+    cancelButton.classList.add('d-none')
     form.classList.remove('d-none')
-    toggleButton.textContent = 'Cancel'
+    toggleButton.textContent = 'Hide form'
     toggleButton.classList.remove('btn-primary')
     toggleButton.classList.add('btn-outline-secondary')
   }
@@ -173,6 +228,70 @@ async function bindDogForm() {
     toggleButton.textContent = 'Add new dog'
     toggleButton.classList.remove('btn-outline-secondary')
     toggleButton.classList.add('btn-primary')
+    form.dataset.mode = 'create'
+    dogIdInput.value = ''
+    form.reset()
+    photoInput.value = ''
+    formTitle.textContent = 'Add your dog'
+    formSubtitle.textContent = 'Create a new profile or edit an existing one.'
+    submitButton.textContent = 'Add dog'
+    cancelButton.classList.add('d-none')
+  }
+
+  const fillEditForm = (dog) => {
+    form.dataset.mode = 'edit'
+    dogIdInput.value = dog.id
+    nameInput.value = dog.name ?? ''
+    breedInput.value = dog.breed ?? ''
+    ageInput.value = dog.age_years ?? ''
+    sizeInput.value = dog.size ?? ''
+    genderInput.value = dog.gender ?? ''
+    temperamentInput.value = dog.temperament ?? ''
+    districtInput.value = dog.district ?? ''
+    descriptionInput.value = dog.description ?? ''
+    photoInput.value = ''
+    form.classList.remove('d-none')
+    toggleButton.textContent = 'Hide form'
+    toggleButton.classList.remove('btn-primary')
+    toggleButton.classList.add('btn-outline-secondary')
+    formTitle.textContent = 'Edit dog'
+    formSubtitle.textContent = 'Update the dog profile or add more photos.'
+    submitButton.textContent = 'Save changes'
+    cancelButton.classList.remove('d-none')
+  }
+
+  const openEditForm = async (dogId, focusPhotos = false) => {
+    const { data, error } = await getMyDogs()
+
+    if (error) {
+      setMessage(status, error.message, 'danger')
+      return
+    }
+
+    const dog = (data ?? []).find((item) => String(item.id) === String(dogId))
+
+    if (!dog) {
+      setMessage(status, 'Dog not found.', 'warning')
+      return
+    }
+
+    fillEditForm(dog)
+
+    if (focusPhotos) {
+      photoInput.focus()
+    }
+  }
+
+  profileFormController = {
+    openEditForm,
+    hideDogForm,
+    showCreateForm,
+  }
+
+  hideDogForm()
+
+  const showDogForm = () => {
+    showCreateForm()
   }
 
   toggleButton.addEventListener('click', () => {
@@ -184,13 +303,21 @@ async function bindDogForm() {
     hideDogForm()
   })
 
+  cancelButton.addEventListener('click', () => {
+    hideDogForm()
+  })
+
   form.addEventListener('submit', async (event) => {
     event.preventDefault()
 
     status.innerHTML = ''
+    submitButton.disabled = true
+    cancelButton.disabled = true
+    toggleButton.disabled = true
 
     const formData = new FormData(form)
     const selectedPhotos = Array.from(form.querySelector('[name="photos"]')?.files ?? [])
+    const dogId = String(formData.get('dogId') ?? '').trim()
 
     const payload = {
       name: String(formData.get('name') ?? '').trim(),
@@ -203,42 +330,50 @@ async function bindDogForm() {
       description: String(formData.get('description') ?? '').trim(),
     }
 
-    const { data: createdDog, error: createError } = await createDogProfile(payload)
+    const isEditMode = Boolean(dogId)
+    const dogActionLabel = isEditMode ? 'Dog updated successfully.' : 'Dog profile created successfully.'
+    const { data: savedDog, error: saveError } = isEditMode
+      ? await updateDogById(dogId, payload)
+      : await createDogProfile(payload)
 
-    if (createError) {
-      setMessage(status, createError.message, 'danger')
+    if (saveError) {
+      setMessage(status, saveError.message, 'danger')
+      submitButton.disabled = false
+      cancelButton.disabled = false
+      toggleButton.disabled = false
       return
     }
 
     if (selectedPhotos.length) {
       const { error: uploadError, data: uploadedPhotos } = await uploadDogPhotos({
-        dogId: createdDog.id,
+        dogId: savedDog.id,
         files: selectedPhotos,
       })
 
       if (uploadError) {
-        setMessage(status, `Dog profile created, but photo upload failed: ${uploadError.message}`, 'warning')
-        form.reset()
+        setMessage(status, `${isEditMode ? 'Dog profile updated' : 'Dog profile created'}, but photo upload failed: ${uploadError.message}`, 'warning')
         hideDogForm()
+        submitButton.disabled = false
+        cancelButton.disabled = false
+        toggleButton.disabled = false
         await refreshMyDogs()
         return
       }
 
-      setMessage(
-        status,
-        `Dog profile created successfully and ${uploadedPhotos.length} photo${uploadedPhotos.length === 1 ? '' : 's'} uploaded.`,
-        'success'
-      )
-
-      form.reset()
+      setMessage(status, `${dogActionLabel} ${uploadedPhotos.length} photo${uploadedPhotos.length === 1 ? '' : 's'} uploaded.`, 'success')
       hideDogForm()
+      submitButton.disabled = false
+      cancelButton.disabled = false
+      toggleButton.disabled = false
       await refreshMyDogs()
       return
     }
 
-    setMessage(status, 'Dog profile created successfully.', 'success')
-    form.reset()
+    setMessage(status, dogActionLabel, 'success')
     hideDogForm()
+    submitButton.disabled = false
+    cancelButton.disabled = false
+    toggleButton.disabled = false
     await refreshMyDogs()
   })
 }
@@ -305,9 +440,9 @@ async function bindProfileView() {
     window.location.assign('/login')
   })
 
- await refreshMyDogs()
-bindMyDogsActions()
-await bindDogForm() 
+  await refreshMyDogs()
+  bindMyDogsActions()
+  await bindDogForm()
 }
 
 export function renderPage() {
