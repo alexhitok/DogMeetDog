@@ -1,4 +1,19 @@
 .page-panel {
-  max-width: 56rem;
+  max-width: 90rem;
   margin-inline: auto;
+}
+
+.admin-summary-card {
+  min-height: 100%;
+}
+
+.admin-dog-thumb {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+}
+
+.admin-thumb-placeholder {
+  width: 56px;
+  height: 56px;
 }

@@ -34,8 +34,9 @@ function formatAge(ageYears) {
 function showDogPhoto(dog) {
   const image = document.querySelector('[data-dog-photo]')
   const placeholder = document.querySelector('[data-dog-photo-placeholder]')
+  const downloadButton = document.querySelector('[data-dog-photo-download]')
 
-  if (!image || !placeholder) {
+  if (!image || !placeholder || !downloadButton) {
     return
   }
 
@@ -44,18 +45,70 @@ function showDogPhoto(dog) {
     image.alt = `${dog.name || 'Dog'} photo`
     image.classList.remove('d-none')
     placeholder.classList.add('d-none')
+    downloadButton.classList.remove('d-none')
     return
   }
 
   image.classList.add('d-none')
   placeholder.classList.remove('d-none')
+  downloadButton.classList.add('d-none')
+}
+
+function buildSafeDownloadFileName(dogName, contentType = '') {
+  const slug = String(dogName || 'dogmeetdog')
+    .normalize('NFKD')
+    .replace(/[^a-zA-Z0-9]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .toLowerCase() || 'dogmeetdog'
+
+  const extensionMap = {
+    'image/jpeg': 'jpg',
+    'image/jpg': 'jpg',
+    'image/png': 'png',
+    'image/webp': 'webp',
+    'image/gif': 'gif',
+    'image/avif': 'avif',
+  }
+
+  const extension = extensionMap[contentType.toLowerCase()] || 'jpg'
+
+  return `dogmeetdog-${slug}-photo.${extension}`
+}
+
+async function downloadDogPhoto(dog) {
+  if (!dog.photoUrl) {
+    return
+  }
+
+  try {
+    const response = await fetch(dog.photoUrl)
+
+    if (!response.ok) {
+      throw new Error('Photo download failed.')
+    }
+
+    const blob = await response.blob()
+    const objectUrl = window.URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href = objectUrl
+    anchor.download = buildSafeDownloadFileName(dog.name, blob.type)
+    document.body.append(anchor)
+    anchor.click()
+    anchor.remove()
+
+    window.setTimeout(() => window.URL.revokeObjectURL(objectUrl), 1000)
+  } catch {
+    window.open(dog.photoUrl, '_blank', 'noopener')
+  }
 }
 
 async function bindDogDetailPage(dogId) {
   const status = document.querySelector('[data-dog-detail-status]')
   const content = document.querySelector('[data-dog-detail-content]')
+  const downloadButton = document.querySelector('[data-dog-photo-download]')
 
-  if (!status || !content) {
+  if (!status || !content || !downloadButton) {
     return
   }
 
@@ -78,6 +131,10 @@ async function bindDogDetailPage(dogId) {
   content.classList.remove('d-none')
 
   showDogPhoto(dog)
+
+  downloadButton.onclick = async () => {
+    await downloadDogPhoto(dog)
+  }
 
   setText('[data-dog-name]', dog.name, 'Unnamed dog')
 
