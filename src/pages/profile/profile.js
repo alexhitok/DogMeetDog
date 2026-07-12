@@ -3,6 +3,7 @@ import './profile.css'
 import { getCurrentUser, logoutUser } from '../../services/authService.js'
 import { createDogProfile, deleteDogById, getMyDogs, updateDogById, uploadDogPhotos } from '../../services/dogService.js'
 import { getMyPlaydateRequests, updatePlaydateRequestStatus } from '../../services/playdateService.js'
+import { getOrCreateConversation } from '../../services/messagingService.js'
 import { formatApproximateDogLocation, resolveApproximateDogLocation } from '../../utils/approximateLocation.js'
 
 let profileFormController = null
@@ -441,6 +442,17 @@ function createPlaydateRequestCard(request, mode) {
 
   card.append(title, details, locationLine, recipientLine)
 
+  if (mode === 'match') {
+    const messageButton = document.createElement('button')
+    messageButton.type = 'button'
+    messageButton.className = 'btn btn-primary btn-sm'
+    messageButton.dataset.playdateAction = 'message-owner'
+    messageButton.dataset.playdateRequestId = request.id
+    messageButton.textContent = 'Message owner'
+
+    card.append(messageButton)
+  }
+
   if (mode === 'received') {
     const actions = document.createElement('div')
     actions.className = 'd-flex flex-wrap gap-2'
@@ -566,7 +578,22 @@ function bindPlaydateDashboard() {
 
     const originalLabel = button.textContent
     button.disabled = true
-    button.textContent = 'Saving...'
+    button.textContent = action === 'message-owner' ? 'Opening...' : 'Saving...'
+
+    if (action === 'message-owner') {
+      const { data: conversationId, error: conversationError } = await getOrCreateConversation(requestId)
+
+      if (conversationError) {
+        setMessage(status, conversationError.message, 'danger')
+        button.disabled = false
+        button.textContent = originalLabel
+        return
+      }
+
+      window.history.pushState({}, '', `/messages?conversation=${conversationId}`)
+      window.dispatchEvent(new PopStateEvent('popstate'))
+      return
+    }
 
     const { error } = await updatePlaydateRequestStatus({ requestId, status: action })
 
