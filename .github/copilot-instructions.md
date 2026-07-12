@@ -4,21 +4,20 @@
 DogMeetDog is a modern responsive web platform for dogs and their owners in Sofia.
 
 The platform includes:
-- dog profiles with posts, photos, videos and comments
-- dog diary and history timeline
-- dog socialization and meetups
+- dog profiles with create, view, edit and delete flows
+- dog photo upload and download
 - adoption listings
 - lost dog reports
-- veterinary clinics and pet shops by district
-- private dog location for the owner only
-- user messages and admin moderation
+- veterinary clinics, pet shops and other places by district
+- Supabase authentication, database, storage and Row-Level Security
+- user roles and a protected admin panel
+- Discover, Adoption, Lost Dogs and Places public pages
 
 ## Required technologies
 - Use Vite, HTML, CSS, vanilla JavaScript and Bootstrap 5.
 - Use ES modules with import and export.
 - Do not use React, TypeScript, Vue, Angular or Tailwind.
-- Use Supabase later for database, authentication, storage and Row-Level Security.
-- Do not add Supabase, authentication or database logic until explicitly requested.
+- Use Supabase for database, authentication, storage and Row-Level Security.
 
 ## Architecture
 - Use a Vite multi-page-style application with a custom client-side router and clean URLs without hashes.
@@ -43,8 +42,6 @@ The platform includes:
 ## Security and privacy
 - Never hardcode secret keys, passwords or private data.
 - Never commit .env files.
-- Dog GPS location must be private and visible only to the owner of that dog profile.
-- Later, use Supabase RLS policies so users can edit only their own profiles, dogs, posts, listings and location data.
 - Admin features must be accessible only to users with an admin role.
 
 ## Development workflow
@@ -54,3 +51,5 @@ The platform includes:
 - Explain briefly which files were created or changed.
 - Prefer simple, maintainable solutions over unnecessary complexity.
 - Do not create fake commits or pretend that functionality works without testing.
+- Database schema changes must use migrations.
+- The next major phase is UI redesign in Bolt, so backend behavior and Supabase services must not be replaced during UI work.
