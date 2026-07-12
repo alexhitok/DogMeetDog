@@ -1,6 +1,12 @@
 import template from './header.html?raw'
 import './header.css'
 import { getCurrentUserRole } from '../../services/adminService.js'
+import { supabase } from '../../services/supabaseClient.js'
+import { getUnreadNotificationCount } from '../../services/notificationService.js'
+
+let activeHeaderElement = null
+let notificationsChangeListenerBound = false
+let authListenerBound = false
 
 function setAuthNavigationState(headerElement, { isLoggedIn, isAdmin }) {
   const authItems = headerElement.querySelectorAll('[data-auth-visible]')
@@ -21,9 +27,53 @@ async function syncAuthNavigation(headerElement) {
   try {
     const { user, isAdmin } = await getCurrentUserRole()
     setAuthNavigationState(headerElement, { isLoggedIn: Boolean(user), isAdmin })
+
+    const badge = headerElement.querySelector('[data-notifications-badge]')
+
+    if (badge && user) {
+      const { data: unreadCount } = await getUnreadNotificationCount()
+      badge.textContent = String(unreadCount ?? 0)
+      badge.classList.toggle('d-none', !unreadCount)
+    } else if (badge) {
+      badge.classList.add('d-none')
+      badge.textContent = '0'
+    }
   } catch {
     setAuthNavigationState(headerElement, { isLoggedIn: false, isAdmin: false })
+    const badge = headerElement.querySelector('[data-notifications-badge]')
+    if (badge) {
+      badge.classList.add('d-none')
+      badge.textContent = '0'
+    }
   }
+}
+
+function bindNotificationRefreshListener() {
+  if (notificationsChangeListenerBound) {
+    return
+  }
+
+  notificationsChangeListenerBound = true
+
+  window.addEventListener('notifications:changed', () => {
+    if (activeHeaderElement) {
+      syncAuthNavigation(activeHeaderElement)
+    }
+  })
+}
+
+function bindAuthStateListener() {
+  if (authListenerBound || !supabase?.auth?.onAuthStateChange) {
+    return
+  }
+
+  authListenerBound = true
+
+  supabase.auth.onAuthStateChange(() => {
+    if (activeHeaderElement) {
+      syncAuthNavigation(activeHeaderElement)
+    }
+  })
 }
 
 export function renderHeader() {
@@ -31,6 +81,7 @@ export function renderHeader() {
 }
 
 export function syncHeaderNavigation(headerElement, pathname) {
+  activeHeaderElement = headerElement
   const links = headerElement.querySelectorAll('a[data-link]')
 
   links.forEach((link) => {
@@ -46,5 +97,7 @@ export function syncHeaderNavigation(headerElement, pathname) {
     }
   })
 
+  bindNotificationRefreshListener()
+  bindAuthStateListener()
   syncAuthNavigation(headerElement)
 }

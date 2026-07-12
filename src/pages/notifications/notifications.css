@@ -1,0 +1,23 @@
+.notifications-page .notification-item {
+  border-radius: 0.9rem;
+}
+
+.notifications-page .notification-item.is-unread {
+  background: #eef5ff;
+  border-color: #8bb4ff;
+}
+
+.notifications-page .notification-title {
+  font-weight: 700;
+}
+
+.notifications-page .notification-body {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.notifications-page .notification-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
