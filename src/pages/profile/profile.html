@@ -1,4 +1,4 @@
-<section class="page-panel card shadow-sm border-0">
+<section class="page-panel card shadow-sm border-0" data-profile-page>
   <div class="card-body py-4">
     <h1 class="h3 mb-4">Profile</h1>
     <div data-profile-user class="mb-3"></div>
@@ -57,9 +57,16 @@
           <label class="form-label" for="dog-district">District</label>
           <input id="dog-district" name="district" type="text" class="form-control" />
         </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="dog-location-city">City</label>
+          <input id="dog-location-city" name="locationCity" type="text" class="form-control" placeholder="Sofia" />
+        </div>
         <div class="col-12">
           <label class="form-label" for="dog-description">Description</label>
           <textarea id="dog-description" name="description" class="form-control" rows="4"></textarea>
+        </div>
+        <div class="col-12">
+          <div class="form-text">City and district are used only for approximate public locations. Street addresses are never stored.</div>
         </div>
         <div class="col-12">
           <label class="form-label" for="dog-photos">Dog photos</label>
@@ -77,6 +84,54 @@
       <h2 class="h5 mb-3">My dogs</h2>
       <div data-my-dogs-status class="mb-3"></div>
       <div data-my-dogs-list class="row g-3"></div>
+    </section>
+    <hr class="my-4" data-playdate-divider />
+    <section data-playdate-section>
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+        <div>
+          <h2 class="h5 mb-1">Playdate requests</h2>
+          <p class="text-secondary small mb-0">Track requests and matches between your dogs and other dogs.</p>
+        </div>
+        <div data-playdate-meta class="small text-secondary"></div>
+      </div>
+
+      <div data-playdate-status class="mb-3"></div>
+
+      <div class="row g-3">
+        <div class="col-12 col-lg-4">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body d-grid gap-3">
+              <div>
+                <h3 class="h6 mb-1">Received requests</h3>
+                <p class="text-secondary small mb-0">Pending requests for your dogs.</p>
+              </div>
+              <div class="d-grid gap-2" data-playdate-received-list></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-4">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body d-grid gap-3">
+              <div>
+                <h3 class="h6 mb-1">Sent requests</h3>
+                <p class="text-secondary small mb-0">Pending requests you have sent.</p>
+              </div>
+              <div class="d-grid gap-2" data-playdate-sent-list></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-4">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body d-grid gap-3">
+              <div>
+                <h3 class="h6 mb-1">Accepted matches</h3>
+                <p class="text-secondary small mb-0">Confirmed playdate matches for your dogs.</p>
+              </div>
+              <div class="d-grid gap-2" data-playdate-matches-list></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </div>
 </section>

@@ -1,4 +1,14 @@
 .page-panel {
-  max-width: 56rem;
+  max-width: 90rem;
   margin-inline: auto;
+}
+
+.discover-map {
+  min-height: 24rem;
+}
+
+@media (max-width: 575.98px) {
+  .discover-map {
+    min-height: 18rem;
+  }
 }

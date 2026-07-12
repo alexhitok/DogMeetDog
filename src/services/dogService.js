@@ -50,6 +50,10 @@ export async function createDogProfile({
   gender,
   temperament,
   district,
+  locationCity,
+  locationLatitude,
+  locationLongitude,
+  locationVisibility,
   description,
 }) {
   ensureSupabaseClient()
@@ -74,6 +78,10 @@ export async function createDogProfile({
       gender,
       temperament,
       district,
+      location_city: locationCity ? String(locationCity).trim() : null,
+      location_latitude: locationLatitude === '' || locationLatitude === null || locationLatitude === undefined ? null : Number(locationLatitude),
+      location_longitude: locationLongitude === '' || locationLongitude === null || locationLongitude === undefined ? null : Number(locationLongitude),
+      location_visibility: locationVisibility || 'approximate',
       description,
       status: 'active',
       owner_id: user.id,
@@ -109,6 +117,10 @@ export async function updateDogById(dogId, payload) {
     gender: payload.gender,
     temperament: payload.temperament,
     district: payload.district,
+    location_city: payload.locationCity ? String(payload.locationCity).trim() : null,
+    location_latitude: payload.locationLatitude === '' || payload.locationLatitude === null || payload.locationLatitude === undefined ? null : Number(payload.locationLatitude),
+    location_longitude: payload.locationLongitude === '' || payload.locationLongitude === null || payload.locationLongitude === undefined ? null : Number(payload.locationLongitude),
+    location_visibility: payload.locationVisibility || 'approximate',
     description: payload.description,
   }
 
