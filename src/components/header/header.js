@@ -1,8 +1,8 @@
 import template from './header.html?raw'
 import './header.css'
-import { getCurrentUser } from '../../services/authService.js'
+import { getCurrentUserRole } from '../../services/adminService.js'
 
-function setAuthNavigationState(headerElement, isLoggedIn) {
+function setAuthNavigationState(headerElement, { isLoggedIn, isAdmin }) {
   const authItems = headerElement.querySelectorAll('[data-auth-visible]')
 
   authItems.forEach((item) => {
@@ -10,7 +10,8 @@ function setAuthNavigationState(headerElement, isLoggedIn) {
 
     const shouldShow =
       (visibility === 'logged-in' && isLoggedIn) ||
-      (visibility === 'logged-out' && !isLoggedIn)
+      (visibility === 'logged-out' && !isLoggedIn) ||
+      (visibility === 'admin' && isLoggedIn && isAdmin)
 
     item.hidden = !shouldShow
   })
@@ -18,10 +19,10 @@ function setAuthNavigationState(headerElement, isLoggedIn) {
 
 async function syncAuthNavigation(headerElement) {
   try {
-    const { user } = await getCurrentUser()
-    setAuthNavigationState(headerElement, Boolean(user))
+    const { user, isAdmin } = await getCurrentUserRole()
+    setAuthNavigationState(headerElement, { isLoggedIn: Boolean(user), isAdmin })
   } catch {
-    setAuthNavigationState(headerElement, false)
+    setAuthNavigationState(headerElement, { isLoggedIn: false, isAdmin: false })
   }
 }
 
