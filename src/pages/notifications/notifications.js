@@ -1,7 +1,7 @@
 import template from './notifications.html?raw'
 import './notifications.css'
 import { t } from '../../i18n/i18n.js'
-import { getCurrentUser } from '../../services/authService.js'
+import { getCurrentUser, isSignedOutAuthError } from '../../services/authService.js'
 import { supabase } from '../../services/supabaseClient.js'
 import { getMyNotifications, markAllNotificationsRead, markNotificationRead } from '../../services/notificationService.js'
 
@@ -24,12 +24,6 @@ function bindTitleSync() {
 
 function updatePageTitle() {
   document.title = `DogMeetDog | ${t('notifications.pageTitle')}`
-}
-
-function isSignedOutAuthError(error) {
-  const message = String(error?.message ?? '')
-
-  return message.includes('Auth session missing') || message.includes('Session missing')
 }
 
 function setStatus(target, message, variant, translationKey = '', replacements = {}) {
