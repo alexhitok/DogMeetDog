@@ -6,6 +6,12 @@ function ensureSupabaseClient() {
   }
 }
 
+export function isSignedOutAuthError(error) {
+  const message = String(error?.message ?? '')
+
+  return message.includes('Auth session missing') || message.includes('Session missing')
+}
+
 export async function registerUser({ email, password, fullName }) {
   ensureSupabaseClient()
 
@@ -65,6 +71,10 @@ export async function getCurrentUser() {
   ensureSupabaseClient()
 
   const { data, error } = await supabase.auth.getUser()
+
+  if (isSignedOutAuthError(error)) {
+    return { user: null, error: null }
+  }
 
   return { user: data.user, error }
 }
