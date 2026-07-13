@@ -67,6 +67,8 @@
 
 .site-header .header-auth-btn {
   min-width: 6.5rem;
+  border-radius: 10px;
+  font-weight: 700;
 }
 
 .site-header .header-more-btn {
@@ -77,6 +79,10 @@
 .site-header .header-more-btn {
   min-width: 44px;
   min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .site-header--desktop .container-fluid,
