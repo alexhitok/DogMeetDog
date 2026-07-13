@@ -7,6 +7,7 @@ export function createRouter({
   renderHeader,
   renderFooter,
   syncHeaderNavigation,
+  onAfterRender,
 }) {
   async function render(pathname = window.location.pathname) {
     const { route, params } = matchRoute(pathname)
@@ -16,6 +17,7 @@ export function createRouter({
     contentElement.innerHTML = pageModule.renderPage(params)
     footerElement.innerHTML = renderFooter()
     syncHeaderNavigation(headerElement, pathname)
+    onAfterRender?.({ headerElement, contentElement, footerElement, pathname, route })
     window.scrollTo(0, 0)
     document.title = `DogMeetDog | ${route.title}`
   }

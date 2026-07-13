@@ -5,14 +5,14 @@
     <div data-admin-view class="d-none">
       <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-start gap-3 mb-4">
         <div>
-          <p class="text-uppercase small text-secondary mb-1">Back office</p>
-          <h1 class="h2 mb-2">Admin panel</h1>
-          <p class="text-secondary mb-0">Monitor dogs, roles and platform data.</p>
+          <p class="text-uppercase small text-secondary mb-1" data-i18n="admin.backOffice">Back office</p>
+          <h1 class="h2 mb-2" data-i18n="admin.heading">Admin panel</h1>
+          <p class="text-secondary mb-0" data-i18n="admin.subtitle">Monitor dogs, roles and platform data.</p>
         </div>
         <div class="text-md-end">
-          <div class="small text-secondary">Current user</div>
+          <div class="small text-secondary" data-i18n="admin.currentUser">Current user</div>
           <div class="fw-semibold" data-admin-user-email>Not available</div>
-          <div class="small text-secondary">Role: <span data-admin-user-role>—</span></div>
+          <div class="small text-secondary"><span data-i18n="admin.roleLabel">Role</span>: <span data-admin-user-role>—</span></div>
         </div>
       </div>
 
@@ -22,20 +22,20 @@
 
       <section class="mb-5">
         <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
-          <h2 class="h4 mb-0">Dogs</h2>
+          <h2 class="h4 mb-0" data-i18n="admin.dogsHeading">Dogs</h2>
           <div class="small text-secondary" data-admin-dogs-meta></div>
         </div>
         <div class="table-responsive shadow-sm rounded-3 border bg-white">
           <table class="table align-middle mb-0">
             <thead class="table-light">
               <tr>
-                <th scope="col">Photo</th>
-                <th scope="col">Dog</th>
-                <th scope="col">Breed</th>
-                <th scope="col">District</th>
-                <th scope="col">Status</th>
-                <th scope="col">Owner</th>
-                <th scope="col">Actions</th>
+                <th scope="col" data-i18n="admin.photo">Photo</th>
+                <th scope="col" data-i18n="admin.dog">Dog</th>
+                <th scope="col" data-i18n="admin.breed">Breed</th>
+                <th scope="col" data-i18n="admin.district">District</th>
+                <th scope="col" data-i18n="admin.status">Status</th>
+                <th scope="col" data-i18n="admin.owner">Owner</th>
+                <th scope="col" data-i18n="admin.actions">Actions</th>
               </tr>
             </thead>
             <tbody data-admin-dogs-body></tbody>
@@ -45,17 +45,17 @@
 
       <section>
         <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
-          <h2 class="h4 mb-0">Roles</h2>
+          <h2 class="h4 mb-0" data-i18n="admin.rolesHeading">Roles</h2>
           <div class="small text-secondary" data-admin-roles-meta></div>
         </div>
         <div class="table-responsive shadow-sm rounded-3 border bg-white">
           <table class="table align-middle mb-0">
             <thead class="table-light">
               <tr>
-                <th scope="col">Full name</th>
-                <th scope="col">User ID</th>
-                <th scope="col">Role</th>
-                <th scope="col">Created</th>
+                <th scope="col" data-i18n="admin.fullName">Full name</th>
+                <th scope="col" data-i18n="admin.userId">User ID</th>
+                <th scope="col" data-i18n="admin.roleLabel">Role</th>
+                <th scope="col" data-i18n="admin.created">Created</th>
               </tr>
             </thead>
             <tbody data-admin-roles-body></tbody>

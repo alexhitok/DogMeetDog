@@ -1,13 +1,35 @@
 import template from './dog-detail.html?raw'
 import './dog-detail.css'
+import { t } from '../../i18n/i18n.js'
 import { getDogById } from '../../services/dogService.js'
 
-function setStatus(target, message, variant) {
+let titleSyncBound = false
+
+function bindTitleSync() {
+  if (titleSyncBound) {
+    return
+  }
+
+  titleSyncBound = true
+  window.addEventListener('language:changed', updatePageTitle)
+}
+
+function updatePageTitle() {
+  document.title = `DogMeetDog | ${t('dogDetail.pageTitle')}`
+}
+
+function setStatus(target, message, variant, translationKey = '', replacements = {}) {
   target.innerHTML = ''
 
   const alert = document.createElement('div')
   alert.className = `alert alert-${variant} mb-0`
   alert.setAttribute('role', 'alert')
+  if (translationKey) {
+    alert.dataset.i18n = translationKey
+    if (Object.keys(replacements).length) {
+      alert.dataset.i18nReplacements = JSON.stringify(replacements)
+    }
+  }
   alert.textContent = message
 
   target.append(alert)
@@ -23,12 +45,28 @@ function setText(selector, value, fallback = 'Not provided') {
   element.textContent = value || value === 0 ? value : fallback
 }
 
-function formatAge(ageYears) {
-  if (ageYears === null || ageYears === undefined || ageYears === '') {
-    return 'Not provided'
+function setTranslatedStatus(target, translationKey, variant, replacements = {}) {
+  setStatus(target, t(translationKey, replacements), variant, translationKey, replacements)
+}
+
+function setI18nText(element, translationKey, replacements = {}) {
+  if (!element) {
+    return
   }
 
-  return `${ageYears} year${Number(ageYears) === 1 ? '' : 's'}`
+  element.dataset.i18n = translationKey
+  if (Object.keys(replacements).length) {
+    element.dataset.i18nReplacements = JSON.stringify(replacements)
+  }
+  element.textContent = t(translationKey, replacements)
+}
+
+function formatAge(ageYears) {
+  if (ageYears === null || ageYears === undefined || ageYears === '') {
+    return t('common.notProvided')
+  }
+
+  return `${ageYears} ${Number(ageYears) === 1 ? t('common.yearSingular') : t('common.yearPlural')}`
 }
 
 function showDogPhoto(dog) {
@@ -42,7 +80,7 @@ function showDogPhoto(dog) {
 
   if (dog.photoUrl) {
     image.src = dog.photoUrl
-    image.alt = `${dog.name || 'Dog'} photo`
+    image.alt = t('dogDetail.photoAlt', { name: dog.name || t('common.unnamedDog') })
     image.classList.remove('d-none')
     placeholder.classList.add('d-none')
     downloadButton.classList.remove('d-none')
@@ -112,7 +150,7 @@ async function bindDogDetailPage(dogId) {
     return
   }
 
-  setStatus(status, 'Loading dog profile...', 'secondary')
+  setTranslatedStatus(status, 'dogDetail.loading', 'secondary')
   content.classList.add('d-none')
 
   const { data: dog, error } = await getDogById(dogId)
@@ -123,7 +161,7 @@ async function bindDogDetailPage(dogId) {
   }
 
   if (!dog) {
-    setStatus(status, 'Dog profile was not found.', 'warning')
+    setTranslatedStatus(status, 'dogDetail.notFound', 'warning')
     return
   }
 
@@ -136,20 +174,21 @@ async function bindDogDetailPage(dogId) {
     await downloadDogPhoto(dog)
   }
 
-  setText('[data-dog-name]', dog.name, 'Unnamed dog')
+  setText('[data-dog-name]', dog.name, t('common.unnamedDog'))
 
   const mainInfo = [dog.breed, dog.district].filter(Boolean).join(' · ')
-  setText('[data-dog-main-info]', mainInfo, 'No breed or district provided')
+  setText('[data-dog-main-info]', mainInfo, t('dogDetail.noBreedOrDistrict'))
 
   setText('[data-dog-age]', formatAge(dog.age_years))
   setText('[data-dog-size]', dog.size)
   setText('[data-dog-gender]', dog.gender)
   setText('[data-dog-temperament]', dog.temperament)
   setText('[data-dog-district]', dog.district)
-  setText('[data-dog-description]', dog.description, 'No description yet.')
+  setText('[data-dog-description]', dog.description, t('dogDetail.noDescriptionYet'))
 }
 
 export function renderPage(params = {}) {
+  bindTitleSync()
   queueMicrotask(() => bindDogDetailPage(params.id))
   return template
 }

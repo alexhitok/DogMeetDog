@@ -2,8 +2,8 @@
   <div class="card-body py-4">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4">
       <div>
-        <h1 class="h3 mb-1">Discover</h1>
-        <p class="text-secondary mb-0">Browse active dog profiles, view approximate nearby locations and find playdate matches.</p>
+        <h1 class="h3 mb-1" data-i18n="discover.heading">Discover</h1>
+        <p class="text-secondary mb-0" data-i18n="discover.subtitle">Browse active dog profiles, view approximate nearby locations and find playdate matches.</p>
       </div>
       <div data-discover-meta class="small text-secondary"></div>
     </div>
@@ -14,39 +14,39 @@
       <div class="card-body">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
           <div>
-            <h2 class="h5 mb-1">Filters</h2>
-            <p class="text-secondary small mb-0">Filter by city, district and nearby radius. Nearby filtering needs an explicit location.</p>
+            <h2 class="h5 mb-1" data-i18n="discover.filtersTitle">Filters</h2>
+            <p class="text-secondary small mb-0" data-i18n="discover.filtersSubtitle">Filter by city, district and nearby radius. Nearby filtering needs an explicit location.</p>
           </div>
           <div data-discover-location-status class="small text-secondary"></div>
         </div>
 
         <div class="row g-3 align-items-end">
           <div class="col-12 col-md-4">
-            <label class="form-label" for="discover-city-filter">City</label>
+            <label class="form-label" for="discover-city-filter" data-i18n="discover.cityLabel">City</label>
             <select id="discover-city-filter" class="form-select" data-discover-city-filter>
-              <option value="">All cities</option>
+              <option value="" data-i18n="discover.allCities">All cities</option>
             </select>
           </div>
           <div class="col-12 col-md-4">
-            <label class="form-label" for="discover-district-filter">District / neighborhood</label>
+            <label class="form-label" for="discover-district-filter" data-i18n="discover.districtLabel">District / neighborhood</label>
             <select id="discover-district-filter" class="form-select" data-discover-district-filter>
-              <option value="">All districts</option>
+              <option value="" data-i18n="discover.allDistricts">All districts</option>
             </select>
           </div>
           <div class="col-12 col-md-2">
-            <label class="form-label" for="discover-radius-filter">Nearby radius</label>
+            <label class="form-label" for="discover-radius-filter" data-i18n="discover.radiusLabel">Nearby radius</label>
             <select id="discover-radius-filter" class="form-select" data-discover-radius-filter disabled>
-              <option value="">Any</option>
+              <option value="" data-i18n="discover.any">Any</option>
               <option value="2">2 km</option>
               <option value="5">5 km</option>
               <option value="10">10 km</option>
             </select>
           </div>
           <div class="col-12 col-md-2 d-grid gap-2">
-            <button type="button" class="btn btn-outline-primary" data-discover-use-location>
+            <button type="button" class="btn btn-outline-primary" data-discover-use-location data-i18n="discover.useMyLocation">
               Use my location
             </button>
-            <button type="button" class="btn btn-outline-secondary d-none" data-discover-clear-location>
+            <button type="button" class="btn btn-outline-secondary d-none" data-discover-clear-location data-i18n="discover.clearLocation">
               Clear
             </button>
           </div>
@@ -58,8 +58,8 @@
       <div class="card-body">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
           <div>
-            <h2 class="h5 mb-1">Nearby map</h2>
-            <p class="text-secondary small mb-0">Markers show approximate public locations only.</p>
+            <h2 class="h5 mb-1" data-i18n="discover.nearbyMapTitle">Nearby map</h2>
+            <p class="text-secondary small mb-0" data-i18n="discover.nearbyMapSubtitle">Markers show approximate public locations only.</p>
           </div>
           <div data-discover-map-meta class="small text-secondary"></div>
         </div>
@@ -72,8 +72,8 @@
     <section>
       <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
         <div>
-          <h2 class="h5 mb-1">Available dogs</h2>
-          <p class="text-secondary small mb-0">Open a profile or request a playdate from another dog owner.</p>
+          <h2 class="h5 mb-1" data-i18n="discover.availableDogsTitle">Available dogs</h2>
+          <p class="text-secondary small mb-0" data-i18n="discover.availableDogsSubtitle">Open a profile or request a playdate from another dog owner.</p>
         </div>
         <div data-discover-list-meta class="small text-secondary"></div>
       </div>
@@ -88,22 +88,22 @@
     <div class="modal-content">
       <div class="modal-header">
         <div>
-          <h2 class="modal-title h5 mb-0">Request a playdate</h2>
+          <h2 class="modal-title h5 mb-0" data-i18n="discover.requestPlaydateTitle">Request a playdate</h2>
           <p class="text-secondary small mb-0" data-playdate-recipient-summary></p>
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" data-i18n-aria-label="header.openMenu"></button>
       </div>
       <div class="modal-body">
         <div data-playdate-modal-status class="mb-3"></div>
         <form data-playdate-form class="d-grid gap-3">
           <input type="hidden" name="recipientDogId" />
           <div>
-            <label class="form-label" for="playdate-sender-dog">Send from</label>
+            <label class="form-label" for="playdate-sender-dog" data-i18n="discover.sendFrom">Send from</label>
             <select id="playdate-sender-dog" class="form-select" name="senderDogId"></select>
-            <div class="form-text">Choose one of your dogs as the sender.</div>
+            <div class="form-text" data-playdate-sender-helper data-i18n="discover.chooseSender">Choose one of your dogs as the sender.</div>
           </div>
           <div class="small text-secondary" data-playdate-modal-note></div>
-          <button type="submit" class="btn btn-primary" data-playdate-submit>Send request</button>
+          <button type="submit" class="btn btn-primary" data-playdate-submit data-i18n="discover.sendRequest">Send request</button>
         </form>
       </div>
     </div>

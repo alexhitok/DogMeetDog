@@ -1,6 +1,7 @@
 import template from './discover.html?raw'
 import './discover.css'
 import Modal from 'bootstrap/js/dist/modal'
+import { t } from '../../i18n/i18n.js'
 import { getActiveDogs, getMyDogs } from '../../services/dogService.js'
 import { createPlaydateRequest, getMyPlaydateRequests } from '../../services/playdateService.js'
 import {
@@ -36,7 +37,22 @@ const state = {
   recipientDog: null,
 }
 
-function setStatus(target, message, variant) {
+let titleSyncBound = false
+
+function bindTitleSync() {
+  if (titleSyncBound) {
+    return
+  }
+
+  titleSyncBound = true
+  window.addEventListener('language:changed', updatePageTitle)
+}
+
+function updatePageTitle() {
+  document.title = `DogMeetDog | ${t('discover.pageTitle')}`
+}
+
+function setStatus(target, message, variant, translationKey = '', replacements = {}) {
   if (!target) {
     return
   }
@@ -46,9 +62,31 @@ function setStatus(target, message, variant) {
   const alert = document.createElement('div')
   alert.className = `alert alert-${variant} mb-0`
   alert.setAttribute('role', 'alert')
+  if (translationKey) {
+    alert.dataset.i18n = translationKey
+    if (Object.keys(replacements).length) {
+      alert.dataset.i18nReplacements = JSON.stringify(replacements)
+    }
+  }
   alert.textContent = message
 
   target.append(alert)
+}
+
+function setTranslatedStatus(target, translationKey, variant, replacements = {}) {
+  setStatus(target, t(translationKey, replacements), variant, translationKey, replacements)
+}
+
+function setI18nText(element, translationKey, replacements = {}) {
+  if (!element) {
+    return
+  }
+
+  element.dataset.i18n = translationKey
+  if (Object.keys(replacements).length) {
+    element.dataset.i18nReplacements = JSON.stringify(replacements)
+  }
+  element.textContent = t(translationKey, replacements)
 }
 
 function escapeHtml(value) {
@@ -266,13 +304,13 @@ function createDogCard(dog) {
   if (dog.photoUrl) {
     const image = document.createElement('img')
     image.src = dog.photoUrl
-    image.alt = `${dog.name || 'Dog'} photo`
+    image.alt = t('discover.photoAlt', { name: dog.name || t('common.unnamedDog') })
     image.className = 'w-100 h-100 object-fit-cover'
     media.append(image)
   } else {
     const placeholder = document.createElement('div')
     placeholder.className = 'd-flex align-items-center justify-content-center text-secondary small'
-    placeholder.textContent = 'No photo'
+    setI18nText(placeholder, 'common.noPhoto')
     media.append(placeholder)
   }
 
@@ -281,7 +319,7 @@ function createDogCard(dog) {
 
   const title = document.createElement('h2')
   title.className = 'h5 card-title mb-2'
-  title.textContent = dog.name || 'Unnamed dog'
+  title.textContent = dog.name || t('common.unnamedDog')
 
   const location = document.createElement('p')
   location.className = 'text-secondary mb-2'
@@ -290,7 +328,7 @@ function createDogCard(dog) {
   const detailParts = [dog.breed, dog.size, dog.gender].filter(Boolean)
   const details = document.createElement('p')
   details.className = 'mb-3'
-  details.textContent = detailParts.length ? detailParts.join(' · ') : 'No breed or profile details provided'
+  details.textContent = detailParts.length ? detailParts.join(' · ') : t('discover.noBreedOrDetails')
 
   const list = document.createElement('ul')
   list.className = 'list-unstyled small mb-0 d-grid gap-1'
@@ -305,13 +343,13 @@ function createDogCard(dog) {
     list.append(item)
   }
 
-  addItem('Age years', dog.age_years)
-  addItem('Temperament', dog.temperament)
+  addItem(t('discover.ageYears'), dog.age_years)
+  addItem(t('discover.temperament'), dog.temperament)
 
   const distanceLabel = getDogDistanceLabel(dog)
 
   if (distanceLabel) {
-    addItem('Distance', distanceLabel)
+    addItem(t('discover.distance'), distanceLabel)
   }
 
   if (dog.description) {
@@ -330,7 +368,7 @@ function createDogCard(dog) {
   viewButton.className = 'btn btn-outline-primary btn-sm'
   viewButton.href = `/dogs/${dog.id}`
   viewButton.setAttribute('data-link', '')
-  viewButton.textContent = 'View profile'
+  setI18nText(viewButton, 'discover.viewProfile')
 
   actions.append(viewButton)
 
@@ -339,7 +377,11 @@ function createDogCard(dog) {
     requestButton.type = 'button'
     requestButton.className = 'btn btn-outline-success btn-sm'
     requestButton.dataset.requestPlaydateId = dog.id
-    requestButton.textContent = hasAcceptedMatchForDog(dog.id) ? 'Matched' : 'Request playdate'
+    if (hasAcceptedMatchForDog(dog.id)) {
+      setI18nText(requestButton, 'discover.matched')
+    } else {
+      setI18nText(requestButton, 'discover.requestPlaydate')
+    }
     requestButton.disabled = hasAcceptedMatchForDog(dog.id)
     actions.append(requestButton)
   }
@@ -368,11 +410,11 @@ function renderDogCards() {
     const alert = document.createElement('div')
     alert.className = 'alert alert-light border mb-0'
     alert.setAttribute('role', 'alert')
-    alert.textContent = 'No dogs match the current filters.'
+    setI18nText(alert, 'discover.noDogsMatchFilters')
 
     empty.append(alert)
     list.append(empty)
-    listMeta.textContent = '0 dogs shown'
+    setI18nText(listMeta, 'discover.zeroDogsShown')
     return
   }
 
@@ -383,7 +425,10 @@ function renderDogCards() {
   })
 
   list.append(fragment)
-  listMeta.textContent = `${state.filteredDogs.length} dog${state.filteredDogs.length === 1 ? '' : 's'} shown`
+  setI18nText(listMeta, 'discover.dogsShown', {
+    count: state.filteredDogs.length,
+    suffix: state.filteredDogs.length === 1 ? '' : 's',
+  })
 }
 
 function renderMap(dogs) {
@@ -396,8 +441,8 @@ function renderMap(dogs) {
   }
 
   if (!state.leaflet) {
-    setStatus(mapStatus, 'Nearby map unavailable. Listings remain usable without the map.', 'warning')
-    mapMeta.textContent = 'Map unavailable'
+    setTranslatedStatus(mapStatus, 'discover.mapUnavailable', 'warning')
+    setI18nText(mapMeta, 'discover.mapUnavailableLabel')
     mapElement.innerHTML = ''
     return
   }
@@ -415,7 +460,7 @@ function renderMap(dogs) {
       .on('tileerror', () => {
         if (!state.mapTileError) {
           state.mapTileError = true
-          setStatus(mapStatus, 'Map tiles could not load. Listings remain available.', 'warning')
+          setTranslatedStatus(mapStatus, 'discover.mapTilesUnavailable', 'warning')
         }
       })
       .addTo(state.map)
@@ -446,9 +491,9 @@ function renderMap(dogs) {
     const locationLabel = getDogDisplayLocation(dog)
     const popupHtml = `
       <div class="d-grid gap-1">
-        <strong>${escapeHtml(dog.name || 'Unnamed dog')}</strong>
-        <span class="text-secondary small">${escapeHtml([dog.breed, locationLabel].filter(Boolean).join(' · ') || 'Approximate location')}</span>
-        <a class="small" href="/dogs/${encodeURIComponent(dog.id)}" data-link>View profile</a>
+        <strong>${escapeHtml(dog.name || t('common.unnamedDog'))}</strong>
+        <span class="text-secondary small">${escapeHtml([dog.breed, locationLabel].filter(Boolean).join(' · ') || t('discover.approxLocation'))}</span>
+        <a class="small" href="/dogs/${encodeURIComponent(dog.id)}" data-link>${escapeHtml(t('discover.viewProfile'))}</a>
       </div>
     `
 
@@ -459,14 +504,17 @@ function renderMap(dogs) {
 
   if (markerBounds.length) {
     state.map.fitBounds(markerBounds, { padding: [24, 24], maxZoom: 14 })
-    mapMeta.textContent = `${markerBounds.length} marker${markerBounds.length === 1 ? '' : 's'}`
-    setStatus(mapStatus, 'Markers show approximate public locations only.', 'secondary')
+    setI18nText(mapMeta, 'discover.results', {
+      count: markerBounds.length,
+      suffix: markerBounds.length === 1 ? '' : 's',
+    })
+    setTranslatedStatus(mapStatus, 'discover.markersApproximateOnly', 'secondary')
     return
   }
 
   state.map.setView([SOFIA_FALLBACK_CENTER.latitude, SOFIA_FALLBACK_CENTER.longitude], 11)
-  mapMeta.textContent = 'No markers'
-  setStatus(mapStatus, 'No approximate coordinates are available for the current filters.', 'warning')
+  setI18nText(mapMeta, 'discover.noMarkers')
+  setTranslatedStatus(mapStatus, 'discover.noApproximateCoordinates', 'warning')
 }
 
 function renderLocationStatus() {
@@ -481,13 +529,13 @@ function renderLocationStatus() {
   if (state.referenceLocation) {
     radiusFilter.disabled = false
     clearButton.classList.remove('d-none')
-    locationStatus.textContent = 'Using your browser location for nearby results. Coordinates are never stored.'
+    setI18nText(locationStatus, 'discover.locationStatusUsingBrowserLocation')
     return
   }
 
   radiusFilter.disabled = true
   clearButton.classList.add('d-none')
-  locationStatus.textContent = 'Nearby radius is disabled until you use your location.'
+  setI18nText(locationStatus, 'discover.locationStatusRadiusDisabled')
 }
 
 function renderSummary() {
@@ -495,22 +543,25 @@ function renderSummary() {
   const status = document.querySelector('[data-discover-status]')
 
   if (meta) {
-    meta.textContent = `${state.filteredDogs.length} result${state.filteredDogs.length === 1 ? '' : 's'}`
+    setI18nText(meta, 'discover.results', {
+      count: state.filteredDogs.length,
+      suffix: state.filteredDogs.length === 1 ? '' : 's',
+    })
   }
 
   if (status) {
     if (!state.dogs.length) {
-      setStatus(status, 'No active dogs available yet.', 'light')
+      setTranslatedStatus(status, 'discover.noDogsAvailableYet', 'light')
       return
     }
 
     if (!state.filteredDogs.length) {
-      setStatus(status, 'No dogs match the current filters.', 'warning')
+      setTranslatedStatus(status, 'discover.noDogsMatchFilters', 'warning')
       return
     }
 
     if (!state.myDogs.length) {
-      setStatus(status, 'Browse dogs now. Add your own dog from Profile to send playdate requests.', 'info')
+      setTranslatedStatus(status, 'discover.browseDogsFromProfile', 'info')
       return
     }
 
@@ -550,7 +601,7 @@ function renderFilterOptions() {
 
   const cityPlaceholder = document.createElement('option')
   cityPlaceholder.value = ''
-  cityPlaceholder.textContent = 'All cities'
+  setI18nText(cityPlaceholder, 'discover.allCities')
   cityFilter.append(cityPlaceholder)
 
   options.cities.forEach((city) => {
@@ -562,7 +613,7 @@ function renderFilterOptions() {
 
   const districtPlaceholder = document.createElement('option')
   districtPlaceholder.value = ''
-  districtPlaceholder.textContent = 'All districts'
+  setI18nText(districtPlaceholder, 'discover.allDistricts')
   districtFilter.append(districtPlaceholder)
 
   options.districts.forEach((district) => {
@@ -590,19 +641,19 @@ function syncModalNotes() {
   const recipientDogId = recipientInput.value
 
   if (!state.myDogs.length) {
-    note.textContent = 'Add your own dog first to send a playdate request.'
+    setI18nText(note, 'discover.playdateModalNoteAddDog')
     submitButton.disabled = true
     return
   }
 
   if (!senderDogId || !recipientDogId) {
-    note.textContent = 'Choose a sender dog to continue.'
+    setI18nText(note, 'discover.playdateModalNoteChooseSender')
     submitButton.disabled = true
     return
   }
 
   if (String(senderDogId) === String(recipientDogId)) {
-    note.textContent = 'A dog cannot send a playdate request to itself.'
+    setI18nText(note, 'discover.playdateModalNoteSelf')
     submitButton.disabled = true
     return
   }
@@ -617,18 +668,18 @@ function syncModalNotes() {
   })
 
   if (hasAcceptedPair) {
-    note.textContent = 'This pair is already matched.'
+    setI18nText(note, 'discover.playdateModalNoteMatched')
     submitButton.disabled = true
     return
   }
 
   if (hasPendingPair) {
-    note.textContent = 'A pending request already exists for this sender and recipient.'
+    setI18nText(note, 'discover.playdateModalNotePending')
     submitButton.disabled = true
     return
   }
 
-  note.textContent = 'Playdate requests do not include messages or attachments.'
+  setI18nText(note, 'discover.playdateModalNoteNoMessages')
   submitButton.disabled = false
 }
 
@@ -643,7 +694,10 @@ function populatePlaydateModal() {
   }
 
   recipientSummary.textContent = state.recipientDog
-    ? `${state.recipientDog.name || 'Unnamed dog'} · ${getDogDisplayLocation(state.recipientDog)}`
+    ? t('discover.recipientSummary', {
+        name: state.recipientDog.name || t('common.unnamedDog'),
+        location: getDogDisplayLocation(state.recipientDog),
+      })
     : ''
   recipientInput.value = state.recipientDog?.id ?? ''
 
@@ -652,10 +706,10 @@ function populatePlaydateModal() {
   if (!state.myDogs.length) {
     const option = document.createElement('option')
     option.value = ''
-    option.textContent = 'Add your own dog first'
+    setI18nText(option, 'discover.addYourOwnDogFirst')
     senderSelect.append(option)
     senderSelect.disabled = true
-    setStatus(modalStatus, 'Add your own dog first to send playdate requests.', 'warning')
+    setTranslatedStatus(modalStatus, 'discover.playdateModalNoteAddDog', 'warning')
     syncModalNotes()
     return
   }
@@ -664,18 +718,18 @@ function populatePlaydateModal() {
 
   const placeholder = document.createElement('option')
   placeholder.value = ''
-  placeholder.textContent = 'Select a sender dog'
+  setI18nText(placeholder, 'discover.selectSenderDog')
   senderSelect.append(placeholder)
 
   state.myDogs.forEach((dog) => {
     const option = document.createElement('option')
     option.value = dog.id
-    option.textContent = `${dog.name || 'Unnamed dog'} · ${getDogDisplayLocation(dog)}`
+    option.textContent = `${dog.name || t('common.unnamedDog')} · ${getDogDisplayLocation(dog)}`
     senderSelect.append(option)
   })
 
   senderSelect.value = state.myDogs[0]?.id ?? ''
-  setStatus(modalStatus, 'Choose the dog that will send the request.', 'secondary')
+  setTranslatedStatus(modalStatus, 'discover.chooseDogToSend', 'secondary')
   syncModalNotes()
 }
 
@@ -700,11 +754,11 @@ async function handleGeolocationRequest() {
   }
 
   if (!navigator.geolocation) {
-    setStatus(locationStatus, 'Browser geolocation is not available in this browser.', 'warning')
+    setTranslatedStatus(locationStatus, 'discover.locationStatusGeoUnavailable', 'warning')
     return
   }
 
-  setStatus(locationStatus, 'Requesting your location...', 'secondary')
+  setTranslatedStatus(locationStatus, 'discover.locationStatusRequesting', 'secondary')
 
   navigator.geolocation.getCurrentPosition(
     (position) => {
@@ -714,7 +768,7 @@ async function handleGeolocationRequest() {
       }
 
       radiusFilter.disabled = false
-      setStatus(locationStatus, 'Using your browser location for nearby filtering. Coordinates are not stored.', 'success')
+      setTranslatedStatus(locationStatus, 'discover.locationStatusUsingBrowserLocation', 'success')
       refreshDiscoverUI()
     },
     (error) => {
@@ -722,9 +776,9 @@ async function handleGeolocationRequest() {
       radiusFilter.disabled = true
 
       if (error.code === 1) {
-        setStatus(locationStatus, 'Location permission denied. Nearby filtering remains disabled.', 'warning')
+        setTranslatedStatus(locationStatus, 'discover.locationStatusPermissionDenied', 'warning')
       } else {
-        setStatus(locationStatus, 'Unable to get your location. Nearby filtering remains disabled.', 'danger')
+        setTranslatedStatus(locationStatus, 'discover.locationStatusUnableToGet', 'danger')
       }
 
       refreshDiscoverUI()
@@ -770,8 +824,8 @@ async function bindDiscoverPage() {
     return
   }
 
-  setStatus(status, 'Loading nearby dogs...', 'secondary')
-  setStatus(playdateModalStatus, 'Select a dog to send a request.', 'secondary')
+  setTranslatedStatus(status, 'discover.loadingDogs', 'secondary')
+  setTranslatedStatus(playdateModalStatus, 'discover.selectDogToSendRequest', 'secondary')
   meta.textContent = ''
 
   state.dogs = []
@@ -813,7 +867,7 @@ async function bindDiscoverPage() {
 
   if (dogsResult.error) {
     setStatus(status, dogsResult.error.message, 'danger')
-    meta.textContent = 'Unable to load dogs.'
+    setI18nText(meta, 'discover.unableToLoadDogs')
     return
   }
 
@@ -889,22 +943,22 @@ async function bindDiscoverPage() {
     }
 
     submitButton.disabled = true
-    submitButton.textContent = 'Sending...'
+    submitButton.textContent = t('discover.sending')
 
     const { data, error } = await createPlaydateRequest({ senderDogId, recipientDogId })
 
     if (error) {
       setStatus(playdateModalStatus, error.message, 'danger')
       submitButton.disabled = false
-      submitButton.textContent = 'Send request'
+      submitButton.textContent = t('discover.sendRequest')
       syncModalNotes()
       return
     }
 
     state.modal.hide()
-    setStatus(status, 'Playdate request sent successfully.', 'success')
+    setTranslatedStatus(status, 'discover.requestSent', 'success')
     submitButton.disabled = false
-    submitButton.textContent = 'Send request'
+    submitButton.textContent = t('discover.sendRequest')
 
     const refreshed = await getMyPlaydateRequests()
 
@@ -919,15 +973,15 @@ async function bindDiscoverPage() {
   modalElement.addEventListener('hidden.bs.modal', () => {
     state.recipientDog = null
     playdateForm.reset()
-    submitButton.textContent = 'Send request'
+    submitButton.textContent = t('discover.sendRequest')
     submitButton.disabled = false
-    setStatus(playdateModalStatus, 'Select a dog to send a request.', 'secondary')
+    setTranslatedStatus(playdateModalStatus, 'discover.selectDogToSendRequest', 'secondary')
   })
 
   if (!state.myDogs.length) {
-    setStatus(status, 'You can browse dogs now. Add your own dog from Profile to send playdate requests.', 'info')
+    setTranslatedStatus(status, 'discover.browseDogsFromProfileInfo', 'info')
   } else {
-    setStatus(status, 'Loading nearby dogs...', 'secondary')
+    setTranslatedStatus(status, 'discover.loadingDogs', 'secondary')
   }
 
   state.filters.city = cityFilter.value
@@ -938,6 +992,7 @@ async function bindDiscoverPage() {
 }
 
 export function renderPage() {
+  bindTitleSync()
   queueMicrotask(bindDiscoverPage)
   return template
 }

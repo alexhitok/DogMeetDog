@@ -1,21 +1,59 @@
 import template from './lost-dogs.html?raw'
 import './lost-dogs.css'
+import { t } from '../../i18n/i18n.js'
 import { getLostDogReports } from '../../services/publicContentService.js'
 
-function setStatus(target, message, variant) {
+let titleSyncBound = false
+
+function bindTitleSync() {
+  if (titleSyncBound) {
+    return
+  }
+
+  titleSyncBound = true
+  window.addEventListener('language:changed', updatePageTitle)
+}
+
+function updatePageTitle() {
+  document.title = `DogMeetDog | ${t('lostDogs.pageTitle')}`
+}
+
+function setStatus(target, message, variant, translationKey = '', replacements = {}) {
   target.replaceChildren()
 
   const alert = document.createElement('div')
   alert.className = `alert alert-${variant} mb-0`
   alert.setAttribute('role', 'alert')
+  if (translationKey) {
+    alert.dataset.i18n = translationKey
+    if (Object.keys(replacements).length) {
+      alert.dataset.i18nReplacements = JSON.stringify(replacements)
+    }
+  }
   alert.textContent = message
 
   target.append(alert)
 }
 
+function setTranslatedStatus(target, translationKey, variant, replacements = {}) {
+  setStatus(target, t(translationKey, replacements), variant, translationKey, replacements)
+}
+
+function setI18nText(element, translationKey, replacements = {}) {
+  if (!element) {
+    return
+  }
+
+  element.dataset.i18n = translationKey
+  if (Object.keys(replacements).length) {
+    element.dataset.i18nReplacements = JSON.stringify(replacements)
+  }
+  element.textContent = t(translationKey, replacements)
+}
+
 function formatDate(value) {
   if (!value) {
-    return 'Not provided'
+    return t('common.notProvided')
   }
 
   return new Date(value).toLocaleDateString()
@@ -34,13 +72,13 @@ function createReportCard(report) {
   if (report.dogPhotoUrl) {
     const image = document.createElement('img')
     image.src = report.dogPhotoUrl
-    image.alt = `${report.dogName || report.title || 'Dog'} photo`
+    image.alt = t('lostDogs.photoAlt', { name: report.dogName || report.title || t('common.unnamedDog') })
     image.className = 'w-100 h-100 object-fit-cover'
     media.append(image)
   } else {
     const placeholder = document.createElement('div')
     placeholder.className = 'd-flex align-items-center justify-content-center text-secondary small'
-    placeholder.textContent = 'No photo'
+    setI18nText(placeholder, 'common.noPhoto')
     media.append(placeholder)
   }
 
@@ -49,15 +87,15 @@ function createReportCard(report) {
 
   const title = document.createElement('h2')
   title.className = 'h5 card-title mb-0'
-  title.textContent = report.dogName ? `${report.dogName} is lost` : 'Lost dog report'
+  title.textContent = report.dogName ? `${report.dogName} ${t('lostDogs.lostSuffix')}` : t('lostDogs.lostReportTitle')
 
   const status = document.createElement('span')
   status.className = 'badge text-bg-danger align-self-start'
-  status.textContent = report.status || 'active'
+  setI18nText(status, 'lostDogs.active')
 
   const description = document.createElement('p')
   description.className = 'mb-0'
-  description.textContent = report.description || 'No description provided.'
+  description.textContent = report.description || t('lostDogs.noDescription')
 
   const details = document.createElement('dl')
   details.className = 'row small mb-0'
@@ -78,11 +116,11 @@ function createReportCard(report) {
     details.append(term, definition)
   }
 
-  addDetail('Dog', report.dogName ? `${report.dogName}${report.dogBreed ? ` · ${report.dogBreed}` : ''}` : 'Dog details not available')
-  addDetail('Lost location', report.last_seen_location)
-  addDetail('Lost date', formatDate(report.last_seen_date))
-  addDetail('Contact', report.contact_phone || '')
-  addDetail('Created', formatDate(report.created_at))
+  addDetail(t('lostDogs.dog'), report.dogName ? `${report.dogName}${report.dogBreed ? ` · ${report.dogBreed}` : ''}` : t('lostDogs.dogDetailsUnavailable'))
+  addDetail(t('lostDogs.lostLocation'), report.last_seen_location)
+  addDetail(t('lostDogs.lostDate'), formatDate(report.last_seen_date))
+  addDetail(t('lostDogs.contact'), report.contact_phone || '')
+  addDetail(t('lostDogs.created'), formatDate(report.created_at))
 
   body.append(title, status, description, details)
   card.append(media, body)
@@ -100,7 +138,7 @@ async function bindLostDogsPage() {
     return
   }
 
-  setStatus(status, 'Loading lost dog reports...', 'secondary')
+  setTranslatedStatus(status, 'lostDogs.loading', 'secondary')
   meta.textContent = ''
   list.innerHTML = ''
 
@@ -108,7 +146,7 @@ async function bindLostDogsPage() {
 
   if (error) {
     setStatus(status, error.message, 'danger')
-    meta.textContent = 'Unable to load lost dog reports.'
+    setI18nText(meta, 'lostDogs.unableToLoad')
     return
   }
 
@@ -120,15 +158,18 @@ async function bindLostDogsPage() {
     const empty = document.createElement('div')
     empty.className = 'alert alert-light border mb-0'
     empty.setAttribute('role', 'alert')
-    empty.textContent = 'No active lost dog reports available yet.'
+    setI18nText(empty, 'lostDogs.empty')
     status.append(empty)
 
-    meta.textContent = '0 reports'
+    setI18nText(meta, 'lostDogs.metaZero')
     return
   }
 
   status.innerHTML = ''
-  meta.textContent = `${reports.length} active report${reports.length === 1 ? '' : 's'}`
+  setI18nText(meta, 'lostDogs.metaCount', {
+    count: reports.length,
+    suffix: reports.length === 1 ? '' : 's',
+  })
 
   const fragment = document.createDocumentFragment()
   reports.forEach((report) => {
@@ -139,6 +180,7 @@ async function bindLostDogsPage() {
 }
 
 export function renderPage() {
+  bindTitleSync()
   queueMicrotask(bindLostDogsPage)
   return template
 }

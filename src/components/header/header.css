@@ -85,6 +85,35 @@
   text-align: center;
 }
 
+.site-header .header-language-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid rgba(31, 90, 74, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.site-header .header-language-btn {
+  min-width: 42px;
+  min-height: 36px;
+  padding: 0.2rem 0.45rem;
+  border: 0;
+  border-radius: 0;
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.site-header .header-language-btn + .header-language-btn {
+  border-left: 1px solid rgba(31, 90, 74, 0.2);
+}
+
+.site-header .header-language-btn.is-active {
+  background: var(--color-primary);
+  color: #fff;
+}
+
 .site-header--desktop .container-fluid,
 .site-header--mobile .container-fluid {
   min-height: 2.75rem;
@@ -157,6 +186,27 @@
   align-content: start;
 }
 
+.site-mobile-nav__language {
+  display: grid;
+  gap: 0.45rem;
+  margin-bottom: 0.35rem;
+  padding: 0.2rem 0.15rem 0.55rem;
+  border-bottom: 1px solid rgba(231, 222, 212, 0.8);
+}
+
+.site-mobile-nav__language-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.site-mobile-nav__language-buttons {
+  display: inline-flex;
+  width: fit-content;
+}
+
 .site-mobile-nav__row,
 .site-mobile-nav__logout {
   min-height: 48px;
@@ -220,19 +270,23 @@
   .site-header__desktop-nav {
     display: flex;
     margin-left: auto;
+    min-width: 0;
   }
 
   .site-header__desktop-nav .navbar-nav {
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     justify-content: flex-end;
+    white-space: nowrap;
   }
 
   .site-header__desktop-actions {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    flex: 0 0 auto;
+    padding-left: 0.45rem;
   }
 
   .site-header .navbar-brand {
@@ -262,6 +316,33 @@
   .site-header .header-auth-btn,
   .site-header .header-more-btn {
     min-height: 44px;
+  }
+
+  .site-header .header-language-switcher {
+    margin-right: 0.25rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1439.98px) {
+  .site-header--desktop .container-fluid,
+  .site-header--mobile .container-fluid {
+    gap: 1rem;
+  }
+
+  .site-header .nav-link {
+  font-size: 0.82rem;
+  padding-inline: 0.32rem;
+}
+
+  .site-header .header-auth-btn {
+    min-width: 6rem;
+    font-size: 0.84rem;
+    padding-inline: 0.62rem;
+  }
+
+  .site-header .header-language-btn {
+    min-width: 38px;
+    padding-inline: 0.35rem;
   }
 }
 
@@ -312,6 +393,11 @@
     gap: 0.4rem;
     margin-left: auto;
     flex: 0 0 auto;
+  }
+
+  .site-header .header-language-btn {
+    min-height: 34px;
+    font-size: 0.72rem;
   }
 
   .site-header .header-auth-btn {
@@ -365,5 +451,83 @@
   .site-bottom-nav *,
   .site-mobile-nav * {
     transition: none !important;
+  }
+}
+@media (min-width: 992px) {
+  .site-header__desktop-nav {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .site-header__desktop-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    flex: 0 0 auto;
+    gap: 0.65rem;
+    margin-left: 0;
+    padding-left: 0.25rem;
+  }
+
+  .site-header__desktop-actions .header-language-switcher {
+    flex: 0 0 auto;
+    margin: 0;
+  }
+
+  .site-header__desktop-actions a,
+  .site-header__desktop-actions button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+}
+@media (min-width: 992px) {
+  .site-header--desktop {
+    width: min(calc(100% - 2rem), 1240px);
+    max-width: 1240px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .site-header--desktop .container-fluid {
+    width: 100%;
+    max-width: none;
+    gap: 0.75rem;
+  }
+
+  .site-header__desktop-nav {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .site-header__desktop-nav .navbar-nav {
+    gap: 0.15rem !important;
+  }
+
+  .site-header .nav-link {
+    font-size: 0.82rem;
+    padding-inline: 0.38rem;
+  }
+
+  .site-header__desktop-actions {
+    flex: 0 0 auto;
+    gap: 0.5rem;
+    margin-left: 0;
+    padding-left: 0.8rem !important;
+  }
+
+  .site-header__desktop-actions .header-language-switcher {
+    flex: 0 0 auto;
+    margin: 0;
+  }
+}
+@media (min-width: 992px) {
+  .site-header__desktop-actions > a[href="/profile"] {
+    margin-left: 0.75rem !important;
+  }
+}
+@media (min-width: 992px) {
+  .site-header__desktop-actions > a[href="/profile"].is-active {
+    background: transparent !important;
+    color: var(--color-primary);
   }
 }

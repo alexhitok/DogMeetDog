@@ -1,6 +1,22 @@
 import template from './register.html?raw'
 import './register.css'
+import { t } from '../../i18n/i18n.js'
 import { registerUser } from '../../services/authService.js'
+
+let titleSyncBound = false
+
+function bindTitleSync() {
+  if (titleSyncBound) {
+    return
+  }
+
+  titleSyncBound = true
+  window.addEventListener('language:changed', updatePageTitle)
+}
+
+function updatePageTitle() {
+  document.title = `DogMeetDog | ${t('register.pageTitle')}`
+}
 
 function renderStatus(target, message, variant) {
   target.innerHTML = `
@@ -43,7 +59,7 @@ function bindRegisterForm() {
     }
 
     if (status) {
-      renderStatus(status, 'Registration successful. Redirecting to profile...', 'success')
+      renderStatus(status, t('register.success'), 'success')
     }
 
     window.location.assign('/profile')
@@ -51,6 +67,7 @@ function bindRegisterForm() {
 }
 
 export function renderPage() {
+  bindTitleSync()
   queueMicrotask(bindRegisterForm)
   return template
 }

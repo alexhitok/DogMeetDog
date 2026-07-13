@@ -1,21 +1,59 @@
 import template from './adoption.html?raw'
 import './adoption.css'
+import { t } from '../../i18n/i18n.js'
 import { getAdoptionPosts } from '../../services/publicContentService.js'
 
-function setStatus(target, message, variant) {
+let titleSyncBound = false
+
+function bindTitleSync() {
+  if (titleSyncBound) {
+    return
+  }
+
+  titleSyncBound = true
+  window.addEventListener('language:changed', updatePageTitle)
+}
+
+function updatePageTitle() {
+  document.title = `DogMeetDog | ${t('adoption.pageTitle')}`
+}
+
+function setStatus(target, message, variant, translationKey = '', replacements = {}) {
   target.replaceChildren()
 
   const alert = document.createElement('div')
   alert.className = `alert alert-${variant} mb-0`
   alert.setAttribute('role', 'alert')
+  if (translationKey) {
+    alert.dataset.i18n = translationKey
+    if (Object.keys(replacements).length) {
+      alert.dataset.i18nReplacements = JSON.stringify(replacements)
+    }
+  }
   alert.textContent = message
 
   target.append(alert)
 }
 
+function setTranslatedStatus(target, translationKey, variant, replacements = {}) {
+  setStatus(target, t(translationKey, replacements), variant, translationKey, replacements)
+}
+
+function setI18nText(element, translationKey, replacements = {}) {
+  if (!element) {
+    return
+  }
+
+  element.dataset.i18n = translationKey
+  if (Object.keys(replacements).length) {
+    element.dataset.i18nReplacements = JSON.stringify(replacements)
+  }
+  element.textContent = t(translationKey, replacements)
+}
+
 function formatDate(value) {
   if (!value) {
-    return 'Not provided'
+    return t('common.notProvided')
   }
 
   return new Date(value).toLocaleDateString()
@@ -34,13 +72,13 @@ function createAdoptionCard(post) {
   if (post.dogPhotoUrl) {
     const image = document.createElement('img')
     image.src = post.dogPhotoUrl
-    image.alt = `${post.dogName || post.title || 'Dog'} photo`
+    image.alt = t('adoption.photoAlt', { name: post.dogName || post.title || t('common.unnamedDog') })
     image.className = 'w-100 h-100 object-fit-cover'
     media.append(image)
   } else {
     const placeholder = document.createElement('div')
     placeholder.className = 'd-flex align-items-center justify-content-center text-secondary small'
-    placeholder.textContent = 'No photo'
+    setI18nText(placeholder, 'common.noPhoto')
     media.append(placeholder)
   }
 
@@ -49,15 +87,15 @@ function createAdoptionCard(post) {
 
   const title = document.createElement('h2')
   title.className = 'h5 card-title mb-0'
-  title.textContent = post.title || 'Untitled adoption post'
+  title.textContent = post.title || t('adoption.untitledPost')
 
   const status = document.createElement('span')
   status.className = 'badge text-bg-success align-self-start'
-  status.textContent = post.status || 'published'
+  setI18nText(status, 'adoption.published')
 
   const description = document.createElement('p')
   description.className = 'mb-0'
-  description.textContent = post.description || 'No description provided.'
+  description.textContent = post.description || t('adoption.noDescription')
 
   const details = document.createElement('dl')
   details.className = 'row small mb-0'
@@ -78,9 +116,9 @@ function createAdoptionCard(post) {
     details.append(term, definition)
   }
 
-  addDetail('Dog', post.dogName ? `${post.dogName}${post.dogBreed ? ` · ${post.dogBreed}` : ''}` : 'Dog details not available')
-  addDetail('Contact', post.contact_phone || '')
-  addDetail('Created', formatDate(post.created_at))
+  addDetail(t('adoption.dog'), post.dogName ? `${post.dogName}${post.dogBreed ? ` · ${post.dogBreed}` : ''}` : t('adoption.dogDetailsUnavailable'))
+  addDetail(t('adoption.contact'), post.contact_phone || '')
+  addDetail(t('adoption.created'), formatDate(post.created_at))
 
   body.append(title, status, description, details)
   card.append(media, body)
@@ -98,7 +136,7 @@ async function bindAdoptionPage() {
     return
   }
 
-  setStatus(status, 'Loading adoption posts...', 'secondary')
+  setTranslatedStatus(status, 'adoption.loading', 'secondary')
   meta.textContent = ''
   list.innerHTML = ''
 
@@ -106,7 +144,7 @@ async function bindAdoptionPage() {
 
   if (error) {
     setStatus(status, error.message, 'danger')
-    meta.textContent = 'Unable to load adoption posts.'
+    setI18nText(meta, 'adoption.unableToLoad')
     return
   }
 
@@ -118,15 +156,18 @@ async function bindAdoptionPage() {
     const empty = document.createElement('div')
     empty.className = 'alert alert-light border mb-0'
     empty.setAttribute('role', 'alert')
-    empty.textContent = 'No adoption posts available yet.'
+    setI18nText(empty, 'adoption.empty')
     status.append(empty)
 
-    meta.textContent = '0 adoption posts'
+    setI18nText(meta, 'adoption.metaZero')
     return
   }
 
   status.innerHTML = ''
-  meta.textContent = `${posts.length} adoption post${posts.length === 1 ? '' : 's'}`
+  setI18nText(meta, 'adoption.metaCount', {
+    count: posts.length,
+    suffix: posts.length === 1 ? '' : 's',
+  })
 
   const fragment = document.createDocumentFragment()
   posts.forEach((post) => {
@@ -137,6 +178,7 @@ async function bindAdoptionPage() {
 }
 
 export function renderPage() {
+  bindTitleSync()
   queueMicrotask(bindAdoptionPage)
   return template
 }

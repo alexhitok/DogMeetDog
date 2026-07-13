@@ -1,4 +1,4 @@
-<nav class="site-header site-header--desktop navbar sticky-top d-none d-md-flex" aria-label="Primary desktop navigation">
+<nav class="site-header site-header--desktop navbar sticky-top d-none d-md-flex" aria-label="Primary desktop navigation" data-i18n-aria-label="header.desktopNavAria">
   <div class="container-fluid px-0 align-items-center gap-3">
     <a class="navbar-brand d-inline-flex align-items-center gap-2 py-0 me-3" href="/" data-link aria-label="DogMeetDog - Home">
       <span class="brand-mark" aria-hidden="true">
@@ -11,46 +11,51 @@
       <div class="navbar-nav align-items-center gap-1">
         <a class="nav-link px-2 d-inline-flex align-items-center gap-1" href="/discover" data-link data-auth-visible="logged-in" hidden>
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.6"/><path d="m14.8 9.2-2.1 5.6-5.6 2.1 2.1-5.6 5.6-2.1z"/></svg>
-          <span>Discover</span>
+          <span data-i18n="header.discover">Discover</span>
         </a>
         <a class="nav-link px-2 d-inline-flex align-items-center gap-1" href="/adoption" data-link data-auth-visible="logged-in" hidden>
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.2s-7.2-4.6-7.2-10.2a4.5 4.5 0 0 1 7.8-3.1A4.5 4.5 0 0 1 20.4 10c0 5.6-8.4 10.2-8.4 10.2z"/></svg>
-          <span>Adoption</span>
+          <span data-i18n="header.adoption">Adoption</span>
         </a>
         <a class="nav-link px-2 d-inline-flex align-items-center gap-1" href="/lost-dogs" data-link data-auth-visible="logged-in" hidden>
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.5 20s-4.5-3.5-4.5-8a4.5 4.5 0 1 1 9 0c0 4.5-4.5 8-4.5 8z"/><circle cx="10.5" cy="12" r="1.6"/><circle cx="17.2" cy="16.8" r="2.2"/><path d="m18.8 18.4 1.9 1.9"/></svg>
-          <span>Lost Dogs</span>
+          <span data-i18n="header.lostDogs">Lost Dogs</span>
         </a>
         <a class="nav-link px-2 d-inline-flex align-items-center gap-1" href="/places" data-link data-auth-visible="logged-in" hidden>
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 6.5 9 4l6 2.5L20.5 4v13.5L15 20l-6-2.5L3.5 20V6.5z"/><path d="M9 4v13.5"/><path d="M15 6.5V20"/></svg>
-          <span>Places</span>
+          <span data-i18n="header.places">Places</span>
         </a>
         <a class="nav-link px-2 d-inline-flex align-items-center gap-1" href="/notifications" data-link data-auth-visible="logged-in" hidden>
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 17H5a2 2 0 0 1-1.6-3.2l.7-.9A5.9 5.9 0 0 0 5.4 9.3V8a6.6 6.6 0 0 1 13.2 0v1.3c0 1.3.4 2.5 1.2 3.6l.7.9A2 2 0 0 1 18.9 17H15"/><path d="M9.7 20a2.3 2.3 0 0 0 4.6 0"/></svg>
-          <span>Notifications</span>
+          <span data-i18n="header.notifications">Notifications</span>
           <span class="badge rounded-pill text-bg-danger d-none" data-notifications-badge>0</span>
         </a>
         <a class="nav-link px-2 d-inline-flex align-items-center gap-1" href="/messages" data-link data-auth-visible="logged-in" hidden>
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 18h8a5 5 0 1 0 0-10H8a5 5 0 1 0 0 10z"/><path d="m10 18-3.8 3 .9-3"/></svg>
-          <span>Messages</span>
+          <span data-i18n="header.messages">Messages</span>
         </a>
         <a class="nav-link px-2 d-inline-flex align-items-center gap-1" href="/admin" data-link data-auth-visible="admin" hidden>
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5.5 6v5.5c0 4.3 2.7 7.7 6.5 9.5 3.8-1.8 6.5-5.2 6.5-9.5V6L12 3z"/><path d="m9.5 12 2 2 3-3.5"/></svg>
-          <span>Admin</span>
+          <span data-i18n="header.admin">Admin</span>
         </a>
         <a class="nav-link px-2 d-inline-flex align-items-center gap-1" href="/profile" data-link data-auth-visible="logged-in" hidden>
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>
-          <span>Profile</span>
+          <span data-i18n="header.profile">Profile</span>
         </a>
+
       </div>
     </div>
 
-    <div class="site-header__desktop-actions d-flex align-items-center gap-2 ms-auto">
+    <div class="site-header__desktop-actions d-flex align-items-center gap-2">
+      <div class="header-language-switcher" role="group" aria-label="Language switcher" data-i18n-aria-label="header.languageSwitcherAria" data-language-switcher>
+        <button class="btn btn-outline-primary btn-sm header-language-btn" type="button" data-lang-option="en" aria-pressed="true">EN</button>
+        <button class="btn btn-outline-primary btn-sm header-language-btn" type="button" data-lang-option="bg" aria-pressed="false">BG</button>
+      </div>
       <a class="btn btn-outline-primary btn-sm header-auth-btn" href="/login" data-link data-auth-visible="logged-out" hidden>
-        Sign in
+        <span data-i18n="header.signIn">Sign in</span>
       </a>
       <a class="btn btn-primary btn-sm header-auth-btn" href="/register" data-link data-auth-visible="logged-out" hidden>
-        Join now
+        <span data-i18n="header.joinNow">Join now</span>
       </a>
     </div>
   </div>
@@ -67,10 +72,10 @@
 
     <div class="site-mobile-actions d-flex align-items-center gap-2 ms-auto">
       <a class="btn btn-outline-primary btn-sm header-auth-btn" href="/login" data-link data-auth-visible="logged-out" hidden>
-        Sign in
+        <span data-i18n="header.signIn">Sign in</span>
       </a>
       <a class="btn btn-primary btn-sm header-auth-btn" href="/register" data-link data-auth-visible="logged-out" hidden>
-        Join now
+        <span data-i18n="header.joinNow">Join now</span>
       </a>
       <button
         class="btn btn-outline-primary btn-sm header-more-btn d-inline-flex align-items-center gap-1"
@@ -80,66 +85,74 @@
         aria-controls="site-mobile-menu"
         aria-expanded="false"
         aria-label="Open menu"
+        data-i18n-aria-label="header.openMenu"
         data-auth-visible="logged-in"
         hidden
       >
         <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <span>More</span>
+        <span data-i18n="header.more">More</span>
       </button>
     </div>
   </div>
 </div>
 
-<nav class="site-bottom-nav d-flex d-md-none" data-auth-visible="logged-in" hidden aria-label="Primary mobile navigation">
+<nav class="site-bottom-nav d-flex d-md-none" data-auth-visible="logged-in" hidden aria-label="Primary mobile navigation" data-i18n-aria-label="header.mobileNavAria">
   <a class="site-bottom-nav__item" href="/" data-link>
     <svg class="site-bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20H4v-8.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 20v-6h6v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-    <span class="site-bottom-nav__label">Home</span>
+    <span class="site-bottom-nav__label" data-i18n="header.home">Home</span>
   </a>
   <a class="site-bottom-nav__item" href="/discover" data-link>
     <svg class="site-bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l7 3-2.5 9L12 20l-4.5-4L5 7l7-3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-    <span class="site-bottom-nav__label">Discover</span>
+    <span class="site-bottom-nav__label" data-i18n="header.discover">Discover</span>
   </a>
   <a class="site-bottom-nav__item" href="/notifications" data-link>
     <svg class="site-bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4a4 4 0 0 0-4 4v2.3c0 .7-.2 1.4-.6 2L6 14.5V16h12v-1.5l-1.4-2.2c-.4-.6-.6-1.3-.6-2V8a4 4 0 0 0-4-4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 18a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
-    <span class="site-bottom-nav__label">Notifications</span>
+    <span class="site-bottom-nav__label" data-i18n="header.notifications">Notifications</span>
     <span class="badge rounded-pill text-bg-danger d-none site-bottom-nav__badge" data-notifications-badge>0</span>
   </a>
   <a class="site-bottom-nav__item" href="/messages" data-link>
     <svg class="site-bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14v10H9l-4 3V6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-    <span class="site-bottom-nav__label">Messages</span>
+    <span class="site-bottom-nav__label" data-i18n="header.messages">Messages</span>
   </a>
   <a class="site-bottom-nav__item" href="/profile" data-link>
     <svg class="site-bottom-nav__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM5 20a7 7 0 0 1 14 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-    <span class="site-bottom-nav__label">Profile</span>
+    <span class="site-bottom-nav__label" data-i18n="header.profile">Profile</span>
   </a>
 </nav>
 
 <div class="offcanvas offcanvas-end site-mobile-nav d-md-none" tabindex="-1" id="site-mobile-menu" aria-labelledby="site-mobile-menu-label" data-auth-visible="logged-in" hidden>
   <div class="offcanvas-header">
-    <h2 class="offcanvas-title h5 mb-0" id="site-mobile-menu-label">More</h2>
+    <h2 class="offcanvas-title h5 mb-0" id="site-mobile-menu-label" data-i18n="header.menuTitle">More</h2>
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body site-mobile-nav__body">
     <div class="site-mobile-nav__list" role="list">
+      <div class="site-mobile-nav__language" data-language-switcher>
+        <span class="site-mobile-nav__language-label" data-i18n="header.language">Language</span>
+        <div class="site-mobile-nav__language-buttons" role="group" aria-label="Language switcher" data-i18n-aria-label="header.languageSwitcherAria">
+          <button class="btn btn-outline-primary btn-sm header-language-btn" type="button" data-lang-option="en" aria-pressed="true">EN</button>
+          <button class="btn btn-outline-primary btn-sm header-language-btn" type="button" data-lang-option="bg" aria-pressed="false">BG</button>
+        </div>
+      </div>
       <a class="site-mobile-nav__row nav-link" href="/adoption" data-link data-auth-visible="logged-in" hidden>
         <svg class="site-mobile-nav__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4.2 4.2 0 0 1 7-3 4.2 4.2 0 0 1 7 3c0 5.5-7 10-7 10z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-        <span>Adoption</span>
+        <span data-i18n="header.adoption">Adoption</span>
       </a>
       <a class="site-mobile-nav__row nav-link" href="/lost-dogs" data-link data-auth-visible="logged-in" hidden>
         <svg class="site-mobile-nav__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6-4.4 6-10a6 6 0 1 0-12 0c0 5.6 6 10 6 10z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="11" r="1.4" fill="currentColor"/></svg>
-        <span>Lost Dogs</span>
+        <span data-i18n="header.lostDogs">Lost Dogs</span>
       </a>
       <a class="site-mobile-nav__row nav-link" href="/places" data-link data-auth-visible="logged-in" hidden>
         <svg class="site-mobile-nav__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s5-5.1 5-10a5 5 0 1 0-10 0c0 4.9 5 10 5 10z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="11" r="1.8" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
-        <span>Places</span>
+        <span data-i18n="header.places">Places</span>
       </a>
       <a class="site-mobile-nav__row nav-link" href="/admin" data-link data-auth-visible="admin" hidden>
         <svg class="site-mobile-nav__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 4v5c0 4.2-2.6 7.4-7 9-4.4-1.6-7-4.8-7-9V7l7-4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-        <span>Admin</span>
+        <span data-i18n="header.admin">Admin</span>
       </a>
       <button type="button" class="site-mobile-nav__logout btn btn-link text-danger w-100" data-mobile-logout-button data-auth-visible="logged-in" hidden>
         <svg class="site-mobile-nav__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l-1 3h10V4H9l1 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 12h8m-3-3 3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>Logout</span>
+        <span data-i18n="header.logout">Logout</span>
       </button>
     </div>
   </div>
