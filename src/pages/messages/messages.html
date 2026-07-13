@@ -2,11 +2,11 @@
   <div class="card-body py-4 d-grid gap-4">
     <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
       <div>
-        <h1 class="h3 mb-1">Messages</h1>
-        <p class="text-secondary small mb-0">Private conversations are available only for accepted playdate matches.</p>
+        <h1 class="h3 mb-1" data-i18n="messages.heading">Messages</h1>
+        <p class="text-secondary small mb-0" data-i18n="messages.subtitle">Private conversations are available only for accepted playdate matches.</p>
       </div>
       <div class="d-flex flex-wrap gap-2">
-        <button type="button" class="btn btn-outline-secondary btn-sm" data-refresh-messages>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-refresh-messages data-i18n="messages.refreshAll">
           Refresh all
         </button>
       </div>
@@ -20,8 +20,8 @@
           <div class="card-body d-grid gap-3">
             <div class="d-flex align-items-center justify-content-between gap-2">
               <div>
-                <h2 class="h6 mb-1">Conversations</h2>
-                <p class="text-secondary small mb-0">Select a match to read messages.</p>
+                <h2 class="h6 mb-1" data-i18n="messages.conversationsHeading">Conversations</h2>
+                <p class="text-secondary small mb-0" data-i18n="messages.conversationsSubtitle">Select a match to read messages.</p>
               </div>
               <div data-conversations-meta class="small text-secondary"></div>
             </div>
@@ -36,10 +36,10 @@
           <div class="card-body d-grid gap-3">
             <div class="d-flex flex-column flex-md-row justify-content-between gap-3 align-items-md-start">
               <div>
-                <h2 class="h5 mb-1" data-selected-conversation-title>Select a conversation</h2>
-                <p class="text-secondary small mb-0" data-selected-conversation-subtitle>Choose an accepted match from the list.</p>
+                <h2 class="h5 mb-1" data-selected-conversation-title data-i18n="messages.selectConversation">Select a conversation</h2>
+                <p class="text-secondary small mb-0" data-selected-conversation-subtitle data-i18n="messages.selectAcceptedMatch">Choose an accepted match from the list.</p>
               </div>
-              <button type="button" class="btn btn-outline-secondary btn-sm align-self-md-start" data-refresh-conversation>
+              <button type="button" class="btn btn-outline-secondary btn-sm align-self-md-start" data-refresh-conversation data-i18n="messages.refreshMessages">
                 Refresh messages
               </button>
             </div>
@@ -50,27 +50,28 @@
 
             <form class="d-grid gap-3 d-none" data-message-form>
               <div>
-                <label class="form-label" for="message-body">Message</label>
+                <label class="form-label" for="message-body" data-i18n="messages.messageLabel">Message</label>
                 <textarea
                   id="message-body"
                   name="body"
                   class="form-control"
                   rows="4"
                   maxlength="2000"
+                  data-i18n-placeholder="messages.messagePlaceholder"
                   placeholder="Write a plain-text message"
                   data-message-input
                 ></textarea>
-                <div class="form-text">Plain text only. Messages are limited to 2000 characters.</div>
+                <div class="form-text" data-i18n="messages.messageHelper">Plain text only. Messages are limited to 2000 characters.</div>
               </div>
 
               <div class="d-flex flex-wrap gap-2">
-                <button type="submit" class="btn btn-primary" data-send-message>
+                <button type="submit" class="btn btn-primary" data-send-message data-i18n="messages.sendMessage">
                   Send message
                 </button>
               </div>
             </form>
 
-            <div class="alert alert-light border mb-0" role="alert" data-message-empty-state>
+            <div class="alert alert-light border mb-0" role="alert" data-message-empty-state data-i18n="messages.selectConversationToMessage">
               Select a conversation to start messaging.
             </div>
           </div>

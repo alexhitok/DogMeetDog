@@ -1,6 +1,22 @@
 import template from './login.html?raw'
 import './login.css'
+import { t } from '../../i18n/i18n.js'
 import { loginUser } from '../../services/authService.js'
+
+let titleSyncBound = false
+
+function bindTitleSync() {
+  if (titleSyncBound) {
+    return
+  }
+
+  titleSyncBound = true
+  window.addEventListener('language:changed', updatePageTitle)
+}
+
+function updatePageTitle() {
+  document.title = `DogMeetDog | ${t('login.pageTitle')}`
+}
 
 function renderStatus(target, message, variant) {
   target.innerHTML = `
@@ -40,7 +56,7 @@ function bindLoginForm() {
     }
 
     if (status) {
-      renderStatus(status, 'Login successful. Redirecting to profile...', 'success')
+      renderStatus(status, t('login.success'), 'success')
     }
 
     window.location.assign('/profile')
@@ -48,6 +64,7 @@ function bindLoginForm() {
 }
 
 export function renderPage() {
+  bindTitleSync()
   queueMicrotask(bindLoginForm)
   return template
 }

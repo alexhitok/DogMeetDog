@@ -1,5 +1,6 @@
 import template from './messages.html?raw'
 import './messages.css'
+import { t } from '../../i18n/i18n.js'
 import { getCurrentUser } from '../../services/authService.js'
 import { getConversationMessages, getMyConversations, sendConversationMessage } from '../../services/messagingService.js'
 
@@ -11,7 +12,22 @@ const state = {
   isSending: false,
 }
 
-function setStatus(target, message, variant) {
+let titleSyncBound = false
+
+function bindTitleSync() {
+  if (titleSyncBound) {
+    return
+  }
+
+  titleSyncBound = true
+  window.addEventListener('language:changed', updatePageTitle)
+}
+
+function updatePageTitle() {
+  document.title = `DogMeetDog | ${t('messages.pageTitle')}`
+}
+
+function setStatus(target, message, variant, translationKey = '', replacements = {}) {
   if (!target) {
     return
   }
@@ -21,6 +37,12 @@ function setStatus(target, message, variant) {
   const alert = document.createElement('div')
   alert.className = `alert alert-${variant} mb-0`
   alert.setAttribute('role', 'alert')
+  if (translationKey) {
+    alert.dataset.i18n = translationKey
+    if (Object.keys(replacements).length) {
+      alert.dataset.i18nReplacements = JSON.stringify(replacements)
+    }
+  }
   alert.textContent = message
 
   target.append(alert)
@@ -32,9 +54,25 @@ function clearStatus(target) {
   }
 }
 
+function setTranslatedStatus(target, translationKey, variant, replacements = {}) {
+  setStatus(target, t(translationKey, replacements), variant, translationKey, replacements)
+}
+
+function setI18nText(element, translationKey, replacements = {}) {
+  if (!element) {
+    return
+  }
+
+  element.dataset.i18n = translationKey
+  if (Object.keys(replacements).length) {
+    element.dataset.i18nReplacements = JSON.stringify(replacements)
+  }
+  element.textContent = t(translationKey, replacements)
+}
+
 function formatDate(value) {
   if (!value) {
-    return 'Unknown date'
+    return t('messages.unknownDate')
   }
 
   return new Date(value).toLocaleDateString()
@@ -42,7 +80,7 @@ function formatDate(value) {
 
 function formatDateTime(value) {
   if (!value) {
-    return 'Unknown time'
+    return t('messages.unknownTime')
   }
 
   return new Date(value).toLocaleString()
@@ -52,7 +90,7 @@ function getConversationTitle(conversation) {
   const dogNames = [conversation?.senderDog?.name, conversation?.recipientDog?.name].filter(Boolean)
 
   if (!dogNames.length) {
-    return 'Conversation'
+    return t('messages.conversationTitle')
   }
 
   if (dogNames.length === 1) {
@@ -64,10 +102,10 @@ function getConversationTitle(conversation) {
 
 function getConversationSubtitle(conversation) {
   if (!conversation) {
-    return 'Choose an accepted match from the list.'
+    return t('messages.selectAcceptedMatch')
   }
 
-  return `Accepted match · Created ${formatDate(conversation.created_at)}`
+  return t('messages.acceptedMatchCreated', { date: formatDate(conversation.created_at) })
 }
 
 function getConversationFromUrl() {
@@ -106,7 +144,7 @@ function renderConversationList(target) {
     const empty = document.createElement('div')
     empty.className = 'alert alert-light border mb-0 small'
     empty.setAttribute('role', 'alert')
-    empty.textContent = 'No accepted matches yet.'
+    setI18nText(empty, 'messages.noAcceptedMatches')
     target.append(empty)
     return
   }
@@ -145,7 +183,7 @@ function renderMessages(target, messages) {
     const empty = document.createElement('div')
     empty.className = 'alert alert-light border mb-0'
     empty.setAttribute('role', 'alert')
-    empty.textContent = 'No messages yet. Send the first one below.'
+    setI18nText(empty, 'messages.noMessagesYet')
     target.append(empty)
     return
   }
@@ -163,7 +201,7 @@ function renderMessages(target, messages) {
 
     const meta = document.createElement('div')
     meta.className = `small mb-1 ${isOwnMessage ? 'text-white-50' : 'text-secondary'}`
-    meta.textContent = `${isOwnMessage ? 'You' : 'Other owner'} · ${formatDateTime(message.created_at)}`
+    meta.textContent = `${isOwnMessage ? t('messages.you') : t('messages.otherOwner')} · ${formatDateTime(message.created_at)}`
 
     const body = document.createElement('p')
     body.className = 'mb-0'
@@ -210,11 +248,11 @@ function setConversationSelection(conversationId, { updateUrl = true } = {}) {
     }
   } else {
     if (title) {
-      title.textContent = 'Select a conversation'
+      title.textContent = t('messages.selectConversation')
     }
 
     if (subtitle) {
-      subtitle.textContent = 'Choose an accepted match from the list.'
+      subtitle.textContent = t('messages.selectAcceptedMatch')
     }
 
     if (form) {
@@ -223,7 +261,7 @@ function setConversationSelection(conversationId, { updateUrl = true } = {}) {
 
     if (emptyState) {
       emptyState.classList.remove('d-none')
-      emptyState.textContent = state.conversations.length ? 'Select a conversation to start messaging.' : 'No accepted matches yet.'
+      setI18nText(emptyState, state.conversations.length ? 'messages.selectConversationToMessage' : 'messages.noAcceptedMatches')
     }
 
     if (refreshConversationButton) {
@@ -257,7 +295,7 @@ async function loadMessagesForSelectedConversation({ quiet = false } = {}) {
 
     if (emptyState) {
       emptyState.classList.remove('d-none')
-      emptyState.textContent = state.conversations.length ? 'Select a conversation to start messaging.' : 'No accepted matches yet.'
+      setI18nText(emptyState, state.conversations.length ? 'messages.selectConversationToMessage' : 'messages.noAcceptedMatches')
     }
 
     clearStatus(status)
@@ -265,7 +303,7 @@ async function loadMessagesForSelectedConversation({ quiet = false } = {}) {
   }
 
   if (!quiet) {
-    setStatus(status, 'Loading messages...', 'secondary')
+    setTranslatedStatus(status, 'messages.loadingMessages', 'secondary')
   }
 
   const loadVersion = ++state.loadVersion
@@ -300,7 +338,7 @@ async function refreshMessagesScreen({ preserveSelection = true } = {}) {
   const emptyState = document.querySelector('[data-message-empty-state]')
   const refreshConversationButton = document.querySelector('[data-refresh-conversation]')
 
-  setStatus(pageStatus, 'Loading conversations...', 'secondary')
+  setTranslatedStatus(pageStatus, 'messages.loadingConversations', 'secondary')
 
   const { user, error: userError } = await getCurrentUser()
 
@@ -318,7 +356,7 @@ async function refreshMessagesScreen({ preserveSelection = true } = {}) {
 
     if (emptyState) {
       emptyState.classList.remove('d-none')
-      emptyState.textContent = 'Sign in to view your conversations.'
+      setI18nText(emptyState, 'messages.signedOut')
     }
 
     if (refreshConversationButton) {
@@ -342,7 +380,7 @@ async function refreshMessagesScreen({ preserveSelection = true } = {}) {
 
     if (emptyState) {
       emptyState.classList.remove('d-none')
-      emptyState.textContent = 'Sign in to view your conversations.'
+      setI18nText(emptyState, 'messages.signedOut')
     }
 
     if (refreshConversationButton) {
@@ -369,7 +407,7 @@ async function refreshMessagesScreen({ preserveSelection = true } = {}) {
 
     if (emptyState) {
       emptyState.classList.remove('d-none')
-      emptyState.textContent = 'Unable to load conversations.'
+      setI18nText(emptyState, 'messages.unableToLoadConversations')
     }
 
     if (refreshConversationButton) {
@@ -382,7 +420,10 @@ async function refreshMessagesScreen({ preserveSelection = true } = {}) {
   state.conversations = data ?? []
 
   if (conversationsMeta) {
-    conversationsMeta.textContent = `${state.conversations.length} conversation${state.conversations.length === 1 ? '' : 's'}`
+    setI18nText(conversationsMeta, 'messages.conversationCount', {
+      count: state.conversations.length,
+      suffix: state.conversations.length === 1 ? '' : 's',
+    })
   }
 
   const queryConversationId = getConversationFromUrl()
@@ -399,7 +440,7 @@ async function refreshMessagesScreen({ preserveSelection = true } = {}) {
   if (!state.conversations.length) {
     if (emptyState) {
       emptyState.classList.remove('d-none')
-      emptyState.textContent = 'No accepted matches yet.'
+      setI18nText(emptyState, 'messages.noAcceptedMatches')
     }
 
     setConversationSelection(null, { updateUrl: false })
@@ -408,7 +449,7 @@ async function refreshMessagesScreen({ preserveSelection = true } = {}) {
   }
 
   if (queryConversationId && !queryConversationExists) {
-    setStatus(pageStatus, 'The selected conversation is not available. Showing your latest match instead.', 'warning')
+    setTranslatedStatus(pageStatus, 'messages.selectedConversationUnavailable', 'warning')
     updateConversationUrl(nextSelectedConversationId, true)
   } else {
     clearStatus(pageStatus)
@@ -490,13 +531,13 @@ function bindMessageForm() {
     const body = String(input.value ?? '')
 
     if (!body.trim()) {
-      setStatus(status, 'Message body cannot be empty.', 'warning')
+      setTranslatedStatus(status, 'messages.messageBodyEmpty', 'warning')
       input.focus()
       return
     }
 
     if (body.length > 2000) {
-      setStatus(status, 'Message body must be 2000 characters or fewer.', 'warning')
+      setTranslatedStatus(status, 'messages.messageBodyTooLong', 'warning')
       input.focus()
       return
     }
@@ -504,7 +545,7 @@ function bindMessageForm() {
     state.isSending = true
     sendButton.disabled = true
     input.disabled = true
-    setStatus(status, 'Sending message...', 'secondary')
+    setTranslatedStatus(status, 'messages.sendingMessage', 'secondary')
 
     const { error } = await sendConversationMessage({
       conversationId: state.selectedConversationId,
@@ -544,14 +585,14 @@ async function bindMessagesPage() {
 
   if (error) {
     setStatus(status, error.message, 'danger')
-    emptyState.textContent = 'Unable to check your sign-in status.'
+    setI18nText(emptyState, 'messages.unableToCheckSignIn')
     return
   }
 
   if (!user) {
-    setStatus(status, 'Sign in to view your conversations.', 'warning')
+    setTranslatedStatus(status, 'messages.signedOut', 'warning')
     conversationsMeta.textContent = ''
-    emptyState.textContent = 'Sign in to view your conversations.'
+    setI18nText(emptyState, 'messages.signedOut')
     document.querySelector('[data-conversations-list]')?.replaceChildren()
     document.querySelector('[data-messages-list]')?.replaceChildren()
     document.querySelector('[data-message-form]')?.classList.add('d-none')
@@ -563,6 +604,7 @@ async function bindMessagesPage() {
 }
 
 export function renderPage() {
+  bindTitleSync()
   queueMicrotask(bindMessagesPage)
   return template
 }

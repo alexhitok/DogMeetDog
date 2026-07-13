@@ -1,5 +1,6 @@
 import template from './notifications.html?raw'
 import './notifications.css'
+import { t } from '../../i18n/i18n.js'
 import { getCurrentUser } from '../../services/authService.js'
 import { supabase } from '../../services/supabaseClient.js'
 import { getMyNotifications, markAllNotificationsRead, markNotificationRead } from '../../services/notificationService.js'
@@ -10,6 +11,20 @@ const state = {
 }
 
 let authStateListenerBound = false
+let titleSyncBound = false
+
+function bindTitleSync() {
+  if (titleSyncBound) {
+    return
+  }
+
+  titleSyncBound = true
+  window.addEventListener('language:changed', updatePageTitle)
+}
+
+function updatePageTitle() {
+  document.title = `DogMeetDog | ${t('notifications.pageTitle')}`
+}
 
 function isSignedOutAuthError(error) {
   const message = String(error?.message ?? '')
@@ -17,7 +32,7 @@ function isSignedOutAuthError(error) {
   return message.includes('Auth session missing') || message.includes('Session missing')
 }
 
-function setStatus(target, message, variant) {
+function setStatus(target, message, variant, translationKey = '', replacements = {}) {
   if (!target) {
     return
   }
@@ -27,9 +42,31 @@ function setStatus(target, message, variant) {
   const alert = document.createElement('div')
   alert.className = `alert alert-${variant} mb-0`
   alert.setAttribute('role', 'alert')
+  if (translationKey) {
+    alert.dataset.i18n = translationKey
+    if (Object.keys(replacements).length) {
+      alert.dataset.i18nReplacements = JSON.stringify(replacements)
+    }
+  }
   alert.textContent = message
 
   target.append(alert)
+}
+
+function setTranslatedStatus(target, translationKey, variant, replacements = {}) {
+  setStatus(target, t(translationKey, replacements), variant, translationKey, replacements)
+}
+
+function setI18nText(element, translationKey, replacements = {}) {
+  if (!element) {
+    return
+  }
+
+  element.dataset.i18n = translationKey
+  if (Object.keys(replacements).length) {
+    element.dataset.i18nReplacements = JSON.stringify(replacements)
+  }
+  element.textContent = t(translationKey, replacements)
 }
 
 function clearStatus(target) {
@@ -100,7 +137,7 @@ function bindAuthStateListener() {
 
 function formatDateTime(value) {
   if (!value) {
-    return 'Unknown time'
+    return t('notifications.unknownTime')
   }
 
   return new Date(value).toLocaleString()
@@ -116,18 +153,18 @@ function getNotificationTarget(notification) {
 
 function getNotificationLabel(notification) {
   if (notification.type === 'playdate_request_received') {
-    return 'Playdate request received'
+    return t('notifications.playdateRequestReceived')
   }
 
   if (notification.type === 'playdate_request_accepted') {
-    return 'Playdate request accepted'
+    return t('notifications.playdateRequestAccepted')
   }
 
   if (notification.type === 'playdate_request_declined') {
-    return 'Playdate request declined'
+    return t('notifications.playdateRequestDeclined')
   }
 
-  return 'New message'
+  return t('notifications.newMessage')
 }
 
 function renderNotifications(target) {
@@ -141,7 +178,7 @@ function renderNotifications(target) {
     const empty = document.createElement('div')
     empty.className = 'alert alert-light border mb-0'
     empty.setAttribute('role', 'alert')
-    empty.textContent = 'No notifications yet.'
+    setI18nText(empty, 'notifications.noNotifications')
     target.append(empty)
     return
   }
@@ -179,7 +216,7 @@ function renderNotifications(target) {
     link.className = 'btn btn-outline-primary btn-sm'
     link.href = getNotificationTarget(notification)
     link.setAttribute('data-link', '')
-    link.textContent = notification.type === 'new_message' ? 'Open conversation' : 'View profile'
+    setI18nText(link, notification.type === 'new_message' ? 'notifications.openConversation' : 'notifications.viewProfile')
 
     actions.append(link)
 
@@ -188,7 +225,7 @@ function renderNotifications(target) {
       markButton.type = 'button'
       markButton.className = 'btn btn-primary btn-sm'
       markButton.dataset.notificationId = notification.id
-      markButton.textContent = 'Mark as read'
+      setI18nText(markButton, 'notifications.markAsRead')
       actions.append(markButton)
     }
 
@@ -205,7 +242,7 @@ async function refreshNotifications() {
   const list = document.querySelector('[data-notifications-list]')
   const markAllButton = document.querySelector('[data-mark-all-read]')
 
-  setStatus(pageStatus, 'Loading notifications...', 'secondary')
+  setTranslatedStatus(pageStatus, 'notifications.loading', 'secondary')
 
   const { user, error: userError } = await getCurrentUser()
 
@@ -308,6 +345,7 @@ async function bindNotificationsPage() {
 }
 
 export function renderPage() {
+  bindTitleSync()
   queueMicrotask(bindNotificationsPage)
   return template
 }

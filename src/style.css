@@ -60,10 +60,14 @@ body::before {
 }
 
 .app-shell {
-  width: min(calc(100% - 64px), var(--site-max-width));
+  width: min(calc(100% - 32px), var(--site-max-width));
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+.container.app-shell {
+  max-width: var(--site-max-width);
 }
 
 .app-shell > header,

@@ -1,21 +1,59 @@
 import template from './admin.html?raw'
 import './admin.css'
+import { t } from '../../i18n/i18n.js'
 import { deleteDogAsAdmin, getAdminDogs, getAdminRoles, getCurrentUserRole } from '../../services/adminService.js'
 
-function setStatus(target, message, variant) {
+let titleSyncBound = false
+
+function bindTitleSync() {
+  if (titleSyncBound) {
+    return
+  }
+
+  titleSyncBound = true
+  window.addEventListener('language:changed', updatePageTitle)
+}
+
+function updatePageTitle() {
+  document.title = `DogMeetDog | ${t('admin.pageTitle')}`
+}
+
+function setStatus(target, message, variant, translationKey = '', replacements = {}) {
   target.replaceChildren()
 
   const alert = document.createElement('div')
   alert.className = `alert alert-${variant} mb-0`
   alert.setAttribute('role', 'alert')
+  if (translationKey) {
+    alert.dataset.i18n = translationKey
+    if (Object.keys(replacements).length) {
+      alert.dataset.i18nReplacements = JSON.stringify(replacements)
+    }
+  }
   alert.textContent = message
 
   target.append(alert)
 }
 
+function setTranslatedStatus(target, translationKey, variant, replacements = {}) {
+  setStatus(target, t(translationKey, replacements), variant, translationKey, replacements)
+}
+
+function setI18nText(element, translationKey, replacements = {}) {
+  if (!element) {
+    return
+  }
+
+  element.dataset.i18n = translationKey
+  if (Object.keys(replacements).length) {
+    element.dataset.i18nReplacements = JSON.stringify(replacements)
+  }
+  element.textContent = t(translationKey, replacements)
+}
+
 function formatDateTime(value) {
   if (!value) {
-    return '—'
+    return t('admin.notAvailableShort')
   }
 
   return new Date(value).toLocaleString()
@@ -58,12 +96,12 @@ function createDogPhotoCell(dog) {
     const image = document.createElement('img')
     image.className = 'rounded border admin-dog-thumb'
     image.src = dog.photoUrl
-    image.alt = `${dog.name || 'Dog'} photo`
+    image.alt = t('common.photoAlt', { name: dog.name || t('common.unnamedDog') })
     wrapper.append(image)
   } else {
     const placeholder = document.createElement('div')
     placeholder.className = 'rounded border bg-body-tertiary d-flex align-items-center justify-content-center text-secondary small admin-thumb-placeholder'
-    placeholder.textContent = 'No photo'
+    setI18nText(placeholder, 'admin.noPhoto')
     wrapper.append(placeholder)
   }
 
@@ -86,23 +124,23 @@ function createDogRow(dog, onDelete) {
   const nameCell = document.createElement('td')
   const name = document.createElement('div')
   name.className = 'fw-semibold'
-  name.textContent = dog.name || 'Unnamed dog'
+  name.textContent = dog.name || t('admin.unnamedDog')
   const meta = document.createElement('div')
   meta.className = 'small text-secondary'
-  meta.textContent = `ID: ${dog.id}`
+  meta.textContent = t('admin.idLabel', { id: dog.id })
   nameCell.append(name, meta)
 
   const breedCell = document.createElement('td')
-  breedCell.textContent = dog.breed || '—'
+  breedCell.textContent = dog.breed || t('admin.notAvailableShort')
 
   const districtCell = document.createElement('td')
-  districtCell.textContent = dog.district || '—'
+  districtCell.textContent = dog.district || t('admin.notAvailableShort')
 
   const statusCell = document.createElement('td')
-  statusCell.append(createTableBadge(dog.status || 'unknown', dog.status === 'active' ? 'success' : 'secondary'))
+  statusCell.append(createTableBadge(dog.status || t('admin.unknownStatus'), dog.status === 'active' ? 'success' : 'secondary'))
 
   const ownerCell = document.createElement('td')
-  ownerCell.textContent = dog.ownerFullName || dog.owner_id || '—'
+  ownerCell.textContent = dog.ownerFullName || dog.owner_id || t('admin.notAvailableShort')
 
   const actionsCell = document.createElement('td')
   const actions = document.createElement('div')
@@ -111,15 +149,15 @@ function createDogRow(dog, onDelete) {
   const viewLink = document.createElement('a')
   viewLink.className = 'btn btn-outline-primary btn-sm'
   viewLink.href = `/dogs/${dog.id}`
-  viewLink.textContent = 'View profile'
+  setI18nText(viewLink, 'admin.viewProfile')
   viewLink.setAttribute('data-link', '')
 
   const deleteButton = document.createElement('button')
   deleteButton.type = 'button'
   deleteButton.className = 'btn btn-outline-danger btn-sm'
-  deleteButton.textContent = 'Delete'
+  setI18nText(deleteButton, 'admin.delete')
   deleteButton.addEventListener('click', () => {
-    const confirmed = window.confirm(`Delete ${dog.name || 'this dog'}? This action cannot be undone.`)
+    const confirmed = window.confirm(t('admin.deleteConfirmation', { name: dog.name || t('common.unnamedDog') }))
 
     if (!confirmed) {
       return
@@ -140,13 +178,13 @@ function createRoleRow(roleRow) {
   const row = document.createElement('tr')
 
   const fullNameCell = document.createElement('td')
-  fullNameCell.textContent = roleRow.fullName || '—'
+  fullNameCell.textContent = roleRow.fullName || t('admin.notAvailableShort')
 
   const userIdCell = document.createElement('td')
   userIdCell.textContent = roleRow.user_id
 
   const roleCell = document.createElement('td')
-  roleCell.append(createTableBadge(roleRow.role, roleRow.role === 'admin' ? 'danger' : 'secondary'))
+  roleCell.append(createTableBadge(roleRow.role === 'admin' ? t('header.admin') : roleRow.role, roleRow.role === 'admin' ? 'danger' : 'secondary'))
 
   const createdCell = document.createElement('td')
   createdCell.textContent = formatDateTime(roleRow.created_at)
@@ -171,7 +209,7 @@ async function renderAdminDashboard() {
     return
   }
 
-  setStatus(status, 'Loading admin panel...', 'secondary')
+  setTranslatedStatus(status, 'admin.loading', 'secondary')
   view.classList.add('d-none')
 
   const { user, role, isAdmin, error } = await getCurrentUserRole()
@@ -182,12 +220,12 @@ async function renderAdminDashboard() {
   }
 
   if (!user) {
-    setStatus(status, 'Please sign in to access the admin panel.', 'warning')
+    setTranslatedStatus(status, 'admin.signInRequired', 'warning')
     return
   }
 
   if (!isAdmin) {
-    setStatus(status, 'Access denied.', 'danger')
+    setTranslatedStatus(status, 'admin.accessDenied', 'danger')
     return
   }
 
@@ -214,7 +252,7 @@ async function renderAdminDashboard() {
       return
     }
 
-    setStatus(status, 'Dog deleted successfully.', 'success')
+    setTranslatedStatus(status, 'admin.dogDeleted', 'success')
     await refreshDogs()
   }
 
@@ -227,7 +265,7 @@ async function renderAdminDashboard() {
     }
 
     dogsBody.replaceChildren(...refreshedDogs.map((dog) => createDogRow(dog, handleDeleteDog)))
-    dogsMeta.textContent = `${refreshedDogs.length} total dog${refreshedDogs.length === 1 ? '' : 's'}`
+    setI18nText(dogsMeta, 'admin.totalDogsMeta', { count: refreshedDogs.length, suffix: refreshedDogs.length === 1 ? '' : 's' })
     summary.replaceChildren(
       createSummaryCard('Total dogs', String(refreshedDogs.length), 'All dogs in the database'),
       createSummaryCard('Active dogs', String(refreshedDogs.filter((dog) => dog.status === 'active').length), 'Public active listings'),
@@ -237,16 +275,17 @@ async function renderAdminDashboard() {
 
   status.innerHTML = ''
   view.classList.remove('d-none')
-  userEmail.textContent = user.email || 'Not available'
-  userRole.textContent = role || '—'
+  userEmail.textContent = user.email || t('admin.notAvailable')
+  userRole.textContent = role || t('admin.notAvailableShort')
 
-  rolesMeta.textContent = `${roles.length} role row${roles.length === 1 ? '' : 's'}`
+  setI18nText(rolesMeta, 'admin.roleRowsMeta', { count: roles.length, suffix: roles.length === 1 ? '' : 's' })
   rolesBody.replaceChildren(...roles.map((roleRow) => createRoleRow(roleRow)))
 
   await refreshDogs()
 }
 
 export function renderPage() {
+  bindTitleSync()
   queueMicrotask(renderAdminDashboard)
   return template
 }

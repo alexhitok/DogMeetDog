@@ -1,5 +1,6 @@
 import template from './profile.html?raw'
 import './profile.css'
+import { t } from '../../i18n/i18n.js'
 import { getCurrentUser, logoutUser } from '../../services/authService.js'
 import { createDogProfile, deleteDogById, getMyDogs, updateDogById, uploadDogPhotos } from '../../services/dogService.js'
 import { getMyPlaydateRequests, updatePlaydateRequestStatus } from '../../services/playdateService.js'
@@ -7,6 +8,20 @@ import { getOrCreateConversation } from '../../services/messagingService.js'
 import { formatApproximateDogLocation, resolveApproximateDogLocation } from '../../utils/approximateLocation.js'
 
 let profileFormController = null
+let titleSyncBound = false
+
+function bindTitleSync() {
+  if (titleSyncBound) {
+    return
+  }
+
+  titleSyncBound = true
+  window.addEventListener('language:changed', updatePageTitle)
+}
+
+function updatePageTitle() {
+  document.title = `DogMeetDog | ${t('profile.pageTitle')}`
+}
 
 function setMessage(target, message, variant) {
   target.replaceChildren()
@@ -33,7 +48,7 @@ function renderDogCards(dogs) {
     return `
       <div class="col-12">
         <div class="alert alert-light border mb-0" role="alert">
-          No dogs yet.
+          ${escapeHtml(t('profile.noDogsYet'))}
         </div>
       </div>
     `
@@ -42,10 +57,10 @@ function renderDogCards(dogs) {
   return dogs
     .map((dog) => {
       const dogId = encodeURIComponent(dog.id)
-      const dogName = escapeHtml(dog.name ?? 'Unnamed dog')
-      const dogBreed = escapeHtml(dog.breed ?? 'No breed')
-      const dogDistrict = escapeHtml(dog.district ?? 'No district')
-      const dogStatus = escapeHtml(dog.status ?? 'unknown')
+      const dogName = escapeHtml(dog.name ?? t('common.unnamedDog'))
+      const dogBreed = escapeHtml(dog.breed ?? t('common.notProvided'))
+      const dogDistrict = escapeHtml(dog.district ?? t('common.notProvided'))
+      const dogStatus = escapeHtml(dog.status ?? t('profile.unknown'))
       const dogLocation = escapeHtml(formatApproximateDogLocation(dog))
       const photoUrl = dog.photoUrl ? escapeHtml(dog.photoUrl) : ''
       const shortDescription = dog.description ? escapeHtml(dog.description.slice(0, 140)) : ''
@@ -55,12 +70,12 @@ function renderDogCards(dogs) {
           <img
             src="${photoUrl}"
             class="w-100 h-100 object-fit-cover"
-            alt="${dogName} photo"
+            alt="${escapeHtml(t('common.photoAlt', { name: dog.name ?? t('common.unnamedDog') }))}"
           />
         `
         : `
           <div class="d-flex align-items-center justify-content-center text-secondary small h-100">
-            No photo
+            ${escapeHtml(t('profile.noPhoto'))}
           </div>
         `
 
@@ -74,13 +89,13 @@ function renderDogCards(dogs) {
             <div class="card-body profile-dog-card__body">
                 <h3 class="h6 card-title mb-2">${dogName}</h3>
               <p class="text-secondary mb-2">${dogBreed} · ${dogDistrict}</p>
-              <p class="mb-2"><span class="fw-semibold">Status:</span> ${dogStatus}</p>
-              <p class="mb-2"><span class="fw-semibold">Location:</span> ${dogLocation}</p>
-              ${shortDescription ? `<p class="mb-0">${shortDescription}</p>` : '<p class="mb-0 text-secondary">No description.</p>'}
+              <p class="mb-2"><span class="fw-semibold">${escapeHtml(t('profile.status'))}:</span> ${dogStatus}</p>
+              <p class="mb-2"><span class="fw-semibold">${escapeHtml(t('profile.location'))}:</span> ${dogLocation}</p>
+              ${shortDescription ? `<p class="mb-0">${shortDescription}</p>` : `<p class="mb-0 text-secondary">${escapeHtml(t('profile.noDescription'))}</p>`}
 
                 <div class="profile-dog-card__actions mt-3">
                   <a href="/dogs/${dogId}" class="btn btn-outline-primary btn-sm" data-link>
-                  View profile
+                    ${escapeHtml(t('profile.viewProfile'))}
                 </a>
                 <button
                   type="button"
@@ -88,7 +103,7 @@ function renderDogCards(dogs) {
                   data-edit-dog-id="${dogId}"
                   data-dog-name="${dogName}"
                 >
-                  Edit
+                  ${escapeHtml(t('profile.edit'))}
                 </button>
                 <button
                   type="button"
@@ -96,7 +111,7 @@ function renderDogCards(dogs) {
                   data-add-photos-dog-id="${dogId}"
                   data-dog-name="${dogName}"
                 >
-                  Add photos
+                  ${escapeHtml(t('profile.addPhotos'))}
                 </button>
                 <button
                   type="button"
@@ -104,7 +119,7 @@ function renderDogCards(dogs) {
                   data-delete-dog-id="${dogId}"
                   data-dog-name="${dogName}"
                 >
-                  Delete
+                  ${escapeHtml(t('profile.delete'))}
                 </button>
               </div>
             </div>
@@ -179,26 +194,26 @@ function bindMyDogsActions() {
     event.preventDefault()
 
     const dogId = deleteButton.dataset.deleteDogId
-    const dogName = deleteButton.dataset.dogName || 'this dog'
-    const confirmed = window.confirm(`Delete ${dogName}? This action cannot be undone.`)
+    const dogName = deleteButton.dataset.dogName || t('common.unnamedDog')
+    const confirmed = window.confirm(t('common.deleteConfirmation', { name: dogName }))
 
     if (!confirmed) {
       return
     }
 
     deleteButton.disabled = true
-    deleteButton.textContent = 'Deleting...'
+    deleteButton.textContent = t('profile.deleting')
 
     const { error } = await deleteDogById(dogId)
 
     if (error) {
       setMessage(status, error.message, 'danger')
       deleteButton.disabled = false
-      deleteButton.textContent = 'Delete'
+      deleteButton.textContent = t('profile.delete')
       return
     }
 
-    setMessage(status, 'Dog deleted successfully.', 'success')
+    setMessage(status, t('profile.dogDeleted'), 'success')
     await refreshMyDogs()
   })
 }
@@ -231,28 +246,28 @@ async function bindDogForm() {
     dogIdInput.value = ''
     form.reset()
     photoInput.value = ''
-    formTitle.textContent = 'Add your dog'
-    formSubtitle.textContent = 'Create a new profile or edit an existing one.'
-    submitButton.textContent = 'Add dog'
+    formTitle.textContent = t('profile.addYourDog')
+    formSubtitle.textContent = t('profile.addDogSubtitle')
+    submitButton.textContent = t('profile.addDog')
     cancelButton.classList.add('d-none')
     form.classList.remove('d-none')
-    toggleButton.textContent = 'Hide form'
+    toggleButton.textContent = t('profile.hideForm')
     toggleButton.classList.remove('btn-primary')
     toggleButton.classList.add('btn-outline-secondary')
   }
 
   const hideDogForm = () => {
     form.classList.add('d-none')
-    toggleButton.textContent = 'Add new dog'
+    toggleButton.textContent = t('profile.addNewDog')
     toggleButton.classList.remove('btn-outline-secondary')
     toggleButton.classList.add('btn-primary')
     form.dataset.mode = 'create'
     dogIdInput.value = ''
     form.reset()
     photoInput.value = ''
-    formTitle.textContent = 'Add your dog'
-    formSubtitle.textContent = 'Create a new profile or edit an existing one.'
-    submitButton.textContent = 'Add dog'
+    formTitle.textContent = t('profile.addYourDog')
+    formSubtitle.textContent = t('profile.addDogSubtitle')
+    submitButton.textContent = t('profile.addDog')
     cancelButton.classList.add('d-none')
   }
 
@@ -270,12 +285,12 @@ async function bindDogForm() {
     descriptionInput.value = dog.description ?? ''
     photoInput.value = ''
     form.classList.remove('d-none')
-    toggleButton.textContent = 'Hide form'
+    toggleButton.textContent = t('profile.hideForm')
     toggleButton.classList.remove('btn-primary')
     toggleButton.classList.add('btn-outline-secondary')
-    formTitle.textContent = 'Edit dog'
-    formSubtitle.textContent = 'Update the dog profile or add more photos.'
-    submitButton.textContent = 'Save changes'
+    formTitle.textContent = t('profile.editDog')
+    formSubtitle.textContent = t('profile.updateDogSubtitle')
+    submitButton.textContent = t('profile.saveChanges')
     cancelButton.classList.remove('d-none')
   }
 
@@ -290,7 +305,7 @@ async function bindDogForm() {
     const dog = (data ?? []).find((item) => String(item.id) === String(dogId))
 
     if (!dog) {
-      setMessage(status, 'Dog not found.', 'warning')
+      setMessage(status, t('profile.dogNotFound'), 'warning')
       return
     }
 
@@ -354,7 +369,7 @@ async function bindDogForm() {
     }
 
     const isEditMode = Boolean(dogId)
-    const dogActionLabel = isEditMode ? 'Dog updated successfully.' : 'Dog profile created successfully.'
+    const dogActionLabel = isEditMode ? t('profile.updateDogSuccess') : t('profile.addDogSuccess')
     const { data: savedDog, error: saveError } = isEditMode
       ? await updateDogById(dogId, payload)
       : await createDogProfile(payload)
@@ -374,7 +389,9 @@ async function bindDogForm() {
       })
 
       if (uploadError) {
-        setMessage(status, `${isEditMode ? 'Dog profile updated' : 'Dog profile created'}, but photo upload failed: ${uploadError.message}`, 'warning')
+        setMessage(status, isEditMode
+          ? t('profile.uploadWarning', { error: uploadError.message })
+          : t('profile.uploadWarningCreate', { error: uploadError.message }), 'warning')
         hideDogForm()
         submitButton.disabled = false
         cancelButton.disabled = false
@@ -383,7 +400,10 @@ async function bindDogForm() {
         return
       }
 
-      setMessage(status, `${dogActionLabel} ${uploadedPhotos.length} photo${uploadedPhotos.length === 1 ? '' : 's'} uploaded.`, 'success')
+      setMessage(status, t('profile.photosUploaded', {
+        base: dogActionLabel,
+        count: uploadedPhotos.length,
+      }), 'success')
       hideDogForm()
       submitButton.disabled = false
       cancelButton.disabled = false
@@ -414,11 +434,20 @@ function createPlaydateRequestCard(request, mode) {
   heading.className = 'fw-semibold small mb-1'
 
   if (mode === 'received') {
-    heading.textContent = `${request.senderDog?.name || 'Unnamed dog'} wants a playdate with ${request.recipientDog?.name || 'your dog'}`
+    heading.textContent = t('profile.receivedRequestTitle', {
+      sender: request.senderDog?.name || t('common.unnamedDog'),
+      recipient: request.recipientDog?.name || t('profile.yourDog'),
+    })
   } else if (mode === 'sent') {
-    heading.textContent = `You sent ${request.senderDog?.name || 'one of your dogs'} to ${request.recipientDog?.name || 'a dog'}`
+    heading.textContent = t('profile.sentRequestTitle', {
+      sender: request.senderDog?.name || t('profile.oneOfYourDogs'),
+      recipient: request.recipientDog?.name || t('profile.aDog'),
+    })
   } else {
-    heading.textContent = `${request.senderDog?.name || 'Dog'} and ${request.recipientDog?.name || 'Dog'} are matched`
+    heading.textContent = t('profile.matchedRequestTitle', {
+      sender: request.senderDog?.name || t('common.unnamedDog'),
+      recipient: request.recipientDog?.name || t('common.unnamedDog'),
+    })
   }
 
   const badge = document.createElement('span')
@@ -430,15 +459,15 @@ function createPlaydateRequestCard(request, mode) {
 
   const details = document.createElement('div')
   details.className = 'small text-secondary mb-3'
-  details.textContent = `Created ${new Date(request.created_at).toLocaleDateString()}`
+  details.textContent = t('profile.playdateCreated', { date: new Date(request.created_at).toLocaleDateString() })
 
   const locationLine = document.createElement('div')
   locationLine.className = 'small mb-2'
-  locationLine.textContent = `${request.senderDog?.name || 'Sender'} · ${formatApproximateDogLocation(request.senderDog)}`
+  locationLine.textContent = `${request.senderDog?.name || t('profile.sender')} · ${formatApproximateDogLocation(request.senderDog)}`
 
   const recipientLine = document.createElement('div')
   recipientLine.className = 'small mb-3'
-  recipientLine.textContent = `${request.recipientDog?.name || 'Recipient'} · ${formatApproximateDogLocation(request.recipientDog)}`
+  recipientLine.textContent = `${request.recipientDog?.name || t('profile.recipient')} · ${formatApproximateDogLocation(request.recipientDog)}`
 
   card.append(title, details, locationLine, recipientLine)
 
@@ -448,7 +477,7 @@ function createPlaydateRequestCard(request, mode) {
     messageButton.className = 'btn btn-primary btn-sm'
     messageButton.dataset.playdateAction = 'message-owner'
     messageButton.dataset.playdateRequestId = request.id
-    messageButton.textContent = 'Message owner'
+    messageButton.textContent = t('profile.messageOwner')
 
     card.append(messageButton)
   }
@@ -462,14 +491,14 @@ function createPlaydateRequestCard(request, mode) {
     acceptButton.className = 'btn btn-success btn-sm'
     acceptButton.dataset.playdateAction = 'accepted'
     acceptButton.dataset.playdateRequestId = request.id
-    acceptButton.textContent = 'Accept'
+    acceptButton.textContent = t('profile.accept')
 
     const declineButton = document.createElement('button')
     declineButton.type = 'button'
     declineButton.className = 'btn btn-outline-danger btn-sm'
     declineButton.dataset.playdateAction = 'declined'
     declineButton.dataset.playdateRequestId = request.id
-    declineButton.textContent = 'Decline'
+    declineButton.textContent = t('profile.decline')
 
     actions.append(acceptButton, declineButton)
     card.append(actions)
@@ -484,7 +513,7 @@ function createPlaydateRequestCard(request, mode) {
     cancelButton.className = 'btn btn-outline-secondary btn-sm'
     cancelButton.dataset.playdateAction = 'cancelled'
     cancelButton.dataset.playdateRequestId = request.id
-    cancelButton.textContent = 'Cancel'
+    cancelButton.textContent = t('profile.cancelRequest')
 
     actions.append(cancelButton)
     card.append(actions)
@@ -505,7 +534,7 @@ async function refreshPlaydateDashboard() {
     return
   }
 
-  setMessage(status, 'Loading playdate requests...', 'secondary')
+  setMessage(status, t('profile.playdateLoading'), 'secondary')
 
   const { data, error } = await getMyPlaydateRequests()
 
@@ -514,7 +543,7 @@ async function refreshPlaydateDashboard() {
     receivedList.replaceChildren()
     sentList.replaceChildren()
     matchesList.replaceChildren()
-    meta.textContent = 'Unable to load requests.'
+    meta.textContent = t('profile.playdateUnableToLoad')
     return
   }
 
@@ -534,23 +563,27 @@ async function refreshPlaydateDashboard() {
   if (requestsData.received.length) {
     receivedList.replaceChildren(...requestsData.received.map((request) => createPlaydateRequestCard(request, 'received')))
   } else {
-    renderEmpty(receivedList, 'No received requests.')
+    renderEmpty(receivedList, t('profile.receivedEmpty'))
   }
 
   if (requestsData.sent.length) {
     sentList.replaceChildren(...requestsData.sent.map((request) => createPlaydateRequestCard(request, 'sent')))
   } else {
-    renderEmpty(sentList, 'No sent requests.')
+    renderEmpty(sentList, t('profile.sentEmpty'))
   }
 
   if (requestsData.matches.length) {
     matchesList.replaceChildren(...requestsData.matches.map((request) => createPlaydateRequestCard(request, 'match')))
   } else {
-    renderEmpty(matchesList, 'No accepted matches yet.')
+    renderEmpty(matchesList, t('profile.matchesEmpty'))
   }
 
-  meta.textContent = `${requestsData.received.length} received, ${requestsData.sent.length} sent, ${requestsData.matches.length} matches`
-  setMessage(status, 'Playdate requests loaded.', 'success')
+  meta.textContent = t('profile.playdateSummary', {
+    received: requestsData.received.length,
+    sent: requestsData.sent.length,
+    matches: requestsData.matches.length,
+  })
+  setMessage(status, t('profile.playdateLoaded'), 'success')
 }
 
 function bindPlaydateDashboard() {
@@ -578,7 +611,7 @@ function bindPlaydateDashboard() {
 
     const originalLabel = button.textContent
     button.disabled = true
-    button.textContent = action === 'message-owner' ? 'Opening...' : 'Saving...'
+    button.textContent = action === 'message-owner' ? t('profile.opening') : t('profile.saving')
 
     if (action === 'message-owner') {
       const { data: conversationId, error: conversationError } = await getOrCreateConversation(requestId)
@@ -604,7 +637,7 @@ function bindPlaydateDashboard() {
       return
     }
 
-    setMessage(status, 'Playdate request updated.', 'success')
+    setMessage(status, t('profile.playdateUpdated'), 'success')
     await refreshPlaydateDashboard()
   })
 }
@@ -639,7 +672,7 @@ async function bindProfileView() {
   }
 
   if (!user) {
-    setMessage(userInfo, 'You are not logged in.', 'warning')
+    setMessage(userInfo, t('profile.youAreNotLoggedIn'), 'warning')
     actionArea.innerHTML = ''
     dogFormSection.hidden = true
     dogSectionDivider.hidden = true
@@ -659,12 +692,12 @@ async function bindProfileView() {
 
   userInfo.innerHTML = `
     <div class="alert alert-success mb-0" role="alert">
-      Logged in as <strong>${user.email ?? 'Unknown email'}</strong>
+      ${escapeHtml(t('profile.loggedInAs', { email: user.email ?? t('common.notProvided') }))}
     </div>
   `
 
   actionArea.innerHTML = `
-    <button type="button" class="btn btn-outline-danger" data-logout-button>Logout</button>
+    <button type="button" class="btn btn-outline-danger" data-logout-button>${escapeHtml(t('profile.logout'))}</button>
   `
 
   const logoutButton = actionArea.querySelector('[data-logout-button]')
@@ -688,6 +721,7 @@ async function bindProfileView() {
 }
 
 export function renderPage() {
+  bindTitleSync()
   queueMicrotask(bindProfileView)
   return template
 }

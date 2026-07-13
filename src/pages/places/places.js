@@ -1,16 +1,54 @@
 import template from './places.html?raw'
 import './places.css'
+import { t } from '../../i18n/i18n.js'
 import { getPlaces } from '../../services/publicContentService.js'
 
-function setStatus(target, message, variant) {
+let titleSyncBound = false
+
+function bindTitleSync() {
+  if (titleSyncBound) {
+    return
+  }
+
+  titleSyncBound = true
+  window.addEventListener('language:changed', updatePageTitle)
+}
+
+function updatePageTitle() {
+  document.title = `DogMeetDog | ${t('places.pageTitle')}`
+}
+
+function setStatus(target, message, variant, translationKey = '', replacements = {}) {
   target.replaceChildren()
 
   const alert = document.createElement('div')
   alert.className = `alert alert-${variant} mb-0`
   alert.setAttribute('role', 'alert')
+  if (translationKey) {
+    alert.dataset.i18n = translationKey
+    if (Object.keys(replacements).length) {
+      alert.dataset.i18nReplacements = JSON.stringify(replacements)
+    }
+  }
   alert.textContent = message
 
   target.append(alert)
+}
+
+function setTranslatedStatus(target, translationKey, variant, replacements = {}) {
+  setStatus(target, t(translationKey, replacements), variant, translationKey, replacements)
+}
+
+function setI18nText(element, translationKey, replacements = {}) {
+  if (!element) {
+    return
+  }
+
+  element.dataset.i18n = translationKey
+  if (Object.keys(replacements).length) {
+    element.dataset.i18nReplacements = JSON.stringify(replacements)
+  }
+  element.textContent = t(translationKey, replacements)
 }
 
 function createPlaceCard(place) {
@@ -25,19 +63,19 @@ function createPlaceCard(place) {
 
   const title = document.createElement('h2')
   title.className = 'h5 card-title mb-0'
-  title.textContent = place.name || 'Unnamed place'
+  title.textContent = place.name || t('places.unnamedPlace')
 
   const badge = document.createElement('span')
   badge.className = 'badge text-bg-primary align-self-start'
-  badge.textContent = place.type || 'Place'
+  badge.textContent = place.type || t('places.place')
 
   const location = document.createElement('p')
   location.className = 'text-secondary mb-0'
-  location.textContent = [place.district, place.address].filter(Boolean).join(' · ') || 'No district or address provided'
+  location.textContent = [place.district, place.address].filter(Boolean).join(' · ') || t('places.noDistrictOrAddress')
 
   const description = document.createElement('p')
   description.className = 'mb-0'
-  description.textContent = place.description || 'No description provided.'
+  description.textContent = place.description || t('places.noDescription')
 
   body.append(title, badge, location, description)
   card.append(body)
@@ -55,7 +93,7 @@ async function bindPlacesPage() {
     return
   }
 
-  setStatus(status, 'Loading places...', 'secondary')
+  setTranslatedStatus(status, 'places.loading', 'secondary')
   meta.textContent = ''
   list.innerHTML = ''
 
@@ -63,7 +101,7 @@ async function bindPlacesPage() {
 
   if (error) {
     setStatus(status, error.message, 'danger')
-    meta.textContent = 'Unable to load places.'
+    setI18nText(meta, 'places.unableToLoad')
     return
   }
 
@@ -75,15 +113,18 @@ async function bindPlacesPage() {
     const empty = document.createElement('div')
     empty.className = 'alert alert-light border mb-0'
     empty.setAttribute('role', 'alert')
-    empty.textContent = 'No places available yet.'
+    setI18nText(empty, 'places.empty')
     status.append(empty)
 
-    meta.textContent = '0 places'
+    setI18nText(meta, 'places.metaZero')
     return
   }
 
   status.innerHTML = ''
-  meta.textContent = `${places.length} place${places.length === 1 ? '' : 's'}`
+  setI18nText(meta, 'places.metaCount', {
+    count: places.length,
+    suffix: places.length === 1 ? '' : 's',
+  })
 
   const fragment = document.createDocumentFragment()
   places.forEach((place) => {
@@ -94,6 +135,7 @@ async function bindPlacesPage() {
 }
 
 export function renderPage() {
+  bindTitleSync()
   queueMicrotask(bindPlacesPage)
   return template
 }
