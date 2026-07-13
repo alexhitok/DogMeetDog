@@ -16,6 +16,7 @@ export function createRouter({
     contentElement.innerHTML = pageModule.renderPage(params)
     footerElement.innerHTML = renderFooter()
     syncHeaderNavigation(headerElement, pathname)
+    window.scrollTo(0, 0)
     document.title = `DogMeetDog | ${route.title}`
   }
 
@@ -54,6 +55,10 @@ export function createRouter({
   }
 
   function start() {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual'
+    }
+
     document.addEventListener('click', onDocumentClick)
     window.addEventListener('popstate', () => render())
     return render()
