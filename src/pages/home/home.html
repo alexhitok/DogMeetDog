@@ -1,5 +1,323 @@
-<section class="page-panel card shadow-sm border-0">
-  <div class="card-body text-center py-5">
-    <h1 class="h3 mb-0">Welcome to DogMeetDog</h1>
-  </div>
-</section>
+<div class="home-page">
+  <section class="home-mobile d-grid gap-3 d-md-none">
+    <div class="home-mobile__hero">
+      <img
+        class="home-mobile__hero-image"
+        src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=1200&q=80"
+        alt="A friendly dog being held close outdoors"
+      >
+      <div class="home-mobile__hero-overlay">
+        <p class="section-kicker mb-2">Dog community, made calmer</p>
+        <h1 class="home-mobile__title">Find friendly dogs and safer playdates near you.</h1>
+        <p class="home-mobile__lead text-muted-custom mb-0">
+          Discover nearby dogs, coordinate calmer meetups and stay in touch through private messaging.
+        </p>
+        <div class="home-mobile__actions">
+          <a class="btn btn-primary btn-lg" href="/discover" data-link>Discover dogs</a>
+          <a class="btn btn-outline-light btn-lg" href="/register" data-link data-home-auth-visible="logged-out" hidden>Join now</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="home-mobile__stats" role="list" aria-label="Quick highlights">
+      <article class="home-mobile__stat" role="listitem">
+        <svg class="home-mobile__stat-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l7 3-2.5 9L12 20l-4.5-4L5 7l7-3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <span class="home-mobile__stat-label">Nearby dogs</span>
+        <strong class="home-mobile__stat-value">Find by district</strong>
+      </article>
+      <article class="home-mobile__stat" role="listitem">
+        <svg class="home-mobile__stat-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s5-5.1 5-10a5 5 0 1 0-10 0c0 4.9 5 10 5 10z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="11" r="1.8" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+        <span class="home-mobile__stat-label">Public meetups</span>
+        <strong class="home-mobile__stat-value">Meet safely first</strong>
+      </article>
+      <article class="home-mobile__stat" role="listitem">
+        <svg class="home-mobile__stat-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14v10H9l-4 3V6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <span class="home-mobile__stat-label">Private chat</span>
+        <strong class="home-mobile__stat-value">Only after match</strong>
+      </article>
+    </div>
+
+    <section class="home-mobile__rail-section">
+      <div class="home-mobile__section-heading">
+        <p class="section-kicker mb-1">Quick paths</p>
+        <h2 class="h4 mb-0">Start with the most useful tools</h2>
+      </div>
+      <div class="home-mobile__rail" aria-label="Primary actions">
+        <a class="home-mobile__rail-card" href="/discover" data-link>
+          <span class="home-mobile__rail-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16.2 16.2 3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span>
+            <strong>Discover</strong>
+            <small>Browse nearby dogs</small>
+          </span>
+        </a>
+        <a class="home-mobile__rail-card" href="/adoption" data-link>
+          <span class="home-mobile__rail-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4.2 4.2 0 0 1 7-3 4.2 4.2 0 0 1 7 3c0 5.5-7 10-7 10z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </span>
+          <span>
+            <strong>Adoption</strong>
+            <small>Share the right match</small>
+          </span>
+        </a>
+        <a class="home-mobile__rail-card" href="/lost-dogs" data-link>
+          <span class="home-mobile__rail-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 21s5-5.1 5-10a5 5 0 1 0-10 0c0 4.9 5 10 5 10z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="11" r="1.8" fill="currentColor"/></svg>
+          </span>
+          <span>
+            <strong>Lost Dogs</strong>
+            <small>Alert nearby owners</small>
+          </span>
+        </a>
+        <a class="home-mobile__rail-card" href="/places" data-link>
+          <span class="home-mobile__rail-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 10.5 12 5l8 5.5V20H4v-9.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 20v-6h6v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </span>
+          <span>
+            <strong>Places</strong>
+            <small>Find public meetups</small>
+          </span>
+        </a>
+      </div>
+    </section>
+
+    <section class="home-mobile__safety">
+      <div class="home-mobile__section-heading">
+        <p class="section-kicker mb-1">Safety first</p>
+        <h2 class="h4 mb-0">Keep the first meetup calm</h2>
+      </div>
+      <div class="home-mobile__tips">
+        <article class="home-mobile__tip">
+          <strong>Meet in public</strong>
+          <span>Choose open, familiar spaces.</span>
+        </article>
+        <article class="home-mobile__tip">
+          <strong>Go slow</strong>
+          <span>Let both dogs set the pace.</span>
+        </article>
+        <article class="home-mobile__tip">
+          <strong>Share context</strong>
+          <span>Reactivity, age and medical needs matter.</span>
+        </article>
+      </div>
+    </section>
+  </section>
+
+  <div class="home-page__desktop d-none d-md-grid gap-3">
+    <section class="home-hero page-panel">
+    <div class="home-hero__content">
+      <div class="home-hero__copy">
+        <p class="section-kicker mb-2">Dog community, made calmer</p>
+        <h1 class="home-hero__title">Find friendly dogs, plan safer playdates and keep every owner in the loop.</h1>
+        <p class="home-hero__lead text-muted-custom">
+          DogMeetDog helps Sofia dog owners discover nearby dogs, agree on playdates and stay connected with simple, private messaging.
+        </p>
+        <div class="home-hero__actions">
+          <a class="btn btn-primary btn-lg" href="/discover" data-link>Discover dogs</a>
+          <a class="btn btn-outline-primary btn-lg" href="/register" data-link>Join now</a>
+        </div>
+        <div class="home-hero__note text-muted-custom">
+          Meet in public places, respect each dog’s pace and keep communication clear from the start.
+        </div>
+      </div>
+
+      <div class="home-hero__media">
+        <div class="home-hero__shape home-hero__shape--primary" aria-hidden="true"></div>
+        <div class="home-hero__shape home-hero__shape--accent" aria-hidden="true"></div>
+        <img
+          class="home-hero__image"
+          src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=1200&q=80"
+          alt="A friendly dog being held close outdoors"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section">
+    <div class="home-section__intro">
+      <p class="section-kicker mb-2">What you can do</p>
+      <h2 class="section-title h2 mb-0">A focused toolkit for everyday dog life</h2>
+    </div>
+
+    <div class="home-feature-grid">
+      <article class="home-feature-card card h-100">
+        <div class="card-body d-grid gap-3">
+          <div class="home-feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16.2 16.2 3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div>
+            <h3 class="h5 mb-2">Discover</h3>
+            <p class="text-muted-custom mb-0">Browse nearby dogs with location-aware filters and a simple, calm interface.</p>
+          </div>
+          <a class="btn btn-outline-primary btn-sm align-self-start" href="/discover" data-link>Explore dogs</a>
+        </div>
+      </article>
+
+      <article class="home-feature-card card h-100">
+        <div class="card-body d-grid gap-3">
+          <div class="home-feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4.2 4.2 0 0 1 7-3 4.2 4.2 0 0 1 7 3c0 5.5-7 10-7 10z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </div>
+          <div>
+            <h3 class="h5 mb-2">Playdates</h3>
+            <p class="text-muted-custom mb-0">Request meetups, accept only when both owners are comfortable, and keep the process clear.</p>
+          </div>
+          <a class="btn btn-outline-primary btn-sm align-self-start" href="/discover" data-link>See playdate flow</a>
+        </div>
+      </article>
+
+      <article class="home-feature-card card h-100">
+        <div class="card-body d-grid gap-3">
+          <div class="home-feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4.2 4.2 0 0 1 7-3 4.2 4.2 0 0 1 7 3c0 5.5-7 10-7 10z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </div>
+          <div>
+            <h3 class="h5 mb-2">Adoption</h3>
+            <p class="text-muted-custom mb-0">Share adoption posts with enough context to help the right home find the right dog.</p>
+          </div>
+          <a class="btn btn-outline-primary btn-sm align-self-start" href="/adoption" data-link>Browse adoption</a>
+        </div>
+      </article>
+
+      <article class="home-feature-card card h-100">
+        <div class="card-body d-grid gap-3">
+          <div class="home-feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 21s5-5.1 5-10a5 5 0 1 0-10 0c0 4.9 5 10 5 10z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="11" r="1.8" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+          </div>
+          <div>
+            <h3 class="h5 mb-2">Lost Dogs</h3>
+            <p class="text-muted-custom mb-0">Report a missing dog and help other owners notice what matters nearby.</p>
+          </div>
+          <a class="btn btn-outline-primary btn-sm align-self-start" href="/lost-dogs" data-link>View reports</a>
+        </div>
+      </article>
+
+      <article class="home-feature-card card h-100">
+        <div class="card-body d-grid gap-3">
+          <div class="home-feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 10.5 12 5l8 5.5V20H4v-9.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 20v-6h6v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </div>
+          <div>
+            <h3 class="h5 mb-2">Places</h3>
+            <p class="text-muted-custom mb-0">Find public meeting spots, dog parks, pet shops and other helpful places by district.</p>
+          </div>
+          <a class="btn btn-outline-primary btn-sm align-self-start" href="/places" data-link>Find places</a>
+        </div>
+      </article>
+
+      <article class="home-feature-card card h-100">
+        <div class="card-body d-grid gap-3">
+          <div class="home-feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M5 6h14v10H9l-4 3V6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </div>
+          <div>
+            <h3 class="h5 mb-2">Secure messages</h3>
+            <p class="text-muted-custom mb-0">Continue the conversation only after a match is accepted.</p>
+          </div>
+          <a class="btn btn-outline-primary btn-sm align-self-start" href="/messages" data-link>Open messages</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="home-section home-steps">
+    <div class="home-section__intro">
+      <p class="section-kicker mb-2">How it works</p>
+      <h2 class="section-title h2 mb-0">Three simple steps</h2>
+    </div>
+
+    <div class="home-steps__grid">
+      <article class="home-step card h-100">
+        <div class="card-body">
+          <span class="home-step__number">1</span>
+          <h3 class="h5 mt-3">Discover nearby dogs</h3>
+          <p class="text-muted-custom mb-0">Browse dogs by district and location to find friendly profiles near you.</p>
+        </div>
+      </article>
+      <article class="home-step card h-100">
+        <div class="card-body">
+          <span class="home-step__number">2</span>
+          <h3 class="h5 mt-3">Send a playdate request</h3>
+          <p class="text-muted-custom mb-0">Request a meetup only when the dogs look like a good fit for both owners.</p>
+        </div>
+      </article>
+      <article class="home-step card h-100">
+        <div class="card-body">
+          <span class="home-step__number">3</span>
+          <h3 class="h5 mt-3">Connect safely after acceptance</h3>
+          <p class="text-muted-custom mb-0">Use private messaging once the match is accepted to agree on the details.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="home-section">
+    <div class="home-section__intro">
+      <p class="section-kicker mb-2">Meet the dogs</p>
+      <h2 class="section-title h2 mb-0">A touch-friendly photo accordion</h2>
+    </div>
+
+    <div class="photo-accordion" data-photo-accordion>
+      <button class="photo-accordion__panel is-active" type="button" data-photo-panel aria-pressed="true">
+        <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=900&q=80" alt="Golden retriever portrait with a bright sky background">
+        <span class="photo-accordion__label">Golden energy</span>
+      </button>
+      <button class="photo-accordion__panel" type="button" data-photo-panel aria-pressed="false">
+        <img src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=900&q=80" alt="Happy dog looking toward the camera outdoors">
+        <span class="photo-accordion__label">Friendly first meetings</span>
+      </button>
+      <button class="photo-accordion__panel" type="button" data-photo-panel aria-pressed="false">
+        <img src="https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=900&q=80" alt="Small dog relaxing on a blanket in warm sunlight">
+        <span class="photo-accordion__label">Calm routines</span>
+      </button>
+      <button class="photo-accordion__panel" type="button" data-photo-panel aria-pressed="false">
+        <img src="https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?auto=format&fit=crop&w=900&q=80" alt="Dog walking along a path with soft greenery around">
+        <span class="photo-accordion__label">Everyday walks</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="home-section home-safety">
+    <div class="home-section__intro">
+      <p class="section-kicker mb-2">Safety first</p>
+      <h2 class="section-title h2 mb-0">Simple habits that keep meetups calm</h2>
+    </div>
+
+    <div class="home-safety__grid">
+      <article class="card home-safety__card h-100">
+        <div class="card-body">
+          <h3 class="h5">Public meeting places</h3>
+          <p class="text-muted-custom mb-0">Choose open, familiar spaces where both dogs and owners can settle in comfortably.</p>
+        </div>
+      </article>
+      <article class="card home-safety__card h-100">
+        <div class="card-body">
+          <h3 class="h5">Calm introductions</h3>
+          <p class="text-muted-custom mb-0">Start slowly, keep leashes manageable and let the dogs decide the pace.</p>
+        </div>
+      </article>
+      <article class="card home-safety__card h-100">
+        <div class="card-body">
+          <h3 class="h5">Special needs matter</h3>
+          <p class="text-muted-custom mb-0">Share allergies, reactivity, age or medical needs before meeting up.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="home-cta page-panel">
+    <div class="home-cta__content">
+      <div>
+        <p class="section-kicker mb-2">Ready to start?</p>
+        <h2 class="section-title h2 mb-2">Discover dogs, then join the community.</h2>
+        <p class="text-muted-custom mb-0">Create a profile, explore nearby dogs and connect with owners in a respectful, private flow.</p>
+      </div>
+      <div class="home-cta__actions">
+        <a class="btn btn-primary btn-lg" href="/discover" data-link>Discover dogs</a>
+        <a class="btn btn-outline-primary btn-lg" href="/register" data-link>Join DogMeetDog</a>
+      </div>
+    </div>
+  </section>
+</div>
+</div>

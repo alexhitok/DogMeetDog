@@ -66,20 +66,20 @@ function renderDogCards(dogs) {
 
       return `
         <div class="col-12 col-lg-6">
-          <article class="card h-100 shadow-sm">
-            <div class="ratio ratio-4x3 bg-body-tertiary">
-              ${photoMarkup}
+          <article class="card h-100 shadow-sm profile-dog-card">
+            <div class="ratio ratio-4x3 bg-body-tertiary profile-dog-card__media">
+                ${photoMarkup}
             </div>
 
-            <div class="card-body">
-              <h3 class="h6 card-title mb-2">${dogName}</h3>
+            <div class="card-body profile-dog-card__body">
+                <h3 class="h6 card-title mb-2">${dogName}</h3>
               <p class="text-secondary mb-2">${dogBreed} · ${dogDistrict}</p>
               <p class="mb-2"><span class="fw-semibold">Status:</span> ${dogStatus}</p>
               <p class="mb-2"><span class="fw-semibold">Location:</span> ${dogLocation}</p>
               ${shortDescription ? `<p class="mb-0">${shortDescription}</p>` : '<p class="mb-0 text-secondary">No description.</p>'}
 
-              <div class="d-flex flex-wrap gap-2 mt-3">
-                <a href="/dogs/${dogId}" class="btn btn-outline-primary btn-sm" data-link>
+                <div class="profile-dog-card__actions mt-3">
+                  <a href="/dogs/${dogId}" class="btn btn-outline-primary btn-sm" data-link>
                   View profile
                 </a>
                 <button
@@ -403,7 +403,7 @@ async function bindDogForm() {
 
 function createPlaydateRequestCard(request, mode) {
   const card = document.createElement('div')
-  card.className = 'border rounded-3 p-3 bg-body-tertiary'
+    card.className = 'border rounded-3 p-3 bg-body-tertiary profile-playdate-card'
   card.dataset.playdateRequestId = request.id
 
   const title = document.createElement('div')

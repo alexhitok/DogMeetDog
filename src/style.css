@@ -1,28 +1,209 @@
+:root {
+  --color-primary: #1f5a4a;
+  --color-primary-dark: #17463a;
+  --color-accent: #f27a5a;
+  --color-accent-dark: #d96043;
+  --color-background: #fff9f2;
+  --color-background-soft: #eaf3ee;
+  --color-surface: #ffffff;
+  --color-text: #17243b;
+  --color-text-muted: #647084;
+  --color-border: #e7ded4;
+  --color-warning: #f2b84b;
+  --color-danger: #c94c4c;
+  --shadow-soft: 0 18px 50px rgba(23, 36, 59, 0.08);
+  --shadow-card: 0 14px 35px rgba(31, 90, 74, 0.12);
+  --radius-xl: 1.5rem;
+  --radius-lg: 1.125rem;
+  --radius-md: 0.9rem;
+  --site-max-width: 75rem;
+  --mobile-bottom-nav-height: 72px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html,
 body {
   min-height: 100%;
+  width: 100%;
 }
 
 body {
   margin: 0;
-  background: #f8f9fa;
+  background:
+    radial-gradient(circle at top left, rgba(31, 90, 74, 0.09), transparent 32%),
+    radial-gradient(circle at 85% 12%, rgba(242, 122, 90, 0.12), transparent 28%),
+    var(--color-background);
+  color: var(--color-text);
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(23, 36, 59, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 36, 59, 0.015) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.26), transparent 80%);
 }
 
 #app {
+  width: 100%;
   min-height: 100vh;
 }
 
 .app-shell {
+  width: min(calc(100% - 64px), var(--site-max-width));
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-.site-header .nav-link.is-active {
-  font-weight: 600;
-  color: #0d6efd;
+.app-shell > header,
+.app-shell > main,
+.app-shell > footer {
+  width: 100%;
+}
+
+.app-shell > header,
+.app-shell > footer,
+.app-shell > main {
+  max-width: none;
+}
+
+.app-shell > main {
+  flex-grow: 1;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+[data-auth-visible][hidden] {
+  display: none !important;
+}
+
+a,
+button,
+.btn,
+.nav-link {
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+a:focus-visible,
+button:focus-visible,
+.btn:focus-visible,
+.nav-link:focus-visible,
+[role='button']:focus-visible {
+  outline: 3px solid rgba(242, 122, 90, 0.35);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 0.2rem rgba(242, 122, 90, 0.18);
 }
 
 .page-panel {
-  background: #ffffff;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
+}
+
+.section-kicker {
+  color: var(--color-primary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.section-title {
+  color: var(--color-text);
+  letter-spacing: -0.03em;
+}
+
+.text-muted-custom {
+  color: var(--color-text-muted) !important;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: 0 12px 24px rgba(31, 90, 74, 0.16);
+}
+
+.btn-primary:hover,
+.btn-primary:focus-visible {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+.btn-outline-primary {
+  color: var(--color-primary);
+  border-color: rgba(31, 90, 74, 0.2);
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus-visible {
+  background-color: rgba(31, 90, 74, 0.08);
+  color: var(--color-primary-dark);
+  border-color: rgba(31, 90, 74, 0.32);
+}
+
+.btn-outline-secondary {
+  border-color: rgba(23, 36, 59, 0.12);
+}
+
+.card,
+.offcanvas,
+.dropdown-menu,
+.alert {
+  border-color: var(--color-border);
+}
+
+.navbar-toggler {
+  border-color: rgba(23, 36, 59, 0.12);
+}
+
+.navbar-toggler-icon {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+@media (max-width: 575.98px) {
+  .app-shell > header,
+  .app-shell > footer,
+  .app-shell > main {
+    padding-inline: 1rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  #app,
+  .app-shell,
+  .app-shell > header,
+  .app-shell > main,
+  .app-shell > footer {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .app-shell--mobile-nav-space > main::after {
+    content: '';
+    display: block;
+    height: calc(var(--mobile-bottom-nav-height, 72px) + env(safe-area-inset-bottom) + 24px);
+    flex: 0 0 auto;
+  }
+
+  .app-shell {
+    --bs-gutter-x: 1rem;
+  }
 }

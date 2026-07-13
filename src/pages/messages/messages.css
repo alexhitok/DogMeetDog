@@ -33,6 +33,38 @@
   margin-left: auto;
 }
 
+@media (max-width: 767.98px) {
+  .messages-page .conversation-item.is-active {
+    border-color: rgba(31, 90, 74, 0.18);
+    background: rgba(234, 243, 238, 0.9);
+    color: var(--color-text);
+  }
+
+  .messages-page .message-bubble.is-own {
+    background: var(--color-primary) !important;
+    color: #fff !important;
+  }
+
+  .messages-page .message-bubble.is-own .text-secondary,
+  .messages-page .message-bubble.is-own .text-white-50 {
+    color: rgba(255, 255, 255, 0.76) !important;
+  }
+
+  .messages-page .message-bubble:not(.is-own) {
+    background: var(--color-background-soft) !important;
+    color: var(--color-text) !important;
+  }
+
+  .messages-page .message-bubble:not(.is-own) .text-secondary {
+    color: var(--color-text-muted) !important;
+  }
+
+  .messages-page .message-bubble {
+    border: 1px solid rgba(31, 90, 74, 0.08);
+    box-shadow: var(--shadow-soft);
+  }
+}
+
 @media (max-width: 991.98px) {
   .messages-page .conversation-list {
     max-height: 18rem;
