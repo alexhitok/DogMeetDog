@@ -1,5 +1,6 @@
 import template from './dog-detail.html?raw'
 import './dog-detail.css'
+import Carousel from 'bootstrap/js/dist/carousel'
 import { getDogById } from '../../services/dogService.js'
 
 function setStatus(target, message, variant) {
@@ -31,27 +32,79 @@ function formatAge(ageYears) {
   return `${ageYears} year${Number(ageYears) === 1 ? '' : 's'}`
 }
 
-function showDogPhoto(dog) {
-  const image = document.querySelector('[data-dog-photo]')
+function sortDogPhotos(photos) {
+  return [...photos].sort((left, right) => {
+    if (left.is_main !== right.is_main) {
+      return Number(right.is_main) - Number(left.is_main)
+    }
+
+    return new Date(left.created_at).getTime() - new Date(right.created_at).getTime()
+  })
+}
+
+function showDogPhotos(dog) {
+  const carouselInner = document.querySelector('[data-dog-photos-carousel]')
   const placeholder = document.querySelector('[data-dog-photo-placeholder]')
   const downloadButton = document.querySelector('[data-dog-photo-download]')
+  const prevButton = document.querySelector('[data-dog-carousel-prev]')
+  const nextButton = document.querySelector('[data-dog-carousel-next]')
+  const indicators = document.querySelector('[data-dog-carousel-indicators]')
 
-  if (!image || !placeholder || !downloadButton) {
+  if (!carouselInner || !placeholder || !downloadButton || !prevButton || !nextButton || !indicators) {
     return
   }
 
-  if (dog.photoUrl) {
-    image.src = dog.photoUrl
-    image.alt = `${dog.name || 'Dog'} photo`
-    image.classList.remove('d-none')
-    placeholder.classList.add('d-none')
-    downloadButton.classList.remove('d-none')
+  const photos = Array.isArray(dog.dog_photos) ? sortDogPhotos(dog.dog_photos) : []
+
+  if (!photos.length) {
+    carouselInner.parentElement.classList.add('d-none')
+    placeholder.classList.remove('d-none')
+    downloadButton.classList.add('d-none')
     return
   }
 
-  image.classList.add('d-none')
-  placeholder.classList.remove('d-none')
-  downloadButton.classList.add('d-none')
+  carouselInner.parentElement.classList.remove('d-none')
+  placeholder.classList.add('d-none')
+  downloadButton.classList.remove('d-none')
+
+  carouselInner.replaceChildren()
+
+  photos.forEach((photo, index) => {
+    const item = document.createElement('div')
+    item.className = `carousel-item ${index === 0 ? 'active' : ''}`
+
+    const img = document.createElement('img')
+    img.src = photo.image_url
+    img.alt = `${dog.name || 'Dog'} photo ${index + 1}`
+    img.className = 'd-block w-100'
+
+    item.append(img)
+    carouselInner.append(item)
+  })
+
+  if (photos.length > 1) {
+    prevButton.classList.remove('d-none')
+    nextButton.classList.remove('d-none')
+    indicators.classList.remove('d-none')
+    indicators.replaceChildren()
+
+    photos.forEach((photo, index) => {
+      const indicator = document.createElement('button')
+      indicator.type = 'button'
+      indicator.setAttribute('data-bs-target', '#dmdDogCarousel')
+      indicator.setAttribute('data-bs-slide-to', String(index))
+      if (index === 0) {
+        indicator.classList.add('active')
+        indicator.setAttribute('aria-current', 'true')
+      }
+      indicator.setAttribute('aria-label', `Photo ${index + 1}`)
+      indicators.append(indicator)
+    })
+  } else {
+    prevButton.classList.add('d-none')
+    nextButton.classList.add('d-none')
+    indicators.classList.add('d-none')
+  }
 }
 
 function buildSafeDownloadFileName(dogName, contentType = '') {
@@ -77,12 +130,15 @@ function buildSafeDownloadFileName(dogName, contentType = '') {
 }
 
 async function downloadDogPhoto(dog) {
-  if (!dog.photoUrl) {
+  const photos = Array.isArray(dog.dog_photos) ? sortDogPhotos(dog.dog_photos) : []
+  const photoUrl = photos[0]?.image_url ?? dog.photoUrl
+
+  if (!photoUrl) {
     return
   }
 
   try {
-    const response = await fetch(dog.photoUrl)
+    const response = await fetch(photoUrl)
 
     if (!response.ok) {
       throw new Error('Photo download failed.')
@@ -99,7 +155,7 @@ async function downloadDogPhoto(dog) {
 
     window.setTimeout(() => window.URL.revokeObjectURL(objectUrl), 1000)
   } catch {
-    window.open(dog.photoUrl, '_blank', 'noopener')
+    window.open(photoUrl, '_blank', 'noopener')
   }
 }
 
@@ -130,7 +186,13 @@ async function bindDogDetailPage(dogId) {
   status.innerHTML = ''
   content.classList.remove('d-none')
 
-  showDogPhoto(dog)
+  showDogPhotos(dog)
+
+  const carouselElement = document.querySelector('#dmdDogCarousel')
+
+  if (carouselElement) {
+    new Carousel(carouselElement, { ride: false })
+  }
 
   downloadButton.onclick = async () => {
     await downloadDogPhoto(dog)
@@ -147,6 +209,10 @@ async function bindDogDetailPage(dogId) {
   setText('[data-dog-temperament]', dog.temperament)
   setText('[data-dog-district]', dog.district)
   setText('[data-dog-description]', dog.description, 'No description yet.')
+
+  if (window.lucide?.createIcons) {
+    window.lucide.createIcons()
+  }
 }
 
 export function renderPage(params = {}) {

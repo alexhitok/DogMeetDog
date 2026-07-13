@@ -2,3 +2,47 @@
   max-width: 56rem;
   margin-inline: auto;
 }
+
+[data-adoption-list] .card {
+  border-radius: var(--dmd-radius-lg);
+  overflow: hidden;
+  transition: transform var(--dmd-transition), box-shadow var(--dmd-transition);
+}
+
+[data-adoption-list] .card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--dmd-shadow-lg) !important;
+}
+
+[data-adoption-list] .ratio {
+  overflow: hidden;
+}
+
+[data-adoption-list] .ratio img {
+  transition: transform var(--dmd-transition-slow);
+}
+
+[data-adoption-list] .card:hover .ratio img {
+  transform: scale(1.05);
+}
+
+[data-adoption-list] .card-title {
+  font-weight: 700;
+  color: var(--dmd-navy);
+}
+
+[data-adoption-list] dl dt {
+  color: var(--dmd-text-secondary);
+  font-weight: 600;
+}
+
+[data-adoption-list] dl dd {
+  color: var(--dmd-navy);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-adoption-list] .card:hover,
+  [data-adoption-list] .card:hover .ratio img {
+    transform: none;
+  }
+}

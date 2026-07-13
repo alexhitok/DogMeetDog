@@ -2,3 +2,34 @@
   max-width: 56rem;
   margin-inline: auto;
 }
+
+[data-profile-page] h1 {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+[data-dog-form-section] .form-label {
+  font-size: 0.85rem;
+}
+
+[data-my-dogs-section] .card {
+  border-radius: var(--dmd-radius-lg);
+  overflow: hidden;
+}
+
+[data-playdate-section] .card {
+  border-radius: var(--dmd-radius-lg);
+}
+
+[data-playdate-section] .card h3 {
+  font-weight: 700;
+}
+
+[data-profile-page] hr {
+  border-color: var(--dmd-border);
+  opacity: 1;
+}
+
+[data-profile-page] .btn[data-logout-button] {
+  font-weight: 600;
+}

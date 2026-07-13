@@ -2,3 +2,55 @@
   max-width: 56rem;
   margin-inline: auto;
 }
+
+.dog-detail-media {
+  border-radius: var(--dmd-radius-lg);
+  overflow: hidden;
+}
+
+.dog-detail-media .carousel-inner {
+  border-radius: var(--dmd-radius-lg);
+  box-shadow: var(--dmd-shadow-sm);
+}
+
+.dog-detail-media .carousel-item img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.dog-detail-media .carousel-indicators {
+  margin-bottom: 0.5rem;
+}
+
+.dog-detail-media .carousel-indicators [data-bs-target] {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.dog-detail-media .carousel-indicators .active {
+  background: var(--dmd-primary);
+}
+
+.dog-detail-media .carousel-control-prev-icon,
+.dog-detail-media .carousel-control-next-icon {
+  background-color: rgba(26, 35, 50, 0.5);
+  border-radius: 50%;
+  padding: 1.1rem;
+  background-size: 45%;
+}
+
+.dog-detail-media .carousel-control-prev,
+.dog-detail-media .carousel-control-next {
+  width: 3rem;
+  opacity: 0.8;
+  transition: opacity var(--dmd-transition-fast);
+}
+
+.dog-detail-media .carousel-control-prev:hover,
+.dog-detail-media .carousel-control-next:hover {
+  opacity: 1;
+}

@@ -1,8 +1,14 @@
 <section class="page-panel card shadow-sm border-0">
-  <div class="card-body py-4">
-    <h1 class="h3 mb-4">Sign in</h1>
+  <div class="card-body py-5 px-4 px-lg-5">
+    <div class="text-center mb-4">
+      <span class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width: 3.5rem; height: 3.5rem; background: var(--dmd-primary-tint); color: var(--dmd-primary);">
+        <i data-lucide="log-in" style="width: 1.5rem; height: 1.5rem;"></i>
+      </span>
+      <h1 class="h3 fw-bold mb-1">Welcome back</h1>
+      <p class="text-secondary mb-0">Sign in to manage your dogs and playdates.</p>
+    </div>
     <div data-login-status class="mb-3"></div>
-    <form data-login-form class="row g-3">
+    <form data-login-form class="row g-3 mx-auto" style="max-width: 28rem;">
       <div class="col-12">
         <label class="form-label" for="login-email">Email</label>
         <input id="login-email" name="email" type="email" class="form-control" required />
@@ -12,7 +18,13 @@
         <input id="login-password" name="password" type="password" class="form-control" required />
       </div>
       <div class="col-12">
-        <button type="submit" class="btn btn-primary">Sign in</button>
+        <button type="submit" class="btn btn-primary w-100">Sign in</button>
+      </div>
+      <div class="col-12 text-center">
+        <p class="text-secondary small mb-0">
+          New to DogMeetDog?
+          <a href="/register" data-link class="fw-semibold">Create an account</a>
+        </p>
       </div>
     </form>
   </div>

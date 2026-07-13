@@ -261,7 +261,7 @@ function createDogCard(dog) {
   })
 
   const media = document.createElement('div')
-  media.className = 'ratio ratio-4x3 bg-body-tertiary'
+  media.className = 'ratio ratio-4x3 bg-body-tertiary dog-card-media'
 
   if (dog.photoUrl) {
     const image = document.createElement('img')
@@ -271,7 +271,7 @@ function createDogCard(dog) {
     media.append(image)
   } else {
     const placeholder = document.createElement('div')
-    placeholder.className = 'd-flex align-items-center justify-content-center text-secondary small'
+    placeholder.className = 'd-flex align-items-center justify-content-center text-secondary small h-100'
     placeholder.textContent = 'No photo'
     media.append(placeholder)
   }
@@ -280,20 +280,32 @@ function createDogCard(dog) {
   body.className = 'card-body d-flex flex-column'
 
   const title = document.createElement('h2')
-  title.className = 'h5 card-title mb-2'
+  title.className = 'h5 card-title mb-1'
   title.textContent = dog.name || 'Unnamed dog'
 
   const location = document.createElement('p')
-  location.className = 'text-secondary mb-2'
+  location.className = 'text-secondary small mb-2'
   location.textContent = getDogDisplayLocation(dog)
 
-  const detailParts = [dog.breed, dog.size, dog.gender].filter(Boolean)
-  const details = document.createElement('p')
-  details.className = 'mb-3'
-  details.textContent = detailParts.length ? detailParts.join(' · ') : 'No breed or profile details provided'
+  const chips = document.createElement('div')
+  chips.className = 'd-flex flex-wrap gap-1 mb-3'
+
+  const addChip = (value, variant = '') => {
+    if (!value && value !== 0) {
+      return
+    }
+    const chip = document.createElement('span')
+    chip.className = `dog-chip ${variant}`
+    chip.textContent = value
+    chips.append(chip)
+  }
+
+  if (dog.breed) addChip(dog.breed)
+  if (dog.size) addChip(dog.size, 'dog-chip--coral')
+  if (dog.gender) addChip(dog.gender, 'dog-chip--neutral')
 
   const list = document.createElement('ul')
-  list.className = 'list-unstyled small mb-0 d-grid gap-1'
+  list.className = 'list-unstyled small mb-0 d-grid gap-1 text-secondary'
 
   const addItem = (label, value) => {
     if (!value && value !== 0) {
@@ -316,11 +328,11 @@ function createDogCard(dog) {
 
   if (dog.description) {
     const description = document.createElement('p')
-    description.className = 'mt-3 mb-0'
+    description.className = 'mt-3 mb-0 small text-secondary'
     description.textContent = dog.description
-    body.append(title, location, details, list, description)
+    body.append(title, location, chips, list, description)
   } else {
-    body.append(title, location, details, list)
+    body.append(title, location, chips, list)
   }
 
   const actions = document.createElement('div')

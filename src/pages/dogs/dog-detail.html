@@ -5,31 +5,42 @@
     <article data-dog-detail-content class="d-none">
       <div class="row g-4 align-items-start">
         <div class="col-12 col-md-5">
-          <div class="ratio ratio-4x3 bg-body-tertiary rounded overflow-hidden">
-            <img
-              data-dog-photo
-              class="w-100 h-100 object-fit-cover d-none"
-              alt="Dog photo"
-            />
-            <div
-              data-dog-photo-placeholder
-              class="d-flex align-items-center justify-content-center text-secondary small h-100"
-            >
-              No photo
+          <div class="dog-detail-media">
+            <div id="dmdDogCarousel" class="carousel slide" data-bs-ride="false">
+              <div class="carousel-inner rounded-3 overflow-hidden" data-dog-photos-carousel></div>
+
+              <button class="carousel-control-prev d-none" type="button" data-bs-target="#dmdDogCarousel" data-bs-slide="prev" data-dog-carousel-prev>
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next d-none" type="button" data-bs-target="#dmdDogCarousel" data-bs-slide="next" data-dog-carousel-next>
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+
+              <div class="carousel-indicators d-none" data-dog-carousel-indicators></div>
+            </div>
+
+            <div class="ratio ratio-4x3 bg-body-tertiary rounded-3 overflow-hidden d-none" data-dog-photo-placeholder>
+              <div class="d-flex align-items-center justify-content-center text-secondary small h-100">
+                No photo
+              </div>
             </div>
           </div>
+
           <button
             type="button"
             class="btn btn-outline-primary btn-sm mt-3 d-none"
             data-dog-photo-download
           >
-            Download photo
+            <i data-lucide="download"></i>
+            <span class="ms-1">Download photo</span>
           </button>
         </div>
 
         <div class="col-12 col-md-7">
-          <p class="text-secondary mb-1">Dog profile</p>
-          <h1 data-dog-name class="h2 mb-2"></h1>
+          <p class="section-eyebrow mb-1">Dog profile</p>
+          <h1 data-dog-name class="h2 mb-2 page-title"></h1>
 
           <p data-dog-main-info class="text-secondary mb-3"></p>
 
@@ -50,8 +61,8 @@
             <dd data-dog-district class="col-7 col-sm-8"></dd>
           </dl>
 
-          <h2 class="h5">About</h2>
-          <p data-dog-description class="mb-0"></p>
+          <h2 class="h5 fw-bold">About</h2>
+          <p data-dog-description class="mb-0 text-secondary"></p>
         </div>
       </div>
     </article>

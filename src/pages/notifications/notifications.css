@@ -1,19 +1,37 @@
+.page-panel {
+  max-width: 56rem;
+  margin-inline: auto;
+}
+
+.notifications-page h1 {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
 .notifications-page .notification-item {
-  border-radius: 0.9rem;
+  border-radius: var(--dmd-radius-lg);
+  border: 1px solid var(--dmd-border);
+  transition: box-shadow var(--dmd-transition-fast), border-color var(--dmd-transition-fast);
+}
+
+.notifications-page .notification-item:hover {
+  box-shadow: var(--dmd-shadow-sm);
 }
 
 .notifications-page .notification-item.is-unread {
-  background: #eef5ff;
-  border-color: #8bb4ff;
+  background: var(--dmd-primary-tint);
+  border-color: var(--dmd-primary-tint-2);
 }
 
 .notifications-page .notification-title {
   font-weight: 700;
+  color: var(--dmd-navy);
 }
 
 .notifications-page .notification-body {
   white-space: pre-wrap;
   word-break: break-word;
+  color: var(--dmd-navy-light);
 }
 
 .notifications-page .notification-links {

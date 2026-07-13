@@ -1,5 +1,6 @@
 import template from './header.html?raw'
 import './header.css'
+import Collapse from 'bootstrap/js/dist/collapse'
 import { getCurrentUserRole } from '../../services/adminService.js'
 import { supabase } from '../../services/supabaseClient.js'
 import { getUnreadNotificationCount } from '../../services/notificationService.js'
@@ -7,6 +8,7 @@ import { getUnreadNotificationCount } from '../../services/notificationService.j
 let activeHeaderElement = null
 let notificationsChangeListenerBound = false
 let authListenerBound = false
+let collapseInstance = null
 
 function setAuthNavigationState(headerElement, { isLoggedIn, isAdmin }) {
   const authItems = headerElement.querySelectorAll('[data-auth-visible]')
@@ -96,6 +98,15 @@ export function syncHeaderNavigation(headerElement, pathname) {
       link.removeAttribute('aria-current')
     }
   })
+
+  const navCollapse = headerElement.querySelector('#dmdNav')
+  if (navCollapse && !collapseInstance) {
+    collapseInstance = new Collapse(navCollapse, { toggle: false })
+  }
+
+  if (window.lucide?.createIcons) {
+    window.lucide.createIcons()
+  }
 
   bindNotificationRefreshListener()
   bindAuthStateListener()

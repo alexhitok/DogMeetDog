@@ -1,5 +1,5 @@
-<nav class="navbar bg-white border rounded-3 px-3 py-2 shadow-sm site-header">
-  <div class="container-fluid p-0 d-flex flex-wrap align-items-center gap-2">
+<nav class="navbar navbar-expand-lg site-header" data-site-header>
+  <div class="container-fluid px-0 d-flex flex-wrap align-items-center gap-2">
     <a
       class="navbar-brand d-inline-flex align-items-center py-0 me-2"
       href="/"
@@ -7,32 +7,64 @@
       aria-label="DogMeetDog - Home"
     >
       <span class="brand-mark" aria-hidden="true">
-  <img src="/logo.png" alt="">
-</span>
-<span class="brand-wordmark">DogMeetDog</span>
+        <img src="/logo.png" alt="" />
+      </span>
+      <span class="brand-wordmark">DogMeetDog</span>
     </a>
 
-    <div class="d-flex flex-wrap align-items-center justify-content-end gap-1 gap-md-2 ms-auto">
-      <a class="nav-link px-2" href="/discover" data-link>Discover</a>
-      <a class="nav-link px-2" href="/adoption" data-link>Adoption</a>
-      <a class="nav-link px-2" href="/lost-dogs" data-link>Lost Dogs</a>
-      <a class="nav-link px-2" href="/places" data-link>Places</a>
-      <a class="nav-link px-2" href="/notifications" data-link data-auth-visible="logged-in" hidden>
-        <span class="d-inline-flex align-items-center gap-1">
-          <span>Notifications</span>
-          <span class="badge rounded-pill text-bg-danger d-none" data-notifications-badge>0</span>
-        </span>
-      </a>
-      <a class="nav-link px-2" href="/messages" data-link data-auth-visible="logged-in">Messages</a>
-      <a class="nav-link px-2" href="/admin" data-link data-auth-visible="admin">Admin</a>
-      <a class="nav-link px-2" href="/profile" data-link data-auth-visible="logged-in">Profile</a>
+    <button
+      class="navbar-toggler d-lg-none ms-auto"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#dmdNav"
+      aria-controls="dmdNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-<a class="btn btn-outline-primary btn-sm ms-md-2" href="/login" data-link data-auth-visible="logged-out">
-  Sign in
-</a>
-<a class="btn btn-primary btn-sm" href="/register" data-link data-auth-visible="logged-out">
-  Join now
-</a>
+    <div class="collapse navbar-collapse d-lg-flex align-items-center justify-content-end gap-1 gap-lg-2 ms-lg-auto" id="dmdNav">
+      <a class="nav-link d-inline-flex align-items-center gap-1 px-2" href="/discover" data-link>
+        <i data-lucide="compass"></i>
+        <span>Discover</span>
+      </a>
+      <a class="nav-link d-inline-flex align-items-center gap-1 px-2" href="/adoption" data-link>
+        <i data-lucide="heart"></i>
+        <span>Adoption</span>
+      </a>
+      <a class="nav-link d-inline-flex align-items-center gap-1 px-2" href="/lost-dogs" data-link>
+        <i data-lucide="search"></i>
+        <span>Lost Dogs</span>
+      </a>
+      <a class="nav-link d-inline-flex align-items-center gap-1 px-2" href="/places" data-link>
+        <i data-lucide="map-pin"></i>
+        <span>Places</span>
+      </a>
+      <a class="nav-link d-inline-flex align-items-center gap-1 px-2" href="/notifications" data-link data-auth-visible="logged-in" hidden>
+        <i data-lucide="bell"></i>
+        <span>Notifications</span>
+        <span class="badge rounded-pill text-bg-danger d-none" data-notifications-badge>0</span>
+      </a>
+      <a class="nav-link d-inline-flex align-items-center gap-1 px-2" href="/messages" data-link data-auth-visible="logged-in">
+        <i data-lucide="message-circle"></i>
+        <span>Messages</span>
+      </a>
+      <a class="nav-link d-inline-flex align-items-center gap-1 px-2" href="/admin" data-link data-auth-visible="admin">
+        <i data-lucide="shield"></i>
+        <span>Admin</span>
+      </a>
+      <a class="nav-link d-inline-flex align-items-center gap-1 px-2" href="/profile" data-link data-auth-visible="logged-in">
+        <i data-lucide="user"></i>
+        <span>Profile</span>
+      </a>
+
+      <a class="btn btn-outline-primary btn-sm ms-lg-2" href="/login" data-link data-auth-visible="logged-out">
+        Sign in
+      </a>
+      <a class="btn btn-primary btn-sm" href="/register" data-link data-auth-visible="logged-out">
+        Join now
+      </a>
     </div>
   </div>
 </nav>

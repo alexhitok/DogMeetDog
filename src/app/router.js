@@ -17,6 +17,10 @@ export function createRouter({
     footerElement.innerHTML = renderFooter()
     syncHeaderNavigation(headerElement, pathname)
     document.title = `DogMeetDog | ${route.title}`
+
+    if (window.lucide?.createIcons) {
+      window.lucide.createIcons()
+    }
   }
 
   function navigate(to, replace = false) {

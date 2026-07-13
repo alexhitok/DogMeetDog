@@ -2,3 +2,28 @@
   max-width: 56rem;
   margin-inline: auto;
 }
+
+[data-places-list] .card {
+  border-radius: var(--dmd-radius-lg);
+  transition: transform var(--dmd-transition), box-shadow var(--dmd-transition);
+}
+
+[data-places-list] .card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--dmd-shadow-lg) !important;
+}
+
+[data-places-list] .card-title {
+  font-weight: 700;
+  color: var(--dmd-navy);
+}
+
+[data-places-list] .badge {
+  font-size: 0.72rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-places-list] .card:hover {
+    transform: none;
+  }
+}

@@ -2,3 +2,47 @@
   max-width: 56rem;
   margin-inline: auto;
 }
+
+[data-lost-dogs-list] .card {
+  border-radius: var(--dmd-radius-lg);
+  overflow: hidden;
+  transition: transform var(--dmd-transition), box-shadow var(--dmd-transition);
+}
+
+[data-lost-dogs-list] .card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--dmd-shadow-lg) !important;
+}
+
+[data-lost-dogs-list] .ratio {
+  overflow: hidden;
+}
+
+[data-lost-dogs-list] .ratio img {
+  transition: transform var(--dmd-transition-slow);
+}
+
+[data-lost-dogs-list] .card:hover .ratio img {
+  transform: scale(1.05);
+}
+
+[data-lost-dogs-list] .card-title {
+  font-weight: 700;
+  color: var(--dmd-navy);
+}
+
+[data-lost-dogs-list] dl dt {
+  color: var(--dmd-text-secondary);
+  font-weight: 600;
+}
+
+[data-lost-dogs-list] dl dd {
+  color: var(--dmd-navy);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-lost-dogs-list] .card:hover,
+  [data-lost-dogs-list] .card:hover .ratio img {
+    transform: none;
+  }
+}

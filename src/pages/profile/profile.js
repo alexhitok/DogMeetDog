@@ -67,18 +67,20 @@ function renderDogCards(dogs) {
       return `
         <div class="col-12 col-lg-6">
           <article class="card h-100 shadow-sm">
-            <div class="ratio ratio-4x3 bg-body-tertiary">
+            <div class="ratio ratio-4x3 bg-body-tertiary dog-card-media">
               ${photoMarkup}
             </div>
 
-            <div class="card-body">
-              <h3 class="h6 card-title mb-2">${dogName}</h3>
-              <p class="text-secondary mb-2">${dogBreed} · ${dogDistrict}</p>
-              <p class="mb-2"><span class="fw-semibold">Status:</span> ${dogStatus}</p>
-              <p class="mb-2"><span class="fw-semibold">Location:</span> ${dogLocation}</p>
-              ${shortDescription ? `<p class="mb-0">${shortDescription}</p>` : '<p class="mb-0 text-secondary">No description.</p>'}
+            <div class="card-body d-flex flex-column">
+              <h3 class="h6 card-title mb-1">${dogName}</h3>
+              <p class="text-secondary small mb-2">${dogBreed} · ${dogDistrict}</p>
+              <div class="d-flex flex-wrap gap-1 mb-2">
+                <span class="dog-chip">${dogStatus}</span>
+                <span class="dog-chip dog-chip--neutral">${dogLocation}</span>
+              </div>
+              ${shortDescription ? `<p class="small text-secondary mb-0">${shortDescription}</p>` : '<p class="small text-secondary mb-0">No description.</p>'}
 
-              <div class="d-flex flex-wrap gap-2 mt-3">
+              <div class="d-flex flex-wrap gap-2 mt-3 pt-1 mt-auto">
                 <a href="/dogs/${dogId}" class="btn btn-outline-primary btn-sm" data-link>
                   View profile
                 </a>
@@ -100,7 +102,7 @@ function renderDogCards(dogs) {
                 </button>
                 <button
                   type="button"
-                  class="btn btn-outline-danger btn-sm"
+                  class="btn btn-outline-danger btn-sm ms-auto"
                   data-delete-dog-id="${dogId}"
                   data-dog-name="${dogName}"
                 >

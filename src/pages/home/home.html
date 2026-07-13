@@ -1,5 +1,199 @@
-<section class="page-panel card shadow-sm border-0">
-  <div class="card-body text-center py-5">
-    <h1 class="h3 mb-0">Welcome to DogMeetDog</h1>
+<section class="home-hero">
+  <div class="home-hero-inner">
+    <div class="row align-items-center g-4 g-lg-5">
+      <div class="col-12 col-lg-6 d-md-reveal">
+        <div class="section-eyebrow">Sofia's dog community</div>
+        <h1 class="display-5 fw-bold page-title mb-3">
+          Where dogs meet, play &amp; find home
+        </h1>
+        <p class="lead text-secondary mb-4">
+          DogMeetDog connects dog owners across Sofia. Discover nearby playmates,
+          browse adoption listings, report lost dogs, and explore dog-friendly
+          places — all in one trusted platform.
+        </p>
+        <div class="d-flex flex-wrap gap-3 mb-4">
+          <a href="/discover" class="btn btn-primary btn-lg" data-link>
+            <i data-lucide="compass" class="me-1"></i>
+            Discover dogs
+          </a>
+          <a href="/register" class="btn btn-outline-primary btn-lg" data-link>
+            <i data-lucide="paw-print" class="me-1"></i>
+            Join now
+          </a>
+        </div>
+        <div class="d-flex flex-wrap gap-4 home-hero-stats">
+          <div>
+            <div class="fw-bold fs-5 text-navy">5+ districts</div>
+            <div class="small text-secondary">Across Sofia</div>
+          </div>
+          <div>
+            <div class="fw-bold fs-5 text-navy">100% free</div>
+            <div class="small text-secondary">To join &amp; use</div>
+          </div>
+          <div>
+            <div class="fw-bold fs-5 text-navy">Privacy-first</div>
+            <div class="small text-secondary">No addresses stored</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-6 d-md-reveal">
+        <div class="home-hero-image-wrap">
+          <img
+            src="https://images.pexels.com/photos/1851164/pexels-photo-1851164.jpeg?auto=compress&cs=tinysrgb&w=900"
+            alt="Happy dog outdoors"
+            class="home-hero-image"
+            loading="eager"
+          />
+          <div class="home-hero-badge">
+            <i data-lucide="shield-check"></i>
+            <span>Safe &amp; secure</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="home-features mt-4 mt-lg-5">
+  <div class="row g-3 g-lg-4 dmd-reveal-stagger">
+    <div class="col-12 col-md-6 col-lg-3">
+      <a href="/discover" class="home-feature-card card h-100 text-decoration-none" data-link>
+        <div class="card-body d-flex flex-column gap-2">
+          <span class="home-feature-icon home-feature-icon--primary">
+            <i data-lucide="compass"></i>
+          </span>
+          <h2 class="h6 fw-bold mb-0">Discover</h2>
+          <p class="text-secondary small mb-0">Browse active dog profiles and find playmates nearby with approximate locations.</p>
+        </div>
+      </a>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3">
+      <a href="/adoption" class="home-feature-card card h-100 text-decoration-none" data-link>
+        <div class="card-body d-flex flex-column gap-2">
+          <span class="home-feature-icon home-feature-icon--coral">
+            <i data-lucide="heart"></i>
+          </span>
+          <h2 class="h6 fw-bold mb-0">Adoption</h2>
+          <p class="text-secondary small mb-0">Browse published adoption posts and find dogs looking for a loving home.</p>
+        </div>
+      </a>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3">
+      <a href="/lost-dogs" class="home-feature-card card h-100 text-decoration-none" data-link>
+        <div class="card-body d-flex flex-column gap-2">
+          <span class="home-feature-icon home-feature-icon--warning">
+            <i data-lucide="search"></i>
+          </span>
+          <h2 class="h6 fw-bold mb-0">Lost Dogs</h2>
+          <p class="text-secondary small mb-0">Report and browse active lost dog alerts to help reunite families.</p>
+        </div>
+      </a>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3">
+      <a href="/places" class="home-feature-card card h-100 text-decoration-none" data-link>
+        <div class="card-body d-flex flex-column gap-2">
+          <span class="home-feature-icon home-feature-icon--info">
+            <i data-lucide="map-pin"></i>
+          </span>
+          <h2 class="h6 fw-bold mb-0">Places</h2>
+          <p class="text-secondary small mb-0">Find vet clinics, pet shops and dog-friendly cafes by district.</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="home-showcase mt-4 mt-lg-5">
+  <div class="page-panel card border-0">
+    <div class="card-body p-4 p-lg-5">
+      <div class="text-center mb-4">
+        <div class="section-eyebrow">Meet the dogs</div>
+        <h2 class="h3 fw-bold page-title">A showcase of Sofia's finest</h2>
+        <p class="text-secondary mb-0">Click a panel to expand the photo and see more.</p>
+      </div>
+
+      <div class="accordion dmd-accordion-showcase" id="dmdShowcaseAccordion">
+        <div class="accordion-item">
+          <h3 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#dmdShow1">
+              <span class="d-flex align-items-center gap-2">
+                <i data-lucide="paw-print"></i>
+                Maya — French Bulldog
+              </span>
+            </button>
+          </h3>
+          <div id="dmdShow1" class="accordion-collapse collapse show" data-bs-parent="#dmdShowcaseAccordion">
+            <div class="accordion-body p-0">
+              <div class="dmd-showcase-panel">
+                <img src="https://images.pexels.com/photos/1851164/pexels-photo-1851164.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Maya" class="dmd-showcase-img" loading="lazy" />
+                <div class="dmd-showcase-overlay">
+                  <p class="mb-0">Compact companion with a big personality and a calm home vibe. Maya loves short walks and cozy afternoons.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h3 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#dmdShow2">
+              <span class="d-flex align-items-center gap-2">
+                <i data-lucide="paw-print"></i>
+                Rex — German Shepherd
+              </span>
+            </button>
+          </h3>
+          <div id="dmdShow2" class="accordion-collapse collapse" data-bs-parent="#dmdShowcaseAccordion">
+            <div class="accordion-body p-0">
+              <div class="dmd-showcase-panel">
+                <img src="https://images.pexels.com/photos/2255301/pexels-photo-2255301.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Rex" class="dmd-showcase-img" loading="lazy" />
+                <div class="dmd-showcase-overlay">
+                  <p class="mb-0">Confident and smart dog that enjoys structure and training. Rex thrives with an active owner.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h3 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#dmdShow3">
+              <span class="d-flex align-items-center gap-2">
+                <i data-lucide="paw-print"></i>
+                Nala — Golden Retriever
+              </span>
+            </button>
+          </h3>
+          <div id="dmdShow3" class="accordion-collapse collapse" data-bs-parent="#dmdShowcaseAccordion">
+            <div class="accordion-body p-0">
+              <div class="dmd-showcase-panel">
+                <img src="https://images.pexels.com/photos/2255301/pexels-photo-2255301.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Nala" class="dmd-showcase-img" loading="lazy" />
+                <div class="dmd-showcase-overlay">
+                  <p class="mb-0">Friendly dog that gets along well with people and other dogs. Nala is always ready for a park adventure.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="home-cta mt-4 mt-lg-5">
+  <div class="home-cta-banner">
+    <div class="row align-items-center g-3">
+      <div class="col-12 col-lg-8">
+        <h2 class="h4 fw-bold mb-1 text-white">Ready to join the pack?</h2>
+        <p class="text-white-50 mb-0">Create a free account, add your dog, and start connecting with owners near you.</p>
+      </div>
+      <div class="col-12 col-lg-4 text-lg-end">
+        <a href="/register" class="btn btn-light btn-lg fw-bold" data-link>
+          <i data-lucide="paw-print" class="me-1"></i>
+          Get started
+        </a>
+      </div>
+    </div>
   </div>
 </section>

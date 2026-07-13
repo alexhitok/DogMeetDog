@@ -1,3 +1,76 @@
+/* ==========================================================================
+   DogMeetDog — Design System
+   ========================================================================== */
+
+:root {
+  /* Brand colors */
+  --dmd-primary: #1b5e3f;
+  --dmd-primary-dark: #134a31;
+  --dmd-primary-light: #2d7a56;
+  --dmd-primary-tint: #e8f3ed;
+  --dmd-primary-tint-2: #d4e9dc;
+
+  --dmd-accent: #e07856;
+  --dmd-accent-dark: #c8623f;
+  --dmd-accent-light: #f4a585;
+  --dmd-accent-tint: #fdf0ea;
+
+  --dmd-navy: #1a2332;
+  --dmd-navy-light: #3a4a5e;
+  --dmd-navy-muted: #6b7a8d;
+
+  /* Backgrounds */
+  --dmd-cream: #faf6f0;
+  --dmd-cream-2: #f5efe6;
+  --dmd-white: #ffffff;
+
+  /* Semantic */
+  --dmd-success: #2a9d6a;
+  --dmd-success-tint: #e6f6ee;
+  --dmd-warning: #e0a515;
+  --dmd-warning-tint: #fdf5e0;
+  --dmd-danger: #d4453a;
+  --dmd-danger-tint: #fceae8;
+  --dmd-info: #3a7bd5;
+  --dmd-info-tint: #e8f1fc;
+
+  /* Neutrals */
+  --dmd-border: #e4ddd2;
+  --dmd-border-strong: #d0c7b8;
+  --dmd-text-secondary: #6b7a8d;
+
+  /* Shadows */
+  --dmd-shadow-xs: 0 1px 2px rgba(26, 35, 50, 0.05);
+  --dmd-shadow-sm: 0 2px 8px rgba(26, 35, 50, 0.07);
+  --dmd-shadow-md: 0 4px 16px rgba(26, 35, 50, 0.09);
+  --dmd-shadow-lg: 0 8px 30px rgba(26, 35, 50, 0.12);
+  --dmd-shadow-xl: 0 16px 50px rgba(26, 35, 50, 0.15);
+
+  /* Radii */
+  --dmd-radius-sm: 0.5rem;
+  --dmd-radius: 0.75rem;
+  --dmd-radius-lg: 1rem;
+  --dmd-radius-xl: 1.5rem;
+
+  /* Transitions */
+  --dmd-transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --dmd-transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --dmd-transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Bootstrap overrides */
+  --bs-primary: #1b5e3f;
+  --bs-primary-rgb: 27, 94, 63;
+  --bs-body-bg: #faf6f0;
+  --bs-body-color: #1a2332;
+  --bs-link-color: #1b5e3f;
+  --bs-link-hover-color: #134a31;
+  --bs-border-color: #e4ddd2;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
 html,
 body {
   min-height: 100%;
@@ -5,7 +78,11 @@ body {
 
 body {
   margin: 0;
-  background: #f8f9fa;
+  background: var(--dmd-cream);
+  color: var(--dmd-navy);
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #app {
@@ -18,11 +95,297 @@ body {
   flex-direction: column;
 }
 
-.site-header .nav-link.is-active {
+/* ==========================================================================
+   Bootstrap color overrides
+   ========================================================================== */
+
+.btn-primary {
+  --bs-btn-bg: var(--dmd-primary);
+  --bs-btn-border-color: var(--dmd-primary);
+  --bs-btn-hover-bg: var(--dmd-primary-dark);
+  --bs-btn-hover-border-color: var(--dmd-primary-dark);
+  --bs-btn-active-bg: var(--dmd-primary-dark);
+  --bs-btn-active-border-color: var(--dmd-primary-dark);
+  --bs-btn-disabled-bg: var(--dmd-primary);
+  --bs-btn-disabled-border-color: var(--dmd-primary);
   font-weight: 600;
-  color: #0d6efd;
 }
 
+.btn-outline-primary {
+  --bs-btn-color: var(--dmd-primary);
+  --bs-btn-border-color: var(--dmd-primary);
+  --bs-btn-hover-bg: var(--dmd-primary);
+  --bs-btn-hover-border-color: var(--dmd-primary);
+  --bs-btn-active-bg: var(--dmd-primary);
+  --bs-btn-active-border-color: var(--dmd-primary);
+  --bs-btn-disabled-color: var(--dmd-primary);
+  --bs-btn-disabled-border-color: var(--dmd-primary);
+  font-weight: 600;
+}
+
+.btn-success {
+  --bs-btn-bg: var(--dmd-success);
+  --bs-btn-border-color: var(--dmd-success);
+  --bs-btn-hover-bg: #238a5a;
+  --bs-btn-hover-border-color: #238a5a;
+  font-weight: 600;
+}
+
+.btn-danger {
+  --bs-btn-bg: var(--dmd-danger);
+  --bs-btn-border-color: var(--dmd-danger);
+  --bs-btn-hover-bg: #c03d33;
+  --bs-btn-hover-border-color: #c03d33;
+  font-weight: 600;
+}
+
+.btn {
+  border-radius: var(--dmd-radius-sm);
+  transition: all var(--dmd-transition-fast);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--dmd-shadow-sm);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   Cards
+   ========================================================================== */
+
 .page-panel {
-  background: #ffffff;
+  background: var(--dmd-white);
+  border-radius: var(--dmd-radius-lg) !important;
+  box-shadow: var(--dmd-shadow-md);
+  border: 1px solid var(--dmd-border) !important;
+}
+
+.card {
+  border-radius: var(--dmd-radius-lg);
+  border: 1px solid var(--dmd-border);
+  transition: box-shadow var(--dmd-transition), transform var(--dmd-transition);
+}
+
+.card.shadow-sm {
+  box-shadow: var(--dmd-shadow-sm) !important;
+}
+
+/* ==========================================================================
+   Forms
+   ========================================================================== */
+
+.form-control,
+.form-select {
+  border-radius: var(--dmd-radius-sm);
+  border-color: var(--dmd-border-strong);
+  padding: 0.55rem 0.85rem;
+  transition: border-color var(--dmd-transition-fast), box-shadow var(--dmd-transition-fast);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--dmd-primary-light);
+  box-shadow: 0 0 0 0.2rem rgba(27, 94, 63, 0.15);
+}
+
+.form-label {
+  font-weight: 600;
+  color: var(--dmd-navy);
+  margin-bottom: 0.35rem;
+}
+
+/* ==========================================================================
+   Badges
+   ========================================================================== */
+
+.badge {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.text-bg-primary {
+  background-color: var(--dmd-primary) !important;
+}
+
+.text-bg-success {
+  background-color: var(--dmd-success) !important;
+}
+
+.text-bg-danger {
+  background-color: var(--dmd-danger) !important;
+}
+
+.text-bg-warning {
+  background-color: var(--dmd-warning) !important;
+}
+
+/* ==========================================================================
+   Alerts
+   ========================================================================== */
+
+.alert {
+  border-radius: var(--dmd-radius);
+  border-width: 1px;
+}
+
+.alert-light {
+  background: var(--dmd-cream-2);
+  border-color: var(--dmd-border);
+}
+
+/* ==========================================================================
+   Info chips
+   ========================================================================== */
+
+.dog-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 2rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: var(--dmd-primary-tint);
+  color: var(--dmd-primary-dark);
+  border: 1px solid var(--dmd-primary-tint-2);
+  white-space: nowrap;
+}
+
+.dog-chip svg {
+  width: 0.85rem;
+  height: 0.85rem;
+  flex-shrink: 0;
+}
+
+.dog-chip--coral {
+  background: var(--dmd-accent-tint);
+  color: var(--dmd-accent-dark);
+  border-color: var(--dmd-accent-light);
+}
+
+.dog-chip--neutral {
+  background: var(--dmd-cream-2);
+  color: var(--dmd-navy-light);
+  border-color: var(--dmd-border);
+}
+
+/* ==========================================================================
+   Dog card image zoom
+   ========================================================================== */
+
+.dog-card-media {
+  overflow: hidden;
+  border-radius: var(--dmd-radius) var(--dmd-radius) 0 0;
+}
+
+.dog-card-media img {
+  transition: transform var(--dmd-transition-slow);
+}
+
+.card:hover .dog-card-media img {
+  transform: scale(1.06);
+}
+
+/* ==========================================================================
+   Section headers
+   ========================================================================== */
+
+.section-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--dmd-accent);
+  margin-bottom: 0.4rem;
+}
+
+/* ==========================================================================
+   Loading skeleton
+   ========================================================================== */
+
+.dmd-skeleton {
+  background: linear-gradient(90deg, var(--dmd-cream-2) 25%, var(--dmd-border) 50%, var(--dmd-cream-2) 75%);
+  background-size: 200% 100%;
+  animation: dmd-shimmer 1.5s infinite;
+  border-radius: var(--dmd-radius-sm);
+}
+
+@keyframes dmd-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ==========================================================================
+   Reveal animation
+   ========================================================================== */
+
+@keyframes dmd-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dmd-reveal {
+  animation: dmd-fade-up 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.dmd-reveal-stagger > * {
+  animation: dmd-fade-up 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.dmd-reveal-stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.dmd-reveal-stagger > *:nth-child(2) { animation-delay: 0.1s; }
+.dmd-reveal-stagger > *:nth-child(3) { animation-delay: 0.15s; }
+.dmd-reveal-stagger > *:nth-child(4) { animation-delay: 0.2s; }
+.dmd-reveal-stagger > *:nth-child(5) { animation-delay: 0.25s; }
+.dmd-reveal-stagger > *:nth-child(6) { animation-delay: 0.3s; }
+
+/* ==========================================================================
+   Lucide icons
+   ========================================================================== */
+
+[data-lucide] {
+  width: 1.1em;
+  height: 1.1em;
+  stroke-width: 2;
+}
+
+/* ==========================================================================
+   Responsive helpers
+   ========================================================================== */
+
+.page-title {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .card:hover .dog-card-media img {
+    transform: none;
+  }
+
+  .btn:hover {
+    transform: none;
+  }
 }

@@ -5,10 +5,33 @@
 
 .discover-map {
   min-height: 24rem;
+  border-radius: var(--dmd-radius-lg);
+  border: 1px solid var(--dmd-border) !important;
+}
+
+.discover-dog-card {
+  border-radius: var(--dmd-radius-lg);
+  transition: transform var(--dmd-transition), box-shadow var(--dmd-transition);
+  cursor: pointer;
+}
+
+.discover-dog-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--dmd-shadow-lg) !important;
+}
+
+.discover-dog-card .card-body {
+  padding: 1.25rem;
 }
 
 @media (max-width: 575.98px) {
   .discover-map {
     min-height: 18rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .discover-dog-card:hover {
+    transform: none;
   }
 }

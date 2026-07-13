@@ -5,15 +5,60 @@
 
 .admin-summary-card {
   min-height: 100%;
+  border-radius: var(--dmd-radius-lg);
+  transition: transform var(--dmd-transition), box-shadow var(--dmd-transition);
+}
+
+.admin-summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--dmd-shadow-md) !important;
+}
+
+.admin-summary-card .display-6 {
+  font-weight: 800;
+  color: var(--dmd-primary);
 }
 
 .admin-dog-thumb {
   width: 56px;
   height: 56px;
   object-fit: cover;
+  border-radius: var(--dmd-radius-sm);
 }
 
 .admin-thumb-placeholder {
   width: 56px;
   height: 56px;
+  border-radius: var(--dmd-radius-sm);
+}
+
+[data-admin-view] .table {
+  margin-bottom: 0;
+}
+
+[data-admin-view] .table thead th {
+  font-weight: 700;
+  color: var(--dmd-navy);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+[data-admin-view] .table tbody tr {
+  transition: background var(--dmd-transition-fast);
+}
+
+[data-admin-view] .table tbody tr:hover {
+  background: var(--dmd-cream);
+}
+
+[data-admin-view] h1 {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-summary-card:hover {
+    transform: none;
+  }
 }
