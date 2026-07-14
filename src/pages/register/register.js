@@ -62,7 +62,8 @@ function bindRegisterForm() {
       renderStatus(status, t('register.success'), 'success')
     }
 
-    window.location.assign('/profile')
+    window.history.pushState({}, '', '/profile')
+    window.dispatchEvent(new PopStateEvent('popstate'))
   })
 }
 

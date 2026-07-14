@@ -710,7 +710,8 @@ async function bindProfileView() {
       return
     }
 
-    window.location.assign('/login')
+    window.history.pushState({}, '', '/login')
+    window.dispatchEvent(new PopStateEvent('popstate'))
   })
 
   await refreshMyDogs()
