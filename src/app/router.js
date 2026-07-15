@@ -13,9 +13,14 @@ export function createRouter({
     const { route, params } = matchRoute(pathname)
     const pageModule = await route.loader()
 
-    headerElement.innerHTML = renderHeader()
+    if (!headerElement.innerHTML.trim()) {
+      headerElement.innerHTML = renderHeader()
+    }
     contentElement.innerHTML = pageModule.renderPage(params)
-    footerElement.innerHTML = renderFooter()
+
+    if (!footerElement.innerHTML.trim()) {
+      footerElement.innerHTML = renderFooter()
+    }
     syncHeaderNavigation(headerElement, pathname)
     onAfterRender?.({ headerElement, contentElement, footerElement, pathname, route })
     window.scrollTo(0, 0)
