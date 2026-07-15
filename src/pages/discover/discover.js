@@ -1,17 +1,33 @@
 import template from './discover.html?raw'
 import './discover.css'
 import Modal from 'bootstrap/js/dist/modal'
-import { t } from '../../i18n/i18n.js'
+import { getCurrentLanguage, t } from '../../i18n/i18n.js'
 import { getActiveDogs, getMyDogs } from '../../services/dogService.js'
 import { createPlaydateRequest, getMyPlaydateRequests } from '../../services/playdateService.js'
 import {
   calculateDistanceKm,
   formatApproximateDogLocation,
   getApproximateLocationCoordinates,
+  getLocalizedCityName,
+  getLocalizedDistrictName,
+  getLocationCityKey,
+  getLocationDistrictKey,
   resolveApproximateDogLocation,
 } from '../../utils/approximateLocation.js'
 
 const SOFIA_FALLBACK_CENTER = { latitude: 42.6977, longitude: 23.3219 }
+
+const SIZE_TRANSLATION_KEYS = {
+  small: 'profile.small',
+  medium: 'profile.medium',
+  large: 'profile.large',
+}
+
+const GENDER_TRANSLATION_KEYS = {
+  male: 'profile.male',
+  female: 'profile.female',
+  unknown: 'profile.unknown',
+}
 
 const state = {
   dogs: [],
@@ -38,6 +54,7 @@ const state = {
 }
 
 let titleSyncBound = false
+let languageSyncBound = false
 
 function bindTitleSync() {
   if (titleSyncBound) {
@@ -50,6 +67,25 @@ function bindTitleSync() {
 
 function updatePageTitle() {
   document.title = `DogMeetDog | ${t('discover.pageTitle')}`
+}
+
+function handleLanguageChanged() {
+  updatePageTitle()
+  renderFilterOptions()
+  refreshDiscoverUI()
+
+  if (state.recipientDog) {
+    populatePlaydateModal()
+  }
+}
+
+function bindLanguageSync() {
+  if (languageSyncBound) {
+    return
+  }
+
+  languageSyncBound = true
+  window.addEventListener('language:changed', handleLanguageChanged)
 }
 
 function setStatus(target, message, variant, translationKey = '', replacements = {}) {
@@ -114,6 +150,22 @@ function formatDistance(distanceKm) {
   return `${distanceKm.toFixed(1)} km`
 }
 
+function translateEnumValue(value, translationMap) {
+  const normalized = String(value ?? '').trim().toLowerCase()
+
+  if (!normalized) {
+    return ''
+  }
+
+  const translationKey = translationMap[normalized]
+
+  if (!translationKey) {
+    return String(value)
+  }
+
+  return t(translationKey)
+}
+
 function getDogCoordinates(dog) {
   const explicitCoordinates = getApproximateLocationCoordinates(dog)
 
@@ -161,7 +213,7 @@ function hasExactRequest(senderDogId, recipientDogId, status) {
 }
 
 function getDogDisplayLocation(dog) {
-  return formatApproximateDogLocation(dog)
+  return formatApproximateDogLocation(dog, getCurrentLanguage())
 }
 
 function getDogDistanceLabel(dog) {
@@ -185,14 +237,14 @@ function getDogDistanceLabel(dog) {
 }
 
 function applyFilters() {
-  const cityFilter = normalizeText(state.filters.city)
-  const districtFilter = normalizeText(state.filters.district)
+  const cityFilter = getLocationCityKey(state.filters.city)
+  const districtFilter = getLocationDistrictKey(state.filters.district)
   const radiusFilter = Number(state.filters.radiusKm)
 
   const filteredDogs = state.dogs.filter((dog) => {
     const location = resolveApproximateDogLocation(dog)
-    const cityLabel = normalizeText(location.city)
-    const districtLabel = normalizeText(location.district)
+    const cityLabel = getLocationCityKey(location.city)
+    const districtLabel = getLocationDistrictKey(location.district)
 
     if (cityFilter && cityLabel !== cityFilter) {
       return false
@@ -239,23 +291,35 @@ function applyFilters() {
 }
 
 function buildLocationOptions(dogs) {
-  const cities = []
-  const districts = []
+  const language = getCurrentLanguage()
+  const cities = new Set()
+  const districts = new Set()
 
   dogs.forEach((dog) => {
     const location = resolveApproximateDogLocation(dog)
+    const cityKey = getLocationCityKey(location.city)
+    const districtKey = getLocationDistrictKey(location.district)
 
-    if (location.city) {
-      cities.push(location.city)
+    if (cityKey) {
+      cities.add(cityKey)
     }
 
-    if (location.district) {
-      districts.push(location.district)
+    if (districtKey) {
+      districts.add(districtKey)
     }
   })
 
-  const uniqueCities = [...new Set(cities)].sort((left, right) => left.localeCompare(right))
-  const uniqueDistricts = [...new Set(districts)].sort((left, right) => left.localeCompare(right))
+  const uniqueCities = [...cities].sort((left, right) =>
+    getLocalizedCityName(left, language).localeCompare(getLocalizedCityName(right, language), undefined, {
+      sensitivity: 'base',
+    })
+  )
+
+  const uniqueDistricts = [...districts].sort((left, right) =>
+    getLocalizedDistrictName(left, language).localeCompare(getLocalizedDistrictName(right, language), undefined, {
+      sensitivity: 'base',
+    })
+  )
 
   return { cities: uniqueCities, districts: uniqueDistricts }
 }
@@ -325,7 +389,11 @@ function createDogCard(dog) {
   location.className = 'text-secondary mb-2'
   location.textContent = getDogDisplayLocation(dog)
 
-  const detailParts = [dog.breed, dog.size, dog.gender].filter(Boolean)
+  const detailParts = [
+    dog.breed,
+    translateEnumValue(dog.size, SIZE_TRANSLATION_KEYS),
+    translateEnumValue(dog.gender, GENDER_TRANSLATION_KEYS),
+  ].filter(Boolean)
   const details = document.createElement('p')
   details.className = 'mb-3'
   details.textContent = detailParts.length ? detailParts.join(' · ') : t('discover.noBreedOrDetails')
@@ -585,8 +653,9 @@ function renderFilterOptions() {
     return
   }
 
-  const currentCity = cityFilter.value
-  const currentDistrict = districtFilter.value
+  const currentLanguage = getCurrentLanguage()
+  const currentCity = getLocationCityKey(cityFilter.value)
+  const currentDistrict = getLocationDistrictKey(districtFilter.value)
 
   let options = { cities: [], districts: [] }
 
@@ -607,7 +676,7 @@ function renderFilterOptions() {
   options.cities.forEach((city) => {
     const option = document.createElement('option')
     option.value = city
-    option.textContent = city
+    option.textContent = getLocalizedCityName(city, currentLanguage)
     cityFilter.append(option)
   })
 
@@ -619,7 +688,7 @@ function renderFilterOptions() {
   options.districts.forEach((district) => {
     const option = document.createElement('option')
     option.value = district
-    option.textContent = district
+    option.textContent = getLocalizedDistrictName(district, currentLanguage)
     districtFilter.append(option)
   })
 
@@ -993,6 +1062,7 @@ async function bindDiscoverPage() {
 
 export function renderPage() {
   bindTitleSync()
+  bindLanguageSync()
   queueMicrotask(bindDiscoverPage)
   return template
 }

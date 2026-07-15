@@ -1,14 +1,40 @@
 import template from './profile.html?raw'
 import './profile.css'
-import { t } from '../../i18n/i18n.js'
+import { getCurrentLanguage, t } from '../../i18n/i18n.js'
 import { getCurrentUser, logoutUser } from '../../services/authService.js'
 import { createDogProfile, deleteDogById, getMyDogs, updateDogById, uploadDogPhotos } from '../../services/dogService.js'
 import { getMyPlaydateRequests, updatePlaydateRequestStatus } from '../../services/playdateService.js'
 import { getOrCreateConversation } from '../../services/messagingService.js'
-import { formatApproximateDogLocation, resolveApproximateDogLocation } from '../../utils/approximateLocation.js'
+import {
+  formatApproximateDogLocation,
+  getLocalizedDistrictName,
+  resolveApproximateDogLocation,
+} from '../../utils/approximateLocation.js'
 
 let profileFormController = null
 let titleSyncBound = false
+
+function getLocalizedDogStatus(status) {
+  const normalizedStatus = String(status ?? '').trim().toLowerCase()
+
+  if (!normalizedStatus) {
+    return t('profile.unknown')
+  }
+
+  if (normalizedStatus === 'active') {
+    return t('lostDogs.active')
+  }
+
+  return String(status)
+}
+
+function handleLanguageChanged() {
+  updatePageTitle()
+  queueMicrotask(() => {
+    void refreshMyDogs()
+    void refreshPlaydateDashboard()
+  })
+}
 
 function bindTitleSync() {
   if (titleSyncBound) {
@@ -16,7 +42,7 @@ function bindTitleSync() {
   }
 
   titleSyncBound = true
-  window.addEventListener('language:changed', updatePageTitle)
+  window.addEventListener('language:changed', handleLanguageChanged)
 }
 
 function updatePageTitle() {
@@ -44,6 +70,8 @@ function escapeHtml(value) {
 }
 
 function renderDogCards(dogs) {
+  const language = getCurrentLanguage()
+
   if (!dogs.length) {
     return `
       <div class="col-12">
@@ -59,9 +87,9 @@ function renderDogCards(dogs) {
       const dogId = encodeURIComponent(dog.id)
       const dogName = escapeHtml(dog.name ?? t('common.unnamedDog'))
       const dogBreed = escapeHtml(dog.breed ?? t('common.notProvided'))
-      const dogDistrict = escapeHtml(dog.district ?? t('common.notProvided'))
-      const dogStatus = escapeHtml(dog.status ?? t('profile.unknown'))
-      const dogLocation = escapeHtml(formatApproximateDogLocation(dog))
+      const dogDistrict = escapeHtml(getLocalizedDistrictName(dog.district, language) || t('common.notProvided'))
+      const dogStatus = escapeHtml(getLocalizedDogStatus(dog.status))
+      const dogLocation = escapeHtml(formatApproximateDogLocation(dog, language))
       const photoUrl = dog.photoUrl ? escapeHtml(dog.photoUrl) : ''
       const shortDescription = dog.description ? escapeHtml(dog.description.slice(0, 140)) : ''
 
@@ -166,9 +194,11 @@ function bindMyDogsActions() {
   const list = document.querySelector('[data-my-dogs-list]')
   const status = document.querySelector('[data-my-dogs-status]')
 
-  if (!list || !status) {
+  if (!list || !status || list.dataset.profileDogActionsBound === 'true') {
     return
   }
+
+  list.dataset.profileDogActionsBound = 'true'
 
   list.addEventListener('click', async (event) => {
     const editButton = event.target.closest('[data-edit-dog-id]')
@@ -422,6 +452,7 @@ async function bindDogForm() {
 }
 
 function createPlaydateRequestCard(request, mode) {
+  const language = getCurrentLanguage()
   const card = document.createElement('div')
     card.className = 'border rounded-3 p-3 bg-body-tertiary profile-playdate-card'
   card.dataset.playdateRequestId = request.id
@@ -452,7 +483,7 @@ function createPlaydateRequestCard(request, mode) {
 
   const badge = document.createElement('span')
   badge.className = mode === 'match' ? 'badge text-bg-success' : 'badge text-bg-secondary'
-  badge.textContent = request.status
+  badge.textContent = getLocalizedDogStatus(request.status)
 
   titleBody.append(heading)
   title.append(titleBody, badge)
@@ -463,11 +494,11 @@ function createPlaydateRequestCard(request, mode) {
 
   const locationLine = document.createElement('div')
   locationLine.className = 'small mb-2'
-  locationLine.textContent = `${request.senderDog?.name || t('profile.sender')} · ${formatApproximateDogLocation(request.senderDog)}`
+  locationLine.textContent = `${request.senderDog?.name || t('profile.sender')} · ${formatApproximateDogLocation(request.senderDog, language)}`
 
   const recipientLine = document.createElement('div')
   recipientLine.className = 'small mb-3'
-  recipientLine.textContent = `${request.recipientDog?.name || t('profile.recipient')} · ${formatApproximateDogLocation(request.recipientDog)}`
+  recipientLine.textContent = `${request.recipientDog?.name || t('profile.recipient')} · ${formatApproximateDogLocation(request.recipientDog, language)}`
 
   card.append(title, details, locationLine, recipientLine)
 
@@ -591,9 +622,11 @@ function bindPlaydateDashboard() {
   const section = document.querySelector('[data-playdate-section]')
   const status = document.querySelector('[data-playdate-status]')
 
-  if (!profilePage || !section || !status) {
+  if (!profilePage || !section || !status || section.dataset.profilePlaydateActionsBound === 'true') {
     return
   }
+
+  section.dataset.profilePlaydateActionsBound = 'true'
 
   section.addEventListener('click', async (event) => {
     const button = event.target.closest('[data-playdate-action]')

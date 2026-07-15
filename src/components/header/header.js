@@ -57,20 +57,14 @@ async function syncAuthNavigation(headerElement) {
       })
     }
 
-    if (activeOffcanvas) {
-      activeOffcanvas.hide()
-    }
+    
   } catch {
     setAuthNavigationState(headerElement, { isLoggedIn: false, isAdmin: false })
     const badges = headerElement.querySelectorAll('[data-notifications-badge]')
     badges.forEach((badge) => {
       badge.classList.add('d-none')
       badge.textContent = '0'
-    })
-
-    if (activeOffcanvas) {
-      activeOffcanvas.hide()
-    }
+    })    
   }
 }
 
