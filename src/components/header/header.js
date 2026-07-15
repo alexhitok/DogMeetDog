@@ -166,10 +166,7 @@ export function syncHeaderNavigation(headerElement, pathname) {
   activeHeaderElement = headerElement
   const links = headerElement.querySelectorAll('a[data-link]')
 
-  if (activeOffcanvas) {
-    activeOffcanvas.hide()
-  }
-
+  
   links.forEach((link) => {
     const linkPath = new URL(link.href).pathname
     const isActive = pathname === linkPath
