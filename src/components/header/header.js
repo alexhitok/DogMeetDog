@@ -108,8 +108,13 @@ function bindMobileNavigation(headerElement) {
     activeOffcanvas = new Offcanvas(offcanvasElement)
     activeOffcanvasElement = offcanvasElement
   }
+  if (headerElement.dataset.mobileNavigationBound === 'true') {
+    return
+}
 
-  headerElement.addEventListener('click', (event) => {
+headerElement.dataset.mobileNavigationBound = 'true'
+
+headerElement.addEventListener('click', (event) => {
     const toggler = event.target.closest('[data-mobile-nav-toggle]')
 
     if (toggler && toggler.dataset.mobileNavTarget === '#site-mobile-menu') {
